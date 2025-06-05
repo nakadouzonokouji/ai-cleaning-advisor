@@ -1,0 +1,38 @@
+# Jekyll configuration for GitHub Pages
+title: "AI掃除アドバイザー"
+description: "画像認識AIを使用した高精度な掃除アドバイス・商品推薦システム"
+baseurl: ""
+url: "https://YOUR_USERNAME.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: null
+
+# Include files
+include:
+  - _headers
+  - _redirects
+
+# Exclude files
+exclude:
+  - server/
+  - node_modules/
+  - .env
+  - "*.log"
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - .claude/
+
+# GitHub Pages settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Custom headers for better performance and security
+defaults:
+  - scope:
+      path: "*.html"
+    values:
+      layout: null

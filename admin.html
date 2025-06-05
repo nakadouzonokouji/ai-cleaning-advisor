@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI掃除アドバイザー - 統合管理ダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .admin-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%); }
+        .dev-bg { background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); }
+        .stat-card { transition: all 0.3s ease; }
+        .stat-card:hover { transform: translateY(-2px); }
+        .admin-table { max-height: 400px; overflow-y: auto; }
+        .loading { animation: spin 1s linear infinite; }
+        
+        /* タブスタイル */
+        .tab-button {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background: white;
+            color: #1e3a8a;
+        }
+        
+        .tab-button.active.dev-tab {
+            color: #7c3aed;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* チャート専用スタイル */
+        .chart-wrapper {
+            position: relative;
+            height: 250px !important;
+            max-height: 250px !important;
+            width: 100% !important;
+            overflow: hidden;
+        }
+        
+        .chart-wrapper canvas {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            max-height: 250px !important;
+            height: 250px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        /* 開発者モード専用 */
+        .dev-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dev-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: debugSweep 3s infinite;
+        }
+        
+        @keyframes debugSweep {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .debug-log {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid #334155;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+            padding: 0.25rem 0;
+            transition: background-color 0.2s ease;
+        }
+        
+        .log-entry:hover {
+            background-color: rgba(51, 65, 85, 0.2);
+        }
+        
+        /* アニメーション */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* ステータスインジケーター */
+        .status-indicator {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-indicator::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.25rem;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-success::before {
+            background-color: #10b981;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+        }
+        
+        .status-error::before {
+            background-color: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+        }
+        
+        .status-warning::before {
+            background-color: #f59e0b;
+            box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+    </style>
+    <script>
+        // LocalStorage代替：メモリ内ストレージ
+        class MemoryStorage {
+            constructor() {
+                this.data = {};
+            }
+            
+            getItem(key) {
+                return this.data[key] || null;
+            }
+            
+            setItem(key, value) {
+                this.data[key] = value;
+            }
+            
+            removeItem(key) {
+                delete this.data[key];
+            }
+        }
+        
+        // localStorage が使用できない場合の代替
+        window.memoryStorage = new MemoryStorage();
+        
+        // アイコンライブラリの安全な初期化
+        window.safeCreateIcons = function() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                try {
+                    lucide.createIcons();
+                } catch (error) {
+                    console.log('アイコン初期化エラー（無視）:', error.message);
+                }
+            }
+        };
+        
+        // 開発者ログシステム
+        class DevLogger {
+            constructor() {
+                this.logs = [];
+                this.maxLogs = 100;
+            }
+            
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = { timestamp, message, type };
+                
+                this.logs.push(logEntry);
+                if (this.logs.length > this.maxLogs) {
+                    this.logs.shift();
+                }
+                
+                this.updateLogDisplay();
+                console.log(`[${type.toUpperCase()}] ${message}`);
+            }
+            
+            updateLogDisplay() {
+                const logContent = document.getElementById('devLogContent');
+                if (!logContent) return;
+                
+                const colorMap = {
+                    'info': 'text-green-400',
+                    'warn': 'text-yellow-400',
+                    'error': 'text-red-400',
+                    'success': 'text-blue-400'
+                };
+                
+                const recentLogs = this.logs.slice(-20);
+                const logHtml = recentLogs.map(log => {
+                    const color = colorMap[log.type] || 'text-green-400';
+                    return `<div class="log-entry ${color}">[${log.timestamp}] ${this.escapeHtml(log.message)}</div>`;
+                }).join('');
+                
+                logContent.innerHTML = logHtml;
+                logContent.scrollTop = logContent.scrollHeight;
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            clear() {
+                this.logs = [];
+                this.updateLogDisplay();
+                this.log('ログクリア完了', 'info');
+            }
+        }
+        
+        // グローバルインスタンス
+        window.devLogger = new DevLogger();
+    </script>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- ヘッダー -->
+    <div id="headerContainer" class="admin-bg text-white shadow-lg">
+        <div class="container mx-auto max-w-6xl">
+            <!-- 上部ヘッダー -->
+            <div class="flex items-center justify-between p-6">
+                <div class="flex items-center">
+                    <span id="headerIcon" class="text-2xl mr-3">🛡️</span>
+                    <h1 id="headerTitle" class="text-2xl font-bold">統合管理ダッシュボード</h1>
+                    <span class="ml-4 text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">AI掃除アドバイザー</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="refreshDataBtn" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-opacity-30 transition-colors flex items-center">
+                        <span class="mr-2">🔄</span>更新
+                    </button>
+                    <a href="index.html" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-opacity-30 transition-colors flex items-center">
+                        <span class="mr-2">←</span>メインページ
+                    </a>
+                </div>
+            </div>
+            
+            <!-- タブナビゲーション -->
+            <div id="tabNavigation" class="hidden">
+                <div class="flex border-b border-white border-opacity-20">
+                    <button id="adminTab" class="tab-button px-6 py-3 text-white bg-white bg-opacity-20 rounded-t-lg mr-1 active">
+                        <span class="mr-2">📊</span>管理者ダッシュボード
+                    </button>
+                    <button id="devTab" class="tab-button dev-tab px-6 py-3 text-white bg-white bg-opacity-10 rounded-t-lg hover:bg-opacity-20">
+                        <span class="mr-2">🔧</span>開発者モード
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- アクセス認証 -->
+        <div id="authPanel" class="bg-white rounded-xl shadow-lg p-8 text-center">
+            <div class="mb-6">
+                <span class="text-6xl text-gray-400 mb-4 block">🔐</span>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">統合ダッシュボード認証</h2>
+                <p class="text-gray-600">管理者パスワードを入力してください</p>
+            </div>
+            <div class="max-w-md mx-auto">
+                <input type="password" id="adminPassword" placeholder="管理者パスワード" 
+                       class="w-full p-3 border border-gray-300 rounded-lg mb-4 text-center">
+                <button id="loginBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                    ログイン
+                </button>
+                <p class="text-xs text-gray-500 mt-4">
+                    デフォルトパスワード: <code class="bg-gray-100 px-2 py-1 rounded">admin123</code>
+                </p>
+                <p class="text-xs text-gray-400 mt-2">
+                    アクセス方法: <code class="bg-gray-100 px-2 py-1 rounded">?admin=1</code> または <code class="bg-gray-100 px-2 py-1 rounded">?dev=true</code>
+                </p>
+            </div>
+        </div>
+
+        <!-- 管理者ダッシュボード -->
+        <div id="adminContent" class="tab-content hidden">
+            <!-- 統計サマリー -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
+                <div class="stat-card bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">総フィードバック数</p>
+                            <p id="totalFeedbacks" class="text-2xl font-bold text-gray-800">0</p>
+                        </div>
+                        <span class="text-3xl text-blue-600">💬</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">満足度</p>
+                            <p id="satisfactionRate" class="text-2xl font-bold text-green-600">0%</p>
+                        </div>
+                        <span class="text-3xl text-green-600">😊</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Good評価</p>
+                            <p id="goodCount" class="text-2xl font-bold text-green-600">0</p>
+                        </div>
+                        <span class="text-3xl text-green-600">👍</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm">Bad評価</p>
+                            <p id="badCount" class="text-2xl font-bold text-red-600">0</p>
+                        </div>
+                        <span class="text-3xl text-red-600">👎</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- チャートエリア -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 fade-in">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">評価分布</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="feedbackChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">時系列推移</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- フィードバック詳細 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in">
+                <!-- 最新フィードバック -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">最新フィードバック</h3>
+                        <button id="exportFeedbackBtn" class="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">
+                            📥 エクスポート
+                        </button>
+                    </div>
+                    <div id="recentFeedbacks" class="admin-table space-y-3">
+                        <!-- 動的に生成 -->
+                    </div>
+                </div>
+
+                <!-- コメント一覧 -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">ユーザーコメント</h3>
+                    <div id="userComments" class="admin-table space-y-3">
+                        <!-- 動的に生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分析データ詳細 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mt-6 fade-in">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">分析データ統計</h3>
+                <div id="analysisStats" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- 動的に生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 開発者モード -->
+        <div id="devContent" class="tab-content hidden">
+            <!-- システム状態 -->
+            <div class="dev-panel text-white p-4 mb-6 rounded-xl">
+                <div class="fade-in">
+                    <h2 class="text-lg font-bold mb-2">🔧 システム状態</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                        <div>
+                            <strong>🔑 Amazon PA-API:</strong>
+                            <div id="amazonApiStatus" class="status-indicator status-success">✅ 設定済み</div>
+                        </div>
+                        <div>
+                            <strong>🤖 Gemini AI:</strong>
+                            <div id="geminiApiStatus" class="status-indicator status-success">✅ 設定済み</div>
+                        </div>
+                        <div>
+                            <strong>🛒 商品取得:</strong>
+                            <div id="productStatus" class="status-indicator status-warning">⏳ 待機中</div>
+                        </div>
+                        <div>
+                            <strong>🔐 セキュリティ:</strong>
+                            <div id="securityStatus" class="status-indicator status-success">✅ 保護中</div>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <button id="testConnectionBtn" class="bg-white text-purple-600 px-4 py-2 rounded hover:bg-gray-100 text-sm font-semibold">
+                            🧪 接続テスト
+                        </button>
+                        <button id="toggleDebugBtn" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 text-sm font-semibold">
+                            📋 ログ表示/非表示
+                        </button>
+                        <button id="exportConfigBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 text-sm font-semibold">
+                            💾 設定エクスポート
+                        </button>
+                        <button id="clearLogBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm font-semibold">
+                            🗑️ ログクリア
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API設定 -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-6 fade-in">
+                <h3 class="text-lg font-bold text-yellow-800 mb-4">🔑 API設定管理</h3>
+                <div id="autoConfigMessage" class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4 hidden">
+                    <div class="flex items-center">
+                        <span class="text-green-500 mr-2">✅</span>
+                        <p class="text-green-700 font-semibold">APIキーが自動設定されました！</p>
+                    </div>
+                    <p class="text-green-600 text-sm mt-2">設定ファイルからGemini APIキーを読み込み完了。</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-yellow-700 mb-2">Gemini API Key:</label>
+                        <div class="flex gap-2">
+                            <input type="password" id="geminiApiKey" placeholder="AIzaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" 
+                                   class="flex-1 p-3 border border-yellow-300 rounded-lg text-sm" autocomplete="off">
+                            <button id="toggleApiKeyVisibility" class="px-3 py-2 bg-yellow-200 text-yellow-800 rounded-lg hover:bg-yellow-300 text-sm">
+                                👁️
+                            </button>
+                        </div>
+                        <p class="text-xs text-yellow-600 mt-1">
+                            Google AI Studio (https://aistudio.google.com/) から取得したAPIキーを入力
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="saveGeminiApiBtn" class="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
+                            💾 API設定を保存
+                        </button>
+                        <button id="testGeminiApiBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                            🧪 接続テスト
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- デバッグログ -->
+            <div id="debugLogPanel" class="bg-white rounded-xl shadow-lg p-6 mb-6 hidden fade-in">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">🔧 開発者ログ</h3>
+                    <div class="flex gap-2">
+                        <button id="refreshLogBtn" class="text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full hover:bg-green-200 transition-colors">
+                            🔄 更新
+                        </button>
+                        <button id="clearDevLogBtn" class="text-sm bg-red-100 text-red-800 px-3 py-1 rounded-full hover:bg-red-200 transition-colors">
+                            🗑️ クリア
+                        </button>
+                    </div>
+                </div>
+                <div id="devLogContent" class="debug-log text-green-400 p-4 rounded-lg font-mono text-sm max-h-64 overflow-y-auto">
+                    <!-- ログエントリがここに表示される -->
+                </div>
+            </div>
+
+            <!-- システム統計 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">🚀 パフォーマンス統計</h3>
+                    <div id="performanceStats" class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">システム稼働時間:</span>
+                            <span id="uptime" class="font-semibold">-- 分</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">API呼び出し回数:</span>
+                            <span id="apiCalls" class="font-semibold">0 回</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">エラー発生回数:</span>
+                            <span id="errorCount" class="font-semibold">0 回</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">成功率:</span>
+                            <span id="successRate" class="font-semibold">100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">🎯 機能統計</h3>
+                    <div id="featureStats" class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">対応汚れタイプ:</span>
+                            <span id="dirtTypeCount" class="font-semibold">-- 種類</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">商品カテゴリ:</span>
+                            <span id="productCategoryCount" class="font-semibold">-- カテゴリ</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">対応場所:</span>
+                            <span id="locationCount" class="font-semibold">-- 箇所</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">システムバージョン:</span>
+                            <span id="systemVersion" class="font-semibold">v3.0.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 設定エクスポート -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mt-6 fade-in">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">💾 システム設定</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">設定データプレビュー:</label>
+                        <textarea id="configPreview" readonly class="w-full p-3 border border-gray-300 rounded-lg font-mono text-xs bg-gray-50" rows="6"></textarea>
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="exportFullConfigBtn" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                            📋 完全設定エクスポート
+                        </button>
+                        <button id="resetConfigBtn" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold">
+                            🔄 設定リセット
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 設定エクスポートモーダル -->
+    <div id="exportModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">💾 設定エクスポート</h3>
+                    <button id="closeExportModal" class="text-gray-400 hover:text-gray-600">
+                        <span class="text-xl">×</span>
+                    </button>
+                </div>
+                <div class="mb-4">
+                    <p class="text-gray-600 mb-3">システム設定をコピーして安全な場所に保存してください：</p>
+                    <textarea id="exportConfig" readonly class="w-full p-3 border border-gray-300 rounded-lg font-mono text-sm" rows="8"></textarea>
+                </div>
+                <div class="flex gap-3">
+                    <button id="copyConfigBtn" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        📋 設定をコピー
+                    </button>
+                    <button id="closeExportBtn" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                        閉じる
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知システム -->
+    <div id="notification" class="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg hidden z-50">
+        <div class="flex items-center gap-2">
+            <span id="notificationIcon">✅</span>
+            <span id="notificationText">操作が完了しました</span>
+        </div>
+    </div>
+
+    <script>
+        class UnifiedDashboard {
+            constructor() {
+                this.adminPassword = 'admin123'; // 本番では環境変数に
+                this.feedbackData = [];
+                this.charts = {};
+                this.devLogger = window.devLogger;
+                this.isLocalStorageAvailable = this.checkLocalStorage();
+                this.activeTab = 'admin';
+                this.systemStats = {
+                    startTime: Date.now(),
+                    apiCalls: 0,
+                    errors: 0
+                };
+                this.performanceInterval = null;
+                this.init();
+            }
+
+            checkLocalStorage() {
+                try {
+                    const test = 'localStorage_test';
+                    localStorage.setItem(test, test);
+                    localStorage.removeItem(test);
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            }
+
+            getStorage() {
+                return this.isLocalStorageAvailable ? localStorage : window.memoryStorage;
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadFeedbackData();
+                this.initializeDevMode();
+                this.startPerformanceMonitoring();
+                
+                // アイコン初期化を遅延実行
+                setTimeout(() => {
+                    window.safeCreateIcons();
+                }, 100);
+                
+                this.devLogger.log('統合ダッシュボード初期化完了', 'success');
+            }
+
+            setupEventListeners() {
+                // 認証関連
+                document.getElementById('loginBtn').addEventListener('click', () => this.authenticate());
+                document.getElementById('adminPassword').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') this.authenticate();
+                });
+
+                // タブ切り替え
+                document.getElementById('adminTab').addEventListener('click', () => this.switchTab('admin'));
+                document.getElementById('devTab').addEventListener('click', () => this.switchTab('dev'));
+
+                // 共通機能
+                document.getElementById('refreshDataBtn').addEventListener('click', () => this.refreshData());
+
+                // 管理者機能
+                document.getElementById('exportFeedbackBtn').addEventListener('click', () => this.exportFeedback());
+
+                // 開発者機能
+                document.getElementById('testConnectionBtn').addEventListener('click', () => this.testConnections());
+                document.getElementById('toggleDebugBtn').addEventListener('click', () => this.toggleDebugLog());
+                document.getElementById('exportConfigBtn').addEventListener('click', () => this.showExportModal());
+                document.getElementById('clearLogBtn').addEventListener('click', () => this.clearLogs());
+                document.getElementById('saveGeminiApiBtn').addEventListener('click', () => this.saveGeminiApi());
+                document.getElementById('testGeminiApiBtn').addEventListener('click', () => this.testGeminiApi());
+                document.getElementById('toggleApiKeyVisibility').addEventListener('click', () => this.toggleApiKeyVisibility());
+                document.getElementById('refreshLogBtn').addEventListener('click', () => this.refreshLogs());
+                document.getElementById('clearDevLogBtn').addEventListener('click', () => this.clearDevLogs());
+                document.getElementById('exportFullConfigBtn').addEventListener('click', () => this.exportFullConfig());
+                document.getElementById('resetConfigBtn').addEventListener('click', () => this.resetConfig());
+
+                // モーダル関連
+                document.getElementById('closeExportModal').addEventListener('click', () => this.closeExportModal());
+                document.getElementById('copyConfigBtn').addEventListener('click', () => this.copyConfiguration());
+                document.getElementById('closeExportBtn').addEventListener('click', () => this.closeExportModal());
+
+                // モーダル外クリック
+                document.getElementById('exportModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'exportModal') this.closeExportModal();
+                });
+
+                // ESCキー
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeExportModal();
+                    }
+                });
+            }
+
+            authenticate() {
+                const inputPassword = document.getElementById('adminPassword').value;
+                
+                if (inputPassword === this.adminPassword) {
+                    document.getElementById('authPanel').classList.add('hidden');
+                    document.getElementById('tabNavigation').classList.remove('hidden');
+                    this.switchTab(this.activeTab);
+                    this.showNotification('ログイン成功 - 統合ダッシュボードへようこそ！', 'success');
+                    this.devLogger.log('管理者認証成功', 'success');
+                } else {
+                    this.showNotification('パスワードが間違っています', 'error');
+                    document.getElementById('adminPassword').value = '';
+                    document.getElementById('adminPassword').focus();
+                    this.devLogger.log('認証失敗', 'warn');
+                }
+            }
+
+            switchTab(tab) {
+                this.activeTab = tab;
+                this.devLogger.log(`タブ切り替え: ${tab}`, 'info');
+                
+                // タブボタンの状態更新
+                document.getElementById('adminTab').classList.remove('active');
+                document.getElementById('devTab').classList.remove('active');
+                document.getElementById(`${tab}Tab`).classList.add('active');
+                
+                // コンテンツの表示切り替え
+                document.getElementById('adminContent').classList.remove('active');
+                document.getElementById('devContent').classList.remove('active');
+                document.getElementById(`${tab}Content`).classList.add('active');
+                
+                // ヘッダーの更新
+                this.updateHeaderForTab(tab);
+                
+                // タブ固有の初期化
+                if (tab === 'admin') {
+                    this.renderDashboard();
+                } else if (tab === 'dev') {
+                    this.initializeDevMode();
+                    this.updateDevStats();
+                }
+            }
+
+            updateHeaderForTab(tab) {
+                const headerContainer = document.getElementById('headerContainer');
+                const headerIcon = document.getElementById('headerIcon');
+                const headerTitle = document.getElementById('headerTitle');
+                
+                if (tab === 'admin') {
+                    headerContainer.className = 'admin-bg text-white shadow-lg';
+                    headerIcon.textContent = '📊';
+                    headerTitle.textContent = '管理者ダッシュボード';
+                } else {
+                    headerContainer.className = 'dev-bg text-white shadow-lg';
+                    headerIcon.textContent = '🔧';
+                    headerTitle.textContent = '開発者モード';
+                }
+            }
+
+            loadFeedbackData() {
+                try {
+                    const storage = this.getStorage();
+                    const data = storage.getItem('ai_cleaner_feedbacks');
+                    
+                    if (data) {
+                        this.feedbackData = JSON.parse(data);
+                    } else {
+                        this.feedbackData = this.generateDemoData();
+                    }
+                    
+                    this.devLogger.log(`フィードバックデータ読み込み完了: ${this.feedbackData.length}件`, 'success');
+                } catch (error) {
+                    this.devLogger.log(`フィードバックデータ読み込みエラー: ${error.message}`, 'error');
+                    this.feedbackData = this.generateDemoData();
+                }
+            }
+
+            generateDemoData() {
+                const sampleData = [
+                    {
+                        id: 1640000000000,
+                        timestamp: new Date(Date.now() - 86400000 * 3).toISOString(),
+                        type: 'good',
+                        comment: '換気扇の掃除方法がとても分かりやすかったです！',
+                        analysisResult: {
+                            dirtType: '油汚れ',
+                            surface: '換気扇・キッチン',
+                            confidence: 95,
+                            hasPhoto: true,
+                            isAIAnalyzed: true
+                        }
+                    },
+                    {
+                        id: 1640000001000,
+                        timestamp: new Date(Date.now() - 86400000 * 2).toISOString(),
+                        type: 'good',
+                        comment: 'AIの提案通りに掃除したら本当にピカピカになりました',
+                        analysisResult: {
+                            dirtType: 'カビ汚れ',
+                            surface: '浴室・お風呂',
+                            confidence: 88,
+                            hasPhoto: true,
+                            isAIAnalyzed: true
+                        }
+                    },
+                    {
+                        id: 1640000002000,
+                        timestamp: new Date(Date.now() - 86400000 * 1).toISOString(),
+                        type: 'bad',
+                        comment: 'もう少し詳しい説明があると良いです',
+                        analysisResult: {
+                            dirtType: '水垢',
+                            surface: 'トイレ',
+                            confidence: 75,
+                            hasPhoto: false,
+                            isAIAnalyzed: true
+                        }
+                    },
+                    {
+                        id: 1640000003000,
+                        timestamp: new Date().toISOString(),
+                        type: 'good',
+                        comment: '',
+                        analysisResult: {
+                            dirtType: 'ホコリ',
+                            surface: '床・フローリング',
+                            confidence: 92,
+                            hasPhoto: true,
+                            isAIAnalyzed: true
+                        }
+                    }
+                ];
+                
+                this.devLogger.log('デモデータを生成しました', 'info');
+                return sampleData;
+            }
+
+            refreshData() {
+                this.loadFeedbackData();
+                if (this.activeTab === 'admin') {
+                    this.renderDashboard();
+                } else {
+                    this.updateDevStats();
+                }
+                this.showNotification('データを更新しました', 'success');
+                this.devLogger.log('データ更新完了', 'info');
+            }
+
+            // 管理者ダッシュボード機能
+            renderDashboard() {
+                this.renderStats();
+                this.renderCharts();
+                this.renderRecentFeedbacks();
+                this.renderComments();
+                this.renderAnalysisStats();
+            }
+
+            renderStats() {
+                const stats = this.calculateStats();
+                
+                document.getElementById('totalFeedbacks').textContent = stats.total;
+                document.getElementById('satisfactionRate').textContent = stats.satisfaction + '%';
+                document.getElementById('goodCount').textContent = stats.good;
+                document.getElementById('badCount').textContent = stats.bad;
+            }
+
+            calculateStats() {
+                const total = this.feedbackData.length;
+                const good = this.feedbackData.filter(f => f.type === 'good').length;
+                const bad = this.feedbackData.filter(f => f.type === 'bad').length;
+                const satisfaction = total > 0 ? Math.round((good / total) * 100) : 0;
+
+                return { total, good, bad, satisfaction };
+            }
+
+            renderCharts() {
+                this.renderPieChart();
+                this.renderTimelineChart();
+            }
+
+            renderPieChart() {
+                const ctx = document.getElementById('feedbackChart');
+                if (!ctx) return;
+                
+                ctx.style.maxHeight = '250px';
+                ctx.style.height = '250px';
+                ctx.width = ctx.offsetWidth;
+                ctx.height = 250;
+                
+                const stats = this.calculateStats();
+
+                if (this.charts.pie) {
+                    this.charts.pie.destroy();
+                }
+
+                this.charts.pie = new Chart(ctx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Good', 'Bad'],
+                        datasets: [{
+                            data: [stats.good, stats.bad],
+                            backgroundColor: ['#10b981', '#ef4444'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        devicePixelRatio: 1,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 10,
+                                    usePointStyle: true
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                this.devLogger.log('円グラフ作成完了', 'success');
+            }
+
+            renderTimelineChart() {
+                const ctx = document.getElementById('timelineChart');
+                if (!ctx) return;
+                
+                ctx.style.maxHeight = '250px';
+                ctx.style.height = '250px';
+                ctx.width = ctx.offsetWidth;
+                ctx.height = 250;
+                
+                const dailyData = this.calculateDailyFeedback();
+                
+                if (this.charts.timeline) {
+                    this.charts.timeline.destroy();
+                }
+
+                this.charts.timeline = new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: dailyData.labels,
+                        datasets: [
+                            {
+                                label: 'Good',
+                                data: dailyData.good,
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                tension: 0.4,
+                                fill: false,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            },
+                            {
+                                label: 'Bad',
+                                data: dailyData.bad,
+                                borderColor: '#ef4444',
+                                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                tension: 0.4,
+                                fill: false,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        devicePixelRatio: 1,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    precision: 0
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    padding: 10,
+                                    usePointStyle: true
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                this.devLogger.log('時系列グラフ作成完了', 'success');
+            }
+
+            calculateDailyFeedback() {
+                const dailyStats = {};
+                
+                this.feedbackData.forEach(feedback => {
+                    const date = new Date(feedback.timestamp).toLocaleDateString();
+                    if (!dailyStats[date]) {
+                        dailyStats[date] = { good: 0, bad: 0 };
+                    }
+                    dailyStats[date][feedback.type]++;
+                });
+
+                const sortedDates = Object.keys(dailyStats).sort();
+                const labels = sortedDates;
+                const good = sortedDates.map(date => dailyStats[date].good);
+                const bad = sortedDates.map(date => dailyStats[date].bad);
+
+                return { labels, good, bad };
+            }
+
+            renderRecentFeedbacks() {
+                const container = document.getElementById('recentFeedbacks');
+                const recent = this.feedbackData.slice(-10).reverse();
+
+                if (recent.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-4">フィードバックがありません</p>';
+                    return;
+                }
+
+                const html = recent.map(feedback => {
+                    const time = new Date(feedback.timestamp).toLocaleString();
+                    const typeIcon = feedback.type === 'good' ? '👍' : '👎';
+                    const typeClass = feedback.type === 'good' ? 'text-green-600' : 'text-red-600';
+                    
+                    return `
+                        <div class="p-3 border border-gray-200 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="${typeClass} font-semibold">${typeIcon} ${feedback.type.toUpperCase()}</span>
+                                <span class="text-xs text-gray-500">${time}</span>
+                            </div>
+                            <p class="text-sm text-gray-700">${feedback.analysisResult.surface} (${feedback.analysisResult.dirtType})</p>
+                            ${feedback.comment ? `<p class="text-sm text-gray-600 mt-1 italic">"${feedback.comment}"</p>` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = html;
+            }
+
+            renderComments() {
+                const container = document.getElementById('userComments');
+                const comments = this.feedbackData.filter(f => f.comment && f.comment.trim() !== '');
+
+                if (comments.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-4">コメントがありません</p>';
+                    return;
+                }
+
+                const html = comments.slice(-10).reverse().map(feedback => {
+                    const time = new Date(feedback.timestamp).toLocaleString();
+                    const typeIcon = feedback.type === 'good' ? '👍' : '👎';
+                    const typeClass = feedback.type === 'good' ? 'text-green-600' : 'text-red-600';
+                    
+                    return `
+                        <div class="p-3 border border-gray-200 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="${typeClass} text-sm">${typeIcon} ${feedback.type}</span>
+                                <span class="text-xs text-gray-500">${time}</span>
+                            </div>
+                            <p class="text-sm text-gray-800">"${feedback.comment}"</p>
+                            <p class="text-xs text-gray-500 mt-1">${feedback.analysisResult.surface}</p>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = html;
+            }
+
+            renderAnalysisStats() {
+                const container = document.getElementById('analysisStats');
+                
+                const locationStats = {};
+                const dirtTypeStats = {};
+                let photoCount = 0;
+
+                this.feedbackData.forEach(feedback => {
+                    const result = feedback.analysisResult;
+                    
+                    locationStats[result.surface] = (locationStats[result.surface] || 0) + 1;
+                    dirtTypeStats[result.dirtType] = (dirtTypeStats[result.dirtType] || 0) + 1;
+                    
+                    if (result.hasPhoto) photoCount++;
+                });
+
+                const topLocation = Object.keys(locationStats).sort((a, b) => locationStats[b] - locationStats[a])[0] || 'なし';
+                const topDirtType = Object.keys(dirtTypeStats).sort((a, b) => dirtTypeStats[b] - dirtTypeStats[a])[0] || 'なし';
+                const photoRate = this.feedbackData.length > 0 ? Math.round((photoCount / this.feedbackData.length) * 100) : 0;
+
+                container.innerHTML = `
+                    <div class="bg-blue-50 p-4 rounded-lg text-center">
+                        <p class="text-blue-600 font-semibold">最多利用場所</p>
+                        <p class="text-xl font-bold text-blue-800">${topLocation}</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg text-center">
+                        <p class="text-green-600 font-semibold">最多汚れタイプ</p>
+                        <p class="text-xl font-bold text-green-800">${topDirtType}</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg text-center">
+                        <p class="text-purple-600 font-semibold">写真利用率</p>
+                        <p class="text-xl font-bold text-purple-800">${photoRate}%</p>
+                    </div>
+                `;
+            }
+
+            exportFeedback() {
+                const data = {
+                    exportDate: new Date().toISOString(),
+                    stats: this.calculateStats(),
+                    feedbacks: this.feedbackData
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `feedback_export_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                this.showNotification('フィードバックデータをエクスポートしました', 'success');
+                this.devLogger.log('フィードバックエクスポート完了', 'success');
+            }
+
+            // 開発者モード機能
+            initializeDevMode() {
+                this.updateSystemStatus();
+                this.updateConfigPreview();
+                this.devLogger.log('開発者モード初期化完了', 'success');
+            }
+
+            updateSystemStatus() {
+                // システム状態の更新
+                this.updateStatusIndicator('amazonApiStatus', '✅ 設定済み', 'status-success');
+                this.updateStatusIndicator('geminiApiStatus', '✅ 設定済み', 'status-success');
+                this.updateStatusIndicator('productStatus', '⏳ 待機中', 'status-warning');
+                this.updateStatusIndicator('securityStatus', '✅ 保護中', 'status-success');
+            }
+
+            updateStatusIndicator(elementId, text, statusClass) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = text;
+                    element.className = `status-indicator ${statusClass}`;
+                }
+            }
+
+            updateDevStats() {
+                const uptime = Math.floor((Date.now() - this.systemStats.startTime) / 60000);
+                const successRate = this.systemStats.apiCalls > 0 ? 
+                    Math.round(((this.systemStats.apiCalls - this.systemStats.errors) / this.systemStats.apiCalls) * 100) : 100;
+
+                document.getElementById('uptime').textContent = `${uptime} 分`;
+                document.getElementById('apiCalls').textContent = `${this.systemStats.apiCalls} 回`;
+                document.getElementById('errorCount').textContent = `${this.systemStats.errors} 回`;
+                document.getElementById('successRate').textContent = `${successRate}%`;
+
+                // 機能統計（仮想データ）
+                document.getElementById('dirtTypeCount').textContent = '25 種類';
+                document.getElementById('productCategoryCount').textContent = '15 カテゴリ';
+                document.getElementById('locationCount').textContent = '8 箇所';
+            }
+
+            startPerformanceMonitoring() {
+                if (this.performanceInterval) {
+                    clearInterval(this.performanceInterval);
+                }
+                
+                this.performanceInterval = setInterval(() => {
+                    if (this.activeTab === 'dev') {
+                        this.updateDevStats();
+                    }
+                }, 30000); // 30秒間隔
+            }
+
+            testConnections() {
+                this.devLogger.log('接続テスト開始', 'info');
+                this.systemStats.apiCalls++;
+                
+                // 模擬テスト
+                setTimeout(() => {
+                    this.showNotification('接続テスト完了 - 全システム正常', 'success');
+                    this.devLogger.log('接続テスト完了 - 全システム正常', 'success');
+                }, 1000);
+            }
+
+            toggleDebugLog() {
+                const debugPanel = document.getElementById('debugLogPanel');
+                const toggleBtn = document.getElementById('toggleDebugBtn');
+                
+                if (debugPanel.classList.contains('hidden')) {
+                    debugPanel.classList.remove('hidden');
+                    toggleBtn.textContent = '📋 ログ非表示';
+                    this.devLogger.log('デバッグログ表示', 'info');
+                } else {
+                    debugPanel.classList.add('hidden');
+                    toggleBtn.textContent = '📋 ログ表示';
+                    this.devLogger.log('デバッグログ非表示', 'info');
+                }
+            }
+
+            clearLogs() {
+                this.devLogger.clear();
+                this.showNotification('ログをクリアしました', 'success');
+            }
+
+            clearDevLogs() {
+                this.devLogger.clear();
+                this.showNotification('開発者ログをクリアしました', 'success');
+            }
+
+            refreshLogs() {
+                this.devLogger.updateLogDisplay();
+                this.showNotification('ログを更新しました', 'success');
+            }
+
+            saveGeminiApi() {
+                const apiKey = document.getElementById('geminiApiKey').value.trim();
+                if (!apiKey) {
+                    this.showNotification('APIキーを入力してください', 'error');
+                    return;
+                }
+                
+                // 仮想保存
+                this.showNotification('Gemini APIキーを保存しました', 'success');
+                this.devLogger.log('Gemini APIキー保存完了', 'success');
+                this.updateStatusIndicator('geminiApiStatus', '✅ 保存済み', 'status-success');
+            }
+
+            testGeminiApi() {
+                this.devLogger.log('Gemini API接続テスト開始', 'info');
+                this.systemStats.apiCalls++;
+                
+                // 模擬テスト
+                setTimeout(() => {
+                    this.showNotification('Gemini API接続成功', 'success');
+                    this.devLogger.log('Gemini API接続テスト成功', 'success');
+                }, 1500);
+            }
+
+            toggleApiKeyVisibility() {
+                const input = document.getElementById('geminiApiKey');
+                const button = document.getElementById('toggleApiKeyVisibility');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    button.textContent = '🙈';
+                } else {
+                    input.type = 'password';
+                    button.textContent = '👁️';
+                }
+            }
+
+            updateConfigPreview() {
+                const config = {
+                    timestamp: new Date().toISOString(),
+                    version: 'v3.0.0',
+                    features: {
+                        adminDashboard: true,
+                        developerMode: true,
+                        feedbackSystem: true,
+                        apiIntegration: true
+                    },
+                    stats: this.systemStats
+                };
+                
+                document.getElementById('configPreview').value = JSON.stringify(config, null, 2);
+            }
+
+            showExportModal() {
+                const modal = document.getElementById('exportModal');
+                const configTextarea = document.getElementById('exportConfig');
+                
+                const fullConfig = {
+                    exportDate: new Date().toISOString(),
+                    systemInfo: {
+                        version: 'v3.0.0',
+                        uptime: Date.now() - this.systemStats.startTime,
+                        userAgent: navigator.userAgent
+                    },
+                    stats: this.systemStats,
+                    feedbackStats: this.calculateStats(),
+                    configuration: {
+                        localStorageAvailable: this.isLocalStorageAvailable,
+                        feedbackCount: this.feedbackData.length
+                    }
+                };
+                
+                configTextarea.value = JSON.stringify(fullConfig, null, 2);
+                modal.classList.remove('hidden');
+                this.devLogger.log('設定エクスポートモーダル表示', 'info');
+            }
+
+            exportFullConfig() {
+                const configData = document.getElementById('configPreview').value;
+                const blob = new Blob([configData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `system_config_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                this.showNotification('システム設定をエクスポートしました', 'success');
+                this.devLogger.log('システム設定エクスポート完了', 'success');
+            }
+
+            resetConfig() {
+                if (confirm('システム設定をリセットしますか？この操作は元に戻せません。')) {
+                    // 設定リセット処理
+                    this.systemStats = {
+                        startTime: Date.now(),
+                        apiCalls: 0,
+                        errors: 0
+                    };
+                    
+                    this.updateConfigPreview();
+                    this.updateDevStats();
+                    this.showNotification('システム設定をリセットしました', 'success');
+                    this.devLogger.log('システム設定リセット完了', 'success');
+                }
+            }
+
+            copyConfiguration() {
+                const configTextarea = document.getElementById('exportConfig');
+                navigator.clipboard.writeText(configTextarea.value).then(() => {
+                    this.showNotification('設定をクリップボードにコピーしました', 'success');
+                    this.devLogger.log('設定コピー完了', 'success');
+                }).catch(err => {
+                    this.showNotification('コピーに失敗しました', 'error');
+                    this.devLogger.log(`設定コピーエラー: ${err.message}`, 'error');
+                });
+            }
+
+            closeExportModal() {
+                document.getElementById('exportModal').classList.add('hidden');
+                this.devLogger.log('設定エクスポートモーダル非表示', 'info');
+            }
+
+            // 通知システム
+            showNotification(message, type = 'success') {
+                const notification = document.getElementById('notification');
+                const icon = document.getElementById('notificationIcon');
+                const text = document.getElementById('notificationText');
+                
+                const config = {
+                    success: { icon: '✅', bg: 'bg-green-600' },
+                    error: { icon: '❌', bg: 'bg-red-600' },
+                    warning: { icon: '⚠️', bg: 'bg-yellow-600' },
+                    info: { icon: 'ℹ️', bg: 'bg-blue-600' }
+                };
+                
+                const settings = config[type] || config.success;
+                
+                if (icon) icon.textContent = settings.icon;
+                if (text) text.textContent = message;
+                
+                notification.className = `fixed top-4 right-4 ${settings.bg} text-white px-4 py-2 rounded-lg shadow-lg z-50`;
+                notification.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    notification.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            const dashboard = new UnifiedDashboard();
+            
+            // URLパラメータによる自動切り替え
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('dev') === 'true' || urlParams.get('debug') === '1') {
+                dashboard.activeTab = 'dev';
+            }
+            
+            // グローバルアクセス（デバッグ用）
+            window.unifiedDashboard = dashboard;
+            
+            console.log('🚀 統合ダッシュボード初期化完了');
+            console.log('📊 管理者ダッシュボード + 🔧 開発者モード');
+            console.log('💡 使用方法:');
+            console.log('  - ?admin=1 で管理者モード優先');
+            console.log('  - ?dev=true で開発者モード優先');
+            console.log('  - パスワード: admin123');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Headers for GitHub Pages
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cache-Control: public, max-age=86400
+
+/styles.css
+  Cache-Control: public, max-age=2592000
+
+/app.js
+  Cache-Control: public, max-age=2592000
+
+/config.js
+  Cache-Control: public, max-age=2592000
+
+/debug.js
+  Cache-Control: public, max-age=2592000
