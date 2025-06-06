@@ -5,19 +5,19 @@
  * 🎯 完全対応：家中のあらゆる汚れに対応する商品選択システム
  */
 
-// Amazon PA-API 設定（本番環境）
+// Amazon PA-API 設定（環境変数から取得）
 const AMAZON_PA_API_CONFIG = {
-    accessKey: 'AKIAIGCBTTVNNHQYMRTA',
-    secretKey: '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',
-    associateTag: 'asdfghj12-22',
+    accessKey: '', // 環境変数から取得
+    secretKey: '', // 環境変数から取得
+    associateTag: '', // 環境変数から取得
     region: 'jp-east-1',
     host: 'webservices.amazon.co.jp',
     uri: '/paapi5/getitems'
 };
 
-// Gemini AI 設定（本番環境）
+// Gemini AI 設定（動的設定）
 const GEMINI_API_CONFIG = {
-    apiKey: 'AIzaSyCVNP-4CckOmO2U2bD9zLldTZF7lMXKZ2c',
+    apiKey: '', // 管理者ダッシュボードから設定
     model: 'gemini-1.5-flash',
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models'
 };
