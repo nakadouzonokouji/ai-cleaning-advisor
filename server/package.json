@@ -1,31 +1,35 @@
-{
-  "name": "ai-cleaner-proxy-server",
-  "version": "1.0.0",
-  "description": "Amazon PA-API プロキシサーバー for AI掃除アドバイザー",
-  "main": "proxy.js",
-  "scripts": {
-    "start": "node proxy.js",
-    "dev": "nodemon proxy.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "amazon",
-    "paapi",
-    "proxy",
-    "express",
-    "aws",
-    "affiliate"
-  ],
-  "author": "CX Mainte",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "engines": {
-    "node": ">=16.0.0"
+ {
+    "name": "ai-cleaner-unified-server",
+    "version": "2.0.0",
+    "description": "AI掃除アドバイザー統合プロキシサーバー (Gemini AI + Amazon PA-API)",
+    "main": "unified-proxy.js",
+    "scripts": {
+      "start": "node unified-proxy.js",
+      "dev": "nodemon unified-proxy.js",
+      "legacy": "node proxy.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+      "amazon",
+      "paapi",
+      "gemini",
+      "ai",
+      "proxy",
+      "express",
+      "aws",
+      "affiliate",
+      "image-analysis"
+    ],
+    "author": "CX Mainte",
+    "license": "MIT",
+    "dependencies": {
+      "express": "^4.18.2",
+      "cors": "^2.8.5"
+    },
+    "devDependencies": {
+      "nodemon": "^3.0.1"
+    },
+    "engines": {
+      "node": ">=16.0.0"
+    }
   }
-}
