@@ -63,8 +63,8 @@
                <!-- 画像アップロード -->
                <div class="mb-6">
                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-                       <input type="file" id="imageUpload" accept="image/*" class="hidden">
-                       <label for="imageUpload" class="cursor-pointer block">
+                       <input type="file" id="imageInput" accept="image/*" class="hidden">
+                       <label for="imageInput" class="cursor-pointer block">
                            <div class="text-gray-600 mb-4">
                                <span class="text-4xl block mb-2">📷</span>
                                <span class="text-lg font-semibold">画像を選択してください</span>
@@ -223,3 +223,7 @@
        <script src="debug.js"></script>
    </body>
    </html>
+
+  変更点：
+  - id="imageUpload" → id="imageInput" (66行目)
+  - for="imageUpload" → for="imageInput" (67行目)
