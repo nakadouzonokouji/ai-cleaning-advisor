@@ -107,14 +107,50 @@ class AmazonProductAPI {
         return await crypto.subtle.sign('HMAC', cryptoKey, messageData);
     }
 
-    // 複数商品情報取得（XServer対応版）
+    // 複数商品情報取得（XServer PHP プロキシ対応）
     async getItems(asinList) {
-        console.log(`🛒 Amazon商品情報取得: ${asinList.length}商品`);
-        console.log('💡 XServer環境のため静的商品データを使用');
-        
-        // XServer環境では直接APIを呼び出せないため、
-        // 高品質なフォールバックデータを提供
-        return this.getEnhancedFallbackData(asinList);
+        if (!this.config || !window.validateAmazonConfig()) {
+            console.log('⚠️ Amazon API設定なし - フォールバックデータを使用');
+            return this.getEnhancedFallbackData(asinList);
+        }
+
+        try {
+            // XServer PHP プロキシ経由でAmazon APIを呼び出し
+            console.log(`🔗 Amazon API呼び出し開始: ${asinList.length}商品`);
+            
+            const response = await fetch('/tools/ai-cleaner/server/amazon-proxy.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    asins: asinList,
+                    config: {
+                        accessKey: this.config.accessKey,
+                        secretKey: this.config.secretKey,
+                        associateTag: this.config.associateTag
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`プロキシ呼び出し失敗: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success && data.products) {
+                console.log(`✅ Amazon API成功: ${Object.keys(data.products).length}商品取得`);
+                return data.products;
+            } else {
+                throw new Error(data.error || 'API応答エラー');
+            }
+
+        } catch (error) {
+            console.warn('⚠️ Amazon API呼び出し失敗:', error.message);
+            console.log('💡 フォールバック: 高品質静的データを使用');
+            return this.getEnhancedFallbackData(asinList);
+        }
     }
 
     // 高品質フォールバックデータ生成

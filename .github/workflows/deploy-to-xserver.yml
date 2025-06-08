@@ -16,16 +16,27 @@ jobs:
     - name: 🔐 Create environment config
       run: |
         # API環境変数をJavaScriptファイルに注入
-        cat > env-config.js << EOF
-        // 本番環境変数（GitHub Secrets経由）
+        echo "Creating env-config.js with secrets..."
+        cat > env-config.js << 'EOF'
+        // 本番環境変数（GitHub Secrets経由で注入）
         window.ENV = {
           AMAZON_ACCESS_KEY: '${{ secrets.AMAZON_ACCESS_KEY }}',
           AMAZON_SECRET_KEY: '${{ secrets.AMAZON_SECRET_KEY }}',
           AMAZON_ASSOCIATE_TAG: '${{ secrets.AMAZON_ASSOCIATE_TAG }}',
           GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
         };
+        
+        // デバッグ情報（本番では削除）
+        console.log('🔐 環境変数読み込み状況:');
+        console.log('Amazon Access Key:', window.ENV.AMAZON_ACCESS_KEY ? '✅ 設定済み' : '❌ 未設定');
+        console.log('Amazon Secret Key:', window.ENV.AMAZON_SECRET_KEY ? '✅ 設定済み' : '❌ 未設定');
+        console.log('Amazon Associate Tag:', window.ENV.AMAZON_ASSOCIATE_TAG ? '✅ 設定済み' : '❌ 未設定');
+        console.log('Gemini API Key:', window.ENV.GEMINI_API_KEY ? '✅ 設定済み' : '❌ 未設定');
         EOF
+        
         echo "✅ 環境変数設定ファイル作成完了"
+        echo "📋 ファイル内容確認:"
+        head -5 env-config.js
         
     - name: 🚀 Deploy to XSERVER via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
