@@ -1,22 +1,64 @@
-  name: Deploy to XSERVER
+name: Deploy AI Cleaner to XSERVER
 
-  on:
-    push:
-      branches: [ main ]
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'index.html'
+      - 'app.js' 
+      - 'config.js'
+      - 'styles.css'
+      - 'admin.html'
+      - 'debug.js'
+      - 'amazon-*.js'
+      - 'env-*.js'
 
-  jobs:
-    deploy:
-      runs-on: ubuntu-latest
-
-      steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Deploy to XSERVER
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.XSERVER_FTP_HOST }}
-          username: ${{ secrets.XSERVER_FTP_USER }}
-          password: ${{ secrets.XSERVER_FTP_PASS }}
-          local-dir: ./
-          server-dir: /cxmainte.com/public_html/tools/ai-cleaner/
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📦 Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: 🔐 Create environment config
+      run: |
+        # API環境変数をJavaScriptファイルに注入
+        cat > env-config.js << EOF
+        // 本番環境変数（GitHub Secrets経由）
+        window.ENV = {
+          AMAZON_ACCESS_KEY: '${{ secrets.AMAZON_ACCESS_KEY }}',
+          AMAZON_SECRET_KEY: '${{ secrets.AMAZON_SECRET_KEY }}',
+          AMAZON_ASSOCIATE_TAG: '${{ secrets.AMAZON_ASSOCIATE_TAG }}',
+          GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
+        };
+        EOF
+        echo "✅ 環境変数設定ファイル作成完了"
+        
+    - name: 🚀 Deploy to XSERVER via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.XSERVER_FTP_HOST }}
+        username: ${{ secrets.XSERVER_FTP_USER }}
+        password: ${{ secrets.XSERVER_FTP_PASS }}
+        local-dir: ./
+        server-dir: /public_html/tools/ai-cleaner/
+        exclude: |
+          .git*
+          .github*
+          node_modules*
+          server*
+          *.md
+          .env*
+          package*.json
+          README.md
+          LICENSE
+          .gitignore
+          env-config-manual.js
+          
+    - name: ✅ Deployment Status
+      run: |
+        echo "🎉 AI掃除アドバイザーのデプロイが完了しました！"
+        echo "🌐 アクセスURL: https://cxmainte.com/tools/ai-cleaner/"
+        echo "📊 デプロイ時刻: $(date)"
+        echo "🔐 Amazon API統合: 有効"
