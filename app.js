@@ -1203,9 +1203,9 @@ class AICleaningAdvisor {
             result.cleaningMethod = serverResult.analysis.recommendedMethod || 
                                    this.generateCleaningMethod(result.dirtType, result.surface);
             
-            // 商品情報を設定
+            // 商品情報を設定（非同期）
             result.recommendedProducts = serverResult.products || 
-                                        this.getRecommendedProducts(result.dirtType);
+                                        await this.getRecommendedProducts(result.dirtType);
             
             console.log('✅ 統合サーバー分析完了:', result);
             return result;
@@ -1301,7 +1301,7 @@ class AICleaningAdvisor {
         // 掃除方法と商品を生成
         try {
             result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface);
-            result.recommendedProducts = this.getRecommendedProducts(result.dirtType);
+            result.recommendedProducts = await this.getRecommendedProducts(result.dirtType);
             console.log('✅ 掃除方法・商品生成完了');
         } catch (error) {
             console.error('💥 掃除方法生成エラー:', error);
@@ -1475,25 +1475,35 @@ class AICleaningAdvisor {
         };
     }
 
-    // 🛒 おすすめ商品取得（拡張版）
-    getRecommendedProducts(dirtType) {
-        console.log(`🛒 商品取得: ${dirtType}`);
+    // 🛒 おすすめ商品取得（Amazon API統合版）
+    async getRecommendedProducts(dirtType) {
+        console.log(`🛒 商品取得開始: ${dirtType}`);
         
-        // COMPREHENSIVE_PRODUCT_DATABASEを使用してより多くの商品を取得
-        if (typeof window.ULTIMATE_PRODUCT_MATCHER !== 'undefined') {
-            const products = window.ULTIMATE_PRODUCT_MATCHER.getProducts(dirtType, this.state.preSelectedLocation);
-            if (products && products.cleaners && products.cleaners.length > 0) {
-                console.log(`✅ スマート商品選択: ${products.cleaners.length}個の洗剤, ${products.tools.length}個のツール, ${products.protection.length}個の保護具`);
-                return products;
+        // 基本商品データを取得
+        const baseProducts = this.getBaseProductData(dirtType);
+        
+        // Amazon APIで詳細情報を取得
+        try {
+            if (window.amazonAPI && window.validateAmazonConfig && window.validateAmazonConfig()) {
+                console.log('🔗 Amazon API統合開始');
+                return await this.enrichProductsWithAmazonData(baseProducts);
+            } else {
+                console.log('⚠️ Amazon API設定なし - 基本データを返却');
+                return baseProducts;
             }
+        } catch (error) {
+            console.error('💥 Amazon API統合エラー:', error);
+            return baseProducts; // フォールバック
         }
-        
-        // フォールバック用の商品マップ（2-3個の商品）
+    }
+
+    // 📦 基本商品データ取得
+    getBaseProductData(dirtType) {
         const productMap = {
             '油汚れ': {
                 cleaners: [
                     {
-                        asin: "B000TGNG0W",
+                        asin: "B000E6G8K2",
                         name: "花王 マジックリン ハンディスプレー 400ml",
                         badge: "🏆 換気扇No.1",
                         emoji: "🧴",
@@ -1502,7 +1512,7 @@ class AICleaningAdvisor {
                         reviews: 2847
                     },
                     {
-                        asin: "B08XKJM789",
+                        asin: "B01GDWX0Q4",
                         name: "ライオン ママレモン 大容量 800ml",
                         badge: "💪 強力洗浄",
                         emoji: "🍋",
@@ -1511,7 +1521,7 @@ class AICleaningAdvisor {
                         reviews: 3456
                     },
                     {
-                        asin: "B07YWJ8234",
+                        asin: "B07K8ZRJYX",
                         name: "重曹ちゃん キッチン泡スプレー 300ml",
                         badge: "🌿 天然成分",
                         emoji: "💚",
@@ -1522,7 +1532,7 @@ class AICleaningAdvisor {
                 ],
                 tools: [
                     {
-                        asin: "B01M4KGHF7",
+                        asin: "B07D7BXQZX",
                         name: "換気扇 専用ブラシセット 3本組",
                         badge: "🪥 換気扇専用",
                         emoji: "🪥",
@@ -1531,7 +1541,7 @@ class AICleaningAdvisor {
                         reviews: 654
                     },
                     {
-                        asin: "B02QRS5678",
+                        asin: "B01LWYQPNY",
                         name: "金属たわし ステンレス製 5個セット",
                         badge: "💪 強力研磨",
                         emoji: "🧽",
@@ -1542,7 +1552,7 @@ class AICleaningAdvisor {
                 ],
                 protection: [
                     {
-                        asin: "B04GHI2345",
+                        asin: "B07GWXSXF1",
                         name: "ニトリル手袋 キッチン用 50枚入",
                         badge: "🧤 手保護",
                         emoji: "🧤",
@@ -1564,8 +1574,8 @@ class AICleaningAdvisor {
                         reviews: 3456
                     },
                     {
-                        asin: "B07K8LM123",
-                        name: "強力 カビ取り ジェルスプレー 500ml",
+                        asin: "B01N5P8B4V",
+                        name: "ジョンソン カビキラー 電動スプレー 750ml",
                         badge: "💪 密着ジェル",
                         emoji: "🧪",
                         price: "¥498",
@@ -1573,8 +1583,8 @@ class AICleaningAdvisor {
                         reviews: 1987
                     },
                     {
-                        asin: "B08PKM7890",
-                        name: "防カビ コーティングスプレー 300ml",
+                        asin: "B078KS3NGF",
+                        name: "カビキラー 除菌@キッチン泡スプレー 400ml",
                         badge: "🛡️ 予防効果",
                         emoji: "✨",
                         price: "¥598",
@@ -1584,8 +1594,8 @@ class AICleaningAdvisor {
                 ],
                 tools: [
                     {
-                        asin: "B01HGF8901",
-                        name: "浴室用 カビ取りブラシセット",
+                        asin: "B07BQFJ5K9",
+                        name: "山崎産業 ユニットバスボンくん 抗菌タイプ",
                         badge: "🪥 隙間対応",
                         emoji: "🪥",
                         price: "¥498",
@@ -1595,8 +1605,8 @@ class AICleaningAdvisor {
                 ],
                 protection: [
                     {
-                        asin: "B07PQR6789",
-                        name: "ゴム手袋 厚手タイプ カビ取り専用",
+                        asin: "B073C4QRLS",
+                        name: "ショーワグローブ No.281 テムレス",
                         badge: "🧤 化学品対応",
                         emoji: "🧤",
                         price: "¥398",
@@ -1608,7 +1618,7 @@ class AICleaningAdvisor {
             '水垢汚れ': {
                 cleaners: [
                     {
-                        asin: "B07KLM5678",
+                        asin: "B07Q9ZKQHZ",
                         name: "茂木和哉 水垢洗剤 200ml",
                         badge: "🏆 水垢専門",
                         emoji: "💎",
@@ -1617,8 +1627,8 @@ class AICleaningAdvisor {
                         reviews: 2134
                     },
                     {
-                        asin: "B08NOP9012",
-                        name: "クエン酸 水垢落とし 400ml",
+                        asin: "B08P8FHYRT",
+                        name: "花王 マジックリン バスマジックリン 泡立ちスプレー SUPER CLEAN",
                         badge: "🍋 天然成分",
                         emoji: "🍋",
                         price: "¥398",
@@ -1628,8 +1638,8 @@ class AICleaningAdvisor {
                 ],
                 tools: [
                     {
-                        asin: "B01QRS3456",
-                        name: "ダイヤモンドパッド 水垢取り用 3枚",
+                        asin: "B075FZ7MGH",
+                        name: "レック ダイヤモンドクリーナー",
                         badge: "💎 研磨効果",
                         emoji: "💎",
                         price: "¥698",
@@ -1675,13 +1685,14 @@ class AICleaningAdvisor {
             }
         };
 
-        return productMap[dirtType] || {
+        // デフォルト値で必ず3カテゴリを返す
+        const defaultProduct = productMap[dirtType] || {
             cleaners: [
                 {
                     asin: "B000TGNG0W",
                     name: "マルチクリーナー 汎用洗剤",
                     badge: "🔄 汎用",
-                    emoji: "🧽",
+                    emoji: "🧴",
                     price: "¥298",
                     rating: 4.0,
                     reviews: 1000
@@ -1707,9 +1718,88 @@ class AICleaningAdvisor {
                     reviews: 5432
                 }
             ],
-            protection: []
+            protection: [
+                {
+                    asin: "B04GHI2345",
+                    name: "ニトリル手袋 家庭用 50枚入",
+                    badge: "🧤 手保護",
+                    emoji: "🧤",
+                    price: "¥598",
+                    rating: 4.5,
+                    reviews: 2341
+                }
+            ]
         };
+        
+        console.log(`✅ 基本商品データ取得: 洗剤${defaultProduct.cleaners.length}個, ツール${defaultProduct.tools ? defaultProduct.tools.length : 0}個, 保護具${defaultProduct.protection ? defaultProduct.protection.length : 0}個`);
+        return defaultProduct;
     }
+
+    // 🔗 Amazon APIでリアルタイム情報を取得
+    async enrichProductsWithAmazonData(products) {
+        try {
+            console.log('🔗 Amazon API データ取得開始');
+            
+            // 全ASINを収集
+            const allAsins = [
+                ...products.cleaners.map(p => p.asin),
+                ...(products.tools || []).map(p => p.asin),
+                ...(products.protection || []).map(p => p.asin)
+            ];
+
+            console.log(`📋 Amazon API呼び出し ASIN: ${allAsins.length}個`);
+
+            // Amazon APIでリアルタイム情報を取得
+            const amazonData = await window.amazonAPI.getItems(allAsins);
+            
+            if (!amazonData) {
+                console.log('⚠️ Amazon API応答なし - 基本データを使用');
+                return products;
+            }
+
+            // 各カテゴリの商品を強化
+            const enrichedProducts = {
+                cleaners: this.enrichCategoryProducts(products.cleaners, amazonData),
+                tools: this.enrichCategoryProducts(products.tools || [], amazonData),
+                protection: this.enrichCategoryProducts(products.protection || [], amazonData)
+            };
+
+            console.log('✅ Amazon API統合完了');
+            return enrichedProducts;
+
+        } catch (error) {
+            console.error('💥 Amazon API統合エラー:', error);
+            return products; // フォールバック
+        }
+    }
+
+    // 🎯 カテゴリ商品の強化
+    enrichCategoryProducts(products, amazonData) {
+        return products.map(product => {
+            const amazonInfo = amazonData[product.asin];
+            if (amazonInfo && !amazonInfo.error) {
+                return {
+                    ...product,
+                    // Amazon APIから取得した情報で上書き
+                    title: amazonInfo.title || product.name,
+                    price: amazonInfo.price || product.price,
+                    originalPrice: amazonInfo.originalPrice,
+                    rating: amazonInfo.rating || product.rating,
+                    reviewCount: amazonInfo.reviewCount || product.reviews,
+                    availability: amazonInfo.availability,
+                    image: amazonInfo.images?.medium || amazonInfo.images?.large,
+                    url: amazonInfo.url,
+                    isRealData: true // リアルデータフラグ
+                };
+            }
+            return {
+                ...product,
+                name: product.name,
+                isRealData: false // 静的データフラグ
+            };
+        });
+    }
+
 
     // 📊 分析結果表示
     displayAnalysisResults() {

@@ -19,6 +19,20 @@ jobs:
     - name: 📦 Checkout repository
       uses: actions/checkout@v4
       
+    - name: 🔐 Create environment config
+      run: |
+        # API環境変数をJavaScriptファイルに注入
+        cat > env-config.js << EOF
+        // 本番環境変数（GitHub Secrets経由）
+        window.ENV = {
+          AMAZON_ACCESS_KEY: '${{ secrets.AMAZON_ACCESS_KEY }}',
+          AMAZON_SECRET_KEY: '${{ secrets.AMAZON_SECRET_KEY }}',
+          AMAZON_ASSOCIATE_TAG: '${{ secrets.AMAZON_ASSOCIATE_TAG }}',
+          GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
+        };
+        EOF
+        echo "✅ 環境変数設定ファイル作成完了"
+        
     - name: 🚀 Deploy to XSERVER via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:

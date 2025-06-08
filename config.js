@@ -15,9 +15,9 @@ const AMAZON_PA_API_CONFIG = {
     uri: '/paapi5/getitems'
 };
 
-// Gemini AI 設定（動的設定）
+// Gemini AI 設定（GitHub Secrets経由）
 const GEMINI_API_CONFIG = {
-    apiKey: '', // 管理者ダッシュボードから設定
+    apiKey: window.ENV?.GEMINI_API_KEY || '', // GitHub Secrets経由で設定
     model: 'gemini-1.5-flash',
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models'
 };
