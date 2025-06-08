@@ -1480,76 +1480,198 @@
       }
 
       // 🛒 商品表示
-      displayProducts(products) {
-          console.log('🛒 商品表示開始');
+    // 🛒 商品表示（完全版：洗剤・ツール・保護具）
+    displayProducts(products) {
+        console.log('🛒 商品表示開始', products);
+        
+        let html = `<div class="space-y-8">`;
+        
+        // 🧴 洗剤セクション
+        if (products.cleaners && products.cleaners.length > 0) {
+            html += `
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        🧴 <span class="ml-2">おすすめ洗剤</span>
+                        <span class="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${products.cleaners.length}種類</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            `;
+            
+            products.cleaners.forEach((product) => {
+                // 修正されたAmazon画像URL（複数パターンでフォールバック）
+                const imageUrl1 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SL1000_.jpg`;
+                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_.jpg`;
+                const imageUrl3 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL160_&ID=AsinImage`;
+                
+                html += `
+                    <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
+                        <div class="relative mb-4">
+                            <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
+                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}">
+                            <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
+                                <div class="text-center">
+                                    <div class="text-5xl mb-2">${product.emoji}</div>
+                                    <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full mb-3 text-center font-bold">${product.badge}</div>
+                        
+                        <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
+                        
+                        <div class="mb-3 flex items-center justify-between">
+                            <span class="text-2xl font-bold text-red-600">${product.price || '¥---'}</span>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <span class="text-yellow-400 mr-1">★</span>
+                                <span class="font-semibold">${product.rating || '4.0'}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
+                        
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}', '_blank')" 
+                                class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
+                            🛒 Amazonで購入
+                        </button>
+                    </div>
+                `;
+            });
+            
+            html += `</div></div>`;
+        }
+        
+        // 🧽 ツールセクション
+        if (products.tools && products.tools.length > 0) {
+            html += `
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        🧽 <span class="ml-2">掃除用具・ツール</span>
+                        <span class="ml-2 text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">${products.tools.length}種類</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            `;
+            
+            products.tools.forEach((product) => {
+                const imageUrl1 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SL1000_.jpg`;
+                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_.jpg`;
+                
+                html += `
+                    <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
+                        <div class="relative mb-4">
+                            <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
+                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}">
+                            <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
+                                <div class="text-center">
+                                    <div class="text-5xl mb-2">${product.emoji}</div>
+                                    <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full mb-3 text-center font-bold">${product.badge}</div>
+                        
+                        <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
+                        
+                        <div class="mb-3 flex items-center justify-between">
+                            <span class="text-2xl font-bold text-green-600">${product.price || '¥---'}</span>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <span class="text-yellow-400 mr-1">★</span>
+                                <span class="font-semibold">${product.rating || '4.0'}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
+                        
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}', '_blank')" 
+                                class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
+                            🛒 Amazonで購入
+                        </button>
+                    </div>
+                `;
+            });
+            
+            html += `</div></div>`;
+        }
+        
+        // 🧤 保護具セクション
+        if (products.protection && products.protection.length > 0) {
+            html += `
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        🧤 <span class="ml-2">安全保護具</span>
+                        <span class="ml-2 text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded-full">${products.protection.length}種類</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            `;
+            
+            products.protection.forEach((product) => {
+                const imageUrl1 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SL1000_.jpg`;
+                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_.jpg`;
+                
+                html += `
+                    <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
+                        <div class="relative mb-4">
+                            <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
+                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}">
+                            <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
+                                <div class="text-center">
+                                    <div class="text-5xl mb-2">${product.emoji}</div>
+                                    <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs bg-purple-100 text-purple-600 px-3 py-1 rounded-full mb-3 text-center font-bold">${product.badge}</div>
+                        
+                        <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
+                        
+                        <div class="mb-3 flex items-center justify-between">
+                            <span class="text-2xl font-bold text-purple-600">${product.price || '¥---'}</span>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <span class="text-yellow-400 mr-1">★</span>
+                                <span class="font-semibold">${product.rating || '4.0'}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
+                        
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}', '_blank')" 
+                                class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
+                            🛒 Amazonで購入
+                        </button>
+                    </div>
+                `;
+            });
+            
+            html += `</div></div>`;
+        }
+        
+        // 商品選択について
+        html += `
+            <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl">
+                <h4 class="font-bold text-blue-800 mb-3">🎯 商品選択について</h4>
+                <div class="text-sm text-blue-700 space-y-1">
+                    <p>✅ 汚れタイプに最適化された専用商品を厳選</p>
+                    <p>✅ 効果・安全性・コストパフォーマンスを総合評価</p>
+                    <p>✅ 実際のユーザーレビューを参考に選定</p>
+                    <p>✅ 洗剤・道具・保護具をセットで提案</p>
+                </div>
+            </div>
+        </div>`;
 
-          let html = `
-              <div class="mb-6">
-                  <h3 class="text-xl font-bold text-gray-800 mb-4">🧴 おすすめ洗剤・道具</h3>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          `;
-
-          if (products.cleaners && products.cleaners.length > 0) {
-              products.cleaners.forEach((product) => {
-                  const imageUrl = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.LZZZZZZZ.jpg`;
-
-                  html += `
-                      <div class="border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
-                          <div class="relative mb-4">
-                              <img src="${imageUrl}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg"
-  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                              <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
-                                  <div class="text-center">
-                                      <div class="text-5xl mb-2">${product.emoji}</div>
-                                      <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
-                                  </div>
-                              </div>
-                          </div>
-
-                          <div class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full mb-3 text-center font-bold">${product.badge}</div>
-
-                          <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
-
-                          <div class="mb-3 flex items-center justify-between">
-                              <span class="text-2xl font-bold text-red-600">${product.price}</span>
-                              <div class="flex items-center text-sm text-gray-600">
-                                  <span class="text-yellow-400 mr-1">★</span>
-                                  <span class="font-semibold">${product.rating}</span>
-                              </div>
-                          </div>
-
-                          <div class="text-xs text-gray-500 mb-4">${product.reviews}件のレビュー</div>
-
-                          <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}', '_blank')"
-                                  class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 rounded-lg hover:from-orange-600
-  hover:to-orange-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
-                              🛒 Amazonで購入
-                          </button>
-                      </div>
-                  `;
-              });
-          }
-
-          html += `
-                  </div>
-              </div>
-              <div class="mt-6 p-6 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl">
-                  <h4 class="font-bold text-blue-800 mb-3">🎯 商品選択について</h4>
-                  <div class="text-sm text-blue-700 space-y-1">
-                      <p>✅ 汚れタイプに最適化された専用商品を厳選</p>
-                      <p>✅ 効果・安全性・コストパフォーマンスを総合評価</p>
-                      <p>✅ 実際のユーザーレビューを参考に選定</p>
-                  </div>
-              </div>
-          `;
-
-          const productsContent = document.getElementById('productsContent');
-          if (productsContent) {
-              productsContent.innerHTML = html;
-              console.log('✅ 商品表示完了');
-          }
-      }
-
+        const productsContent = document.getElementById('productsContent');
+        if (productsContent) {
+            productsContent.innerHTML = html;
+            
+            // 商品数のログ
+            const cleanerCount = products.cleaners ? products.cleaners.length : 0;
+            const toolCount = products.tools ? products.tools.length : 0;
+            const protectionCount = products.protection ? products.protection.length : 0;
+            
+            console.log(`✅ 商品表示完了: 洗剤${cleanerCount}個, ツール${toolCount}個, 保護具${protectionCount}個`);
+        }
+    }
       // 🔄 ローディング表示制御
       showAnalysisLoading(show) {
           const analyzeBtn = document.getElementById('analyzeBtn');
