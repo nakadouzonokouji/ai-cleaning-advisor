@@ -3,15 +3,7 @@ name: Deploy AI Cleaner to XSERVER
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'index.html'
-      - 'app.js' 
-      - 'config.js'
-      - 'styles.css'
-      - 'admin.html'
-      - 'debug.js'
-      - 'amazon-*.js'
-      - 'env-*.js'
+  workflow_dispatch:
 
 jobs:
   deploy:
