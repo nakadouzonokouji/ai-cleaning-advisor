@@ -1102,16 +1102,16 @@ class AICleaningAdvisor {
             let analysisResult;
             
             if (this.state.selectedImage !== 'no-photo') {
-                // 画像ありの場合
-                console.log('🖼️ 画像分析モード');
-                analysisResult = await this.executeImageBasedAnalysis();
+                // 画像ありの場合（サーバーレス版）
+                console.log('🖼️ 画像分析モード（サーバーレス）');
+                analysisResult = await this.executeLocalImageAnalysis();
             } else if (this.state.preSelectedLocation === 'custom' && this.state.customLocation.trim()) {
                 // カスタム場所の場合
-                console.log('✏️ カスタム場所分析モード');
+                console.log('✏️ カスタム場所分析モード（サーバーレス）');
                 analysisResult = await this.executeCustomLocationAnalysis();
             } else if (this.state.preSelectedLocation) {
                 // 事前選択場所の場合
-                console.log('📍 場所ベース分析モード');
+                console.log('📍 場所ベース分析モード（サーバーレス）');
                 analysisResult = await this.executeLocationBasedAnalysis();
             }
 
@@ -1129,97 +1129,10 @@ class AICleaningAdvisor {
         }
     }
 
-    // 🖼️ 画像ベース分析（統合サーバー対応）
+    // 🖼️ 画像ベース分析（サーバーレス版）
     async executeImageBasedAnalysis() {
-        console.log('🖼️ 統合サーバーでの画像分析実行');
-        
-        try {
-            // サーバー接続テスト
-            console.log(`🔗 サーバー接続テスト: ${this.serverConfig.baseUrl}`);
-            
-            // FormDataを作成
-            const formData = new FormData();
-            
-            // 画像データを追加
-            if (this.state.selectedImage instanceof File) {
-                formData.append('image', this.state.selectedImage);
-            } else if (typeof this.state.selectedImage === 'string') {
-                formData.append('image', this.state.selectedImage);
-            }
-            
-            // 場所情報を追加
-            if (this.state.preSelectedLocation && this.state.preSelectedLocation !== 'custom') {
-                formData.append('location', this.state.preSelectedLocation);
-                
-                // 事前選択場所の詳細情報
-                const locationInfo = window.COMPREHENSIVE_LOCATION_CONFIG?.[this.state.preSelectedLocation];
-                if (locationInfo?.surface) {
-                    formData.append('surface', locationInfo.surface);
-                }
-            } else if (this.state.customLocation) {
-                formData.append('location', this.state.customLocation);
-                formData.append('surface', this.state.customLocation);
-            }
-            
-            // 統合サーバーにリクエスト送信（タイムアウト設定）
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒でタイムアウト
-            
-            const response = await fetch(`${this.serverConfig.baseUrl}${this.serverConfig.endpoints.analyze}`, {
-                method: 'POST',
-                body: formData,
-                signal: controller.signal,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`サーバーエラー: ${response.status} - ${response.statusText}`);
-            }
-            
-            const serverResult = await response.json();
-            
-            if (!serverResult.success) {
-                throw new Error(serverResult.error?.message || 'サーバー解析に失敗しました');
-            }
-            
-            // サーバーレスポンスを内部形式に変換
-            const result = {
-                dirtType: serverResult.analysis.dirtType,
-                additionalDirt: serverResult.analysis.productCategories || [],
-                surface: serverResult.analysis.surface,
-                confidence: serverResult.analysis.confidence,
-                isAIAnalyzed: true,
-                hasPhoto: true,
-                location: serverResult.analysis.location,
-                analysisVersion: 'server-based',
-                serverResponse: serverResult
-            };
-            
-            // 掃除方法を設定
-            result.cleaningMethod = serverResult.analysis.recommendedMethod || 
-                                   this.generateCleaningMethod(result.dirtType, result.surface);
-            
-            // 商品情報を設定（非同期）
-            result.recommendedProducts = serverResult.products || 
-                                        await this.getRecommendedProducts(result.dirtType);
-            
-            console.log('✅ 統合サーバー分析完了:', result);
-            return result;
-            
-        } catch (error) {
-            console.error('💥 統合サーバー分析エラー:', error);
-            console.log('📡 サーバーが利用できません - ローカル分析を実行します');
-            
-            // ユーザーに状況を通知
-            this.showServerFallbackNotification();
-            
-            // 必ずフォールバック：ローカル分析
-            return await this.executeLocalImageAnalysis();
-        }
+        console.log('🖼️ サーバーレス分析実行');
+        return await this.executeLocalImageAnalysis();
     }
     
     // 🔄 ローカル分析（フォールバック用）
@@ -1356,7 +1269,7 @@ class AICleaningAdvisor {
         };
 
         result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface);
-        result.recommendedProducts = this.getRecommendedProducts(result.dirtType);
+        result.recommendedProducts = await this.getRecommendedProducts(result.dirtType);
 
         return result;
     }
@@ -1382,7 +1295,7 @@ class AICleaningAdvisor {
         };
 
         result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface);
-        result.recommendedProducts = this.getRecommendedProducts(result.dirtType);
+        result.recommendedProducts = await this.getRecommendedProducts(result.dirtType);
 
         return result;
     }
