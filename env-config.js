@@ -1,9 +1,10 @@
-// 本番環境変数（GitHub Secrets経由で注入される）
+// XServer対応版環境設定
 window.ENV = {
-  AMAZON_ACCESS_KEY: '',
-  AMAZON_SECRET_KEY: '', 
-  AMAZON_ASSOCIATE_TAG: '',
-  GEMINI_API_KEY: ''
+  // セキュリティのため、APIキーはクライアントサイドに保存しません
+  // Amazon商品情報は静的データで提供します
+  AMAZON_ASSOCIATE_TAG: 'yourtagname-22', // アソシエイトタグのみ使用
+  GEMINI_API_KEY: '' // 必要に応じて設定
 };
 
-// 注意: この内容はGitHub Actionsで自動的に実際のAPIキーに置換されます
+// 注意: XServer環境ではサーバーサイドAPIが制限されるため、
+// 静的な商品情報を提供し、正確な情報は商品ページで確認していただきます
