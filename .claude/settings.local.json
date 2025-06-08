@@ -10,7 +10,11 @@
       "Bash(mkdir:*)",
       "WebFetch(domain:github.com)",
       "Bash(git add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(rg:*)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"executeAnalysis|executeImageBasedAnalysis|fetch|XMLHttpRequest\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"fetch\\(|XMLHttpRequest|ajax|\\.post\\(|\\.get\\(\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"fetch|XMLHttpRequest|ajax\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)"
     ],
     "deny": []
   }
