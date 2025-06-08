@@ -107,29 +107,22 @@ class AmazonProductAPI {
         return await crypto.subtle.sign('HMAC', cryptoKey, messageData);
     }
 
-    // 複数商品情報取得（XServer PHP プロキシ対応）
+    // 複数商品情報取得（セキュアXServer PHP プロキシ対応）
     async getItems(asinList) {
-        if (!this.config || !window.validateAmazonConfig()) {
-            console.log('⚠️ Amazon API設定なし - フォールバックデータを使用');
-            return this.getEnhancedFallbackData(asinList);
-        }
-
         try {
-            // XServer PHP プロキシ経由でAmazon APIを呼び出し
+            // セキュアなXServer PHP プロキシ経由でAmazon APIを呼び出し
             console.log(`🔗 Amazon API呼び出し開始: ${asinList.length}商品`);
             
-            const response = await fetch('/tools/ai-cleaner/server/amazon-proxy.php', {
+            const apiEndpoint = window.ENV?.API_ENDPOINT || '/tools/ai-cleaner/server/amazon-proxy.php';
+            
+            const response = await fetch(apiEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
-                    asins: asinList,
-                    config: {
-                        accessKey: this.config.accessKey,
-                        secretKey: this.config.secretKey,
-                        associateTag: this.config.associateTag
-                    }
+                    asins: asinList
+                    // APIキーはサーバーサイドで安全に管理
                 })
             });
 

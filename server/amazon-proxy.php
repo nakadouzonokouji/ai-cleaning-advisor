@@ -1,7 +1,7 @@
 <?php
-// XServer用 Amazon PA-API v5 プロキシ
+// XServer用 Amazon PA-API v5 セキュアプロキシ
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: https://cxmainte.com');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -17,23 +17,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// セキュア設定を読み込み
+require_once __DIR__ . '/config.php';
+
 try {
     // リクエストボディを取得
     $input = file_get_contents('php://input');
     $request = json_decode($input, true);
     
-    if (!$request || !isset($request['asins']) || !isset($request['config'])) {
+    if (!$request || !isset($request['asins'])) {
         throw new Exception('Invalid request format');
     }
     
     $asins = $request['asins'];
-    $config = $request['config'];
     
-    // Amazon PA-API設定
+    // セキュアなAmazon PA-API設定（サーバーサイドから取得）
     $amazonConfig = [
-        'accessKey' => $config['accessKey'],
-        'secretKey' => $config['secretKey'],
-        'associateTag' => $config['associateTag'],
+        'accessKey' => AMAZON_ACCESS_KEY,
+        'secretKey' => AMAZON_SECRET_KEY,
+        'associateTag' => AMAZON_ASSOCIATE_TAG,
         'endpoint' => 'webservices.amazon.co.jp',
         'region' => 'us-west-2'
     ];
