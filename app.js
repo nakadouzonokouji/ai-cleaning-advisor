@@ -1894,7 +1894,7 @@
   console.log('🌐 エックスサーバー等の静的ホスティング完全対応');
   console.log('🔧 サーバー不要でローカル分析による掃除方法生成');
   console.log('🎯 複数の方法で確実な場所選択を実現');
-  console.log('🛒 Amazon PA-API統合対応 - リアルタイム商品情報');
+  console.log('🛒 Amazon PA-API統合対応 - セキュアなリアルタイム商品情報');
   console.log('🧪 手動テスト関数も利用可能:');
   console.log('  - window.testLocationSelection("kitchen")');
   console.log('  - window.checkDOMState()');
