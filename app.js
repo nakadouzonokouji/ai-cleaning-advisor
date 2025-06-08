@@ -2239,3 +2239,4 @@ console.log('  - window.testLocationSelection("kitchen")');
 console.log('  - window.checkDOMState()');
 console.log('  - window.initializeLocationButtons()');
 console.log('🚀 必ず動作する完全動作バージョン');
+console.log('🔄 GitHub Actions デプロイメント確認テスト実行中...');
