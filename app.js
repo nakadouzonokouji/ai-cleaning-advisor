@@ -1484,11 +1484,13 @@ class AICleaningAdvisor {
         
         // Amazon APIで詳細情報を取得
         try {
-            if (window.amazonAPI && window.validateAmazonConfig && window.validateAmazonConfig()) {
+            // Amazon設定の確認
+            if (window.getAmazonProductInfo && window.validateAmazonConfig && window.validateAmazonConfig()) {
                 console.log('🔗 Amazon API統合開始');
                 return await this.enrichProductsWithAmazonData(baseProducts);
             } else {
                 console.log('⚠️ Amazon API設定なし - 基本データを返却');
+                console.log('💡 GitHub Actions デプロイ後にAPI機能が有効になります');
                 return baseProducts;
             }
         } catch (error) {
@@ -1735,70 +1737,70 @@ class AICleaningAdvisor {
         return defaultProduct;
     }
 
-    // 🔗 Amazon APIでリアルタイム情報を取得
-    async enrichProductsWithAmazonData(products) {
+    // 🔗 Amazon APIでの商品データ拡張
+    async enrichProductsWithAmazonData(baseProducts) {
+        console.log('🔗 Amazon APIで商品データ拡張開始');
+        
         try {
-            console.log('🔗 Amazon API データ取得開始');
+            // 全カテゴリのASIN収集
+            const allAsins = [];
+            ['cleaners', 'tools', 'protection'].forEach(category => {
+                if (baseProducts[category]) {
+                    baseProducts[category].forEach(product => {
+                        if (product.asin) allAsins.push(product.asin);
+                    });
+                }
+            });
+
+            if (allAsins.length === 0) {
+                console.log('⚠️ ASINが見つかりません');
+                return baseProducts;
+            }
+
+            console.log(`📦 Amazon API呼び出し: ${allAsins.length}商品`);
             
-            // 全ASINを収集
-            const allAsins = [
-                ...products.cleaners.map(p => p.asin),
-                ...(products.tools || []).map(p => p.asin),
-                ...(products.protection || []).map(p => p.asin)
-            ];
-
-            console.log(`📋 Amazon API呼び出し ASIN: ${allAsins.length}個`);
-
-            // Amazon APIでリアルタイム情報を取得
-            const amazonData = await window.amazonAPI.getItems(allAsins);
+            // Amazon APIで商品情報取得
+            const amazonData = await window.getAmazonProductInfo(allAsins);
             
             if (!amazonData) {
                 console.log('⚠️ Amazon API応答なし - 基本データを使用');
-                return products;
+                return baseProducts;
             }
 
-            // 各カテゴリの商品を強化
-            const enrichedProducts = {
-                cleaners: this.enrichCategoryProducts(products.cleaners, amazonData),
-                tools: this.enrichCategoryProducts(products.tools || [], amazonData),
-                protection: this.enrichCategoryProducts(products.protection || [], amazonData)
-            };
+            // 商品データをAmazon情報で拡張
+            const enrichedProducts = { ...baseProducts };
+            
+            ['cleaners', 'tools', 'protection'].forEach(category => {
+                if (enrichedProducts[category]) {
+                    enrichedProducts[category] = enrichedProducts[category].map(product => {
+                        const amazonInfo = amazonData[product.asin];
+                        if (amazonInfo) {
+                            return {
+                                ...product,
+                                name: amazonInfo.title || product.name,
+                                price: amazonInfo.price || product.price,
+                                rating: amazonInfo.rating || product.rating,
+                                reviews: amazonInfo.reviewCount || product.reviews,
+                                image: amazonInfo.images?.large || amazonInfo.images?.medium,
+                                availability: amazonInfo.availability,
+                                isRealData: true
+                            };
+                        }
+                        return product;
+                    });
+                }
+            });
 
-            console.log('✅ Amazon API統合完了');
+            console.log('✅ Amazon API商品データ拡張完了');
             return enrichedProducts;
 
         } catch (error) {
-            console.error('💥 Amazon API統合エラー:', error);
-            return products; // フォールバック
+            console.error('💥 Amazon API拡張エラー:', error);
+            return baseProducts; // フォールバック
         }
     }
 
-    // 🎯 カテゴリ商品の強化
-    enrichCategoryProducts(products, amazonData) {
-        return products.map(product => {
-            const amazonInfo = amazonData[product.asin];
-            if (amazonInfo && !amazonInfo.error) {
-                return {
-                    ...product,
-                    // Amazon APIから取得した情報で上書き
-                    title: amazonInfo.title || product.name,
-                    price: amazonInfo.price || product.price,
-                    originalPrice: amazonInfo.originalPrice,
-                    rating: amazonInfo.rating || product.rating,
-                    reviewCount: amazonInfo.reviewCount || product.reviews,
-                    availability: amazonInfo.availability,
-                    image: amazonInfo.images?.medium || amazonInfo.images?.large,
-                    url: amazonInfo.url,
-                    isRealData: true // リアルデータフラグ
-                };
-            }
-            return {
-                ...product,
-                name: product.name,
-                isRealData: false // 静的データフラグ
-            };
-        });
-    }
+
 
 
     // 📊 分析結果表示
@@ -1983,7 +1985,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}', '_blank')" 
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=yourtagname-22', '_blank')" 
                                 class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </button>
@@ -2036,7 +2038,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}', '_blank')" 
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=yourtagname-22', '_blank')" 
                                 class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </button>
@@ -2089,7 +2091,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}', '_blank')" 
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=yourtagname-22', '_blank')" 
                                 class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </button>
