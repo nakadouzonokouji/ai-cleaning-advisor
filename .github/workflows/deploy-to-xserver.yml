@@ -44,14 +44,21 @@ jobs:
         
         echo "✅ セキュアな設定ファイル作成完了"
         
-    - name: 🚀 Deploy to XSERVER via FTP
+    - name: 🔧 Debug FTP Settings
+      run: |
+        echo "FTP Host: ${{ secrets.XSERVER_FTP_HOST }}"
+        echo "FTP User: ${{ secrets.XSERVER_FTP_USER }}"
+        echo "Target Dir: /public_html/tools/ai-cleaner/"
+        
+    - name: 🚀 Deploy to XSERVER via FTP (Primary)
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.XSERVER_FTP_HOST }}
         username: ${{ secrets.XSERVER_FTP_USER }}
         password: ${{ secrets.XSERVER_FTP_PASS }}
         local-dir: ./
-        server-dir: /cxmainte.com/public_html/tools/ai-cleaner/
+        server-dir: /public_html/tools/ai-cleaner/
+        log-level: verbose
         exclude: |
           .git*
           .github*
@@ -64,6 +71,16 @@ jobs:
           .gitignore
           env-config-manual.js
           netlify*
+          
+    - name: 🔄 Alternative FTP Deploy (Backup)
+      if: failure()
+      uses: sebastianpopp/ftp-action@releases/v2
+      with:
+        host: ${{ secrets.XSERVER_FTP_HOST }}
+        user: ${{ secrets.XSERVER_FTP_USER }}
+        password: ${{ secrets.XSERVER_FTP_PASS }}
+        localDir: "./"
+        remoteDir: "/public_html/tools/ai-cleaner/"
           
     - name: ✅ Deployment Status
       run: |
