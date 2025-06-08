@@ -24,8 +24,6 @@
       }
 
       init() {
-          console.log('🚀 AI掃除アドバイザー初期化開始（サーバーレス版）');
-
           // DOM準備を待つ（複数の方法で確実に）
           if (document.readyState === 'loading') {
               document.addEventListener('DOMContentLoaded', () => this.initializeApp());
@@ -44,229 +42,70 @@
 
       initializeApp() {
           if (this.isInitialized) {
-              console.log('⚠️ 既に初期化済み - スキップ');
               return;
           }
           this.isInitialized = true;
 
-          console.log('🔧 アプリケーション本体初期化開始');
-
-          // デバッグ: DOM状態確認
-          this.debugDOMState();
-
           // 1. 基本的なイベントリスナーを設定
           this.setupBasicEventListeners();
 
-          // 2. 場所選択ボタンを徹底的にデバッグしながら設定
-          this.setupLocationButtonsWithDebug();
+          // 2. 場所選択ボタンを設定
+          this.setupLocationButtons();
 
           // 3. アイコンとUI初期化
           this.initializeLucideIcons();
           this.updateUI();
-
-          // 4. システム検証
-          this.validateComprehensiveSystem();
-
-          console.log('✅ AI掃除アドバイザー初期化完了（サーバーレス版）');
       }
 
-      // 🔍 DOM状態の詳細デバッグ
-      debugDOMState() {
-          console.log('🔍 DOM状態デバッグ開始');
-          console.log('document.readyState:', document.readyState);
 
-          // 場所選択ボタンの詳細調査
-          const allButtons = document.querySelectorAll('button');
-          console.log(`全ボタン数: ${allButtons.length}`);
-
+      // 場所選択ボタン設定
+      setupLocationButtons() {
           const locationButtons = document.querySelectorAll('.location-btn');
-          console.log(`location-btnクラスのボタン数: ${locationButtons.length}`);
-
-          const dataLocationButtons = document.querySelectorAll('[data-location]');
-          console.log(`data-location属性を持つ要素数: ${dataLocationButtons.length}`);
-
-          // 各ボタンの詳細情報
-          locationButtons.forEach((btn, index) => {
-              const location = btn.getAttribute('data-location');
-              const textContent = btn.textContent.trim().substring(0, 30);
-              console.log(`ボタン${index + 1}: data-location="${location}", テキスト="${textContent}"`);
-              console.log(`  - disabled: ${btn.disabled}`);
-              console.log(`  - style.pointerEvents: ${btn.style.pointerEvents}`);
-              console.log(`  - classList: ${btn.classList.toString()}`);
-          });
-      }
-
-      // 🔧 徹底的なデバッグ付き場所選択ボタン設定
-      setupLocationButtonsWithDebug() {
-          console.log('📍 場所選択ボタン設定開始（デバッグ版）');
-
-          // 複数の方法でボタンを検索
-          const methods = [
-              () => document.querySelectorAll('.location-btn'),
-              () => document.querySelectorAll('button[data-location]'),
-              () => document.querySelectorAll('button.location-btn'),
-              () => Array.from(document.querySelectorAll('button')).filter(btn => btn.hasAttribute('data-location'))
-          ];
-
-          let locationButtons = null;
-
-          for (let i = 0; i < methods.length; i++) {
-              try {
-                  locationButtons = methods[i]();
-                  if (locationButtons.length > 0) {
-                      console.log(`✅ 方法${i + 1}で${locationButtons.length}個のボタンを発見`);
-                      break;
-                  } else {
-                      console.log(`❌ 方法${i + 1}: ボタンが見つかりません`);
-                  }
-              } catch (error) {
-                  console.error(`❌ 方法${i + 1}でエラー:`, error);
-              }
-          }
 
           if (!locationButtons || locationButtons.length === 0) {
-              console.error('❌ 場所選択ボタンが見つかりません - HTMLを確認してください');
-
-              // フォールバック: 全ボタンを調査
-              const allButtons = document.querySelectorAll('button');
-              console.log(`フォールバック: 全ボタン${allButtons.length}個を調査中...`);
-              allButtons.forEach((btn, index) => {
-                  const hasDataLocation = btn.hasAttribute('data-location');
-                  const hasLocationClass = btn.classList.contains('location-btn');
-                  if (hasDataLocation || hasLocationClass) {
-                      console.log(`見つかった可能性: ボタン${index}, data-location=${hasDataLocation}, location-btn=${hasLocationClass}`);
-                  }
-              });
               return;
           }
 
           // 各ボタンに対して設定
-          locationButtons.forEach((btn, index) => {
-              try {
-                  const location = btn.getAttribute('data-location') || btn.dataset.location;
+          locationButtons.forEach((btn) => {
+              const location = btn.getAttribute('data-location') || btn.dataset.location;
 
-                  if (!location) {
-                      console.warn(`⚠️ ボタン${index + 1}: data-location属性がありません`);
-                      console.log('  - outerHTML:', btn.outerHTML.substring(0, 100));
-                      return;
-                  }
-
-                  console.log(`🔗 ボタン${index + 1}設定開始: ${location}`);
-
-                  // ボタンを強制的に有効化
-                  btn.disabled = false;
-                  btn.style.pointerEvents = 'auto';
-                  btn.style.opacity = '1';
-                  btn.style.cursor = 'pointer';
-                  btn.removeAttribute('disabled');
-
-                  // 既存のイベントリスナーを削除（複数の方法で）
-                  this.removeAllEventListeners(btn, index);
-
-                  // 新しいイベントリスナーを追加（複数の方法で）
-                  this.addLocationEventListener(btn, location, index);
-
-                  console.log(`✅ ボタン${index + 1}設定完了: ${location}`);
-
-              } catch (error) {
-                  console.error(`❌ ボタン${index + 1}設定エラー:`, error);
+              if (!location) {
+                  return;
               }
-          });
 
-          console.log('✅ 場所選択ボタン設定完了（デバッグ版）');
+              // ボタンを有効化
+              btn.disabled = false;
+              btn.style.pointerEvents = 'auto';
+              btn.style.opacity = '1';
+              btn.style.cursor = 'pointer';
+              btn.removeAttribute('disabled');
 
-          // 最終テスト
-          this.testButtonSetup();
-      }
+              // イベントリスナーを追加
+              btn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  this.selectLocation(location);
+              });
 
-      // イベントリスナーの完全削除
-      removeAllEventListeners(btn, index) {
-          try {
-              // 方法1: cloneNode
-              const newBtn = btn.cloneNode(true);
-              btn.parentNode.replaceChild(newBtn, btn);
-              console.log(`  📝 ボタン${index + 1}: cloneNodeで古いリスナー削除`);
-              return newBtn;
-          } catch (error) {
-              console.warn(`  ⚠️ ボタン${index + 1}: cloneNode失敗`, error);
-              return btn;
-          }
-      }
-
-      // 確実なイベントリスナー追加
-      addLocationEventListener(btn, location, index) {
-          const actualBtn = btn.parentNode ? btn : document.querySelectorAll('.location-btn')[index];
-
-          if (!actualBtn) {
-              console.error(`❌ ボタン${index + 1}が見つかりません`);
-              return;
-          }
-
-          // 方法1: addEventListener
-          try {
-              const clickHandler = (e) => {
-                  console.log(`🎯 ボタンクリック検出: ${location} (方法1)`);
+              // フォールバック用のonclick
+              btn.onclick = (e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   this.selectLocation(location);
               };
-
-              actualBtn.addEventListener('click', clickHandler);
-              console.log(`  ✅ ボタン${index + 1}: addEventListener設定完了`);
-          } catch (error) {
-              console.error(`  ❌ ボタン${index + 1}: addEventListener失敗`, error);
-          }
-
-          // 方法2: onclick (フォールバック)
-          try {
-              actualBtn.onclick = (e) => {
-                  console.log(`🎯 ボタンクリック検出: ${location} (方法2)`);
-                  e.preventDefault();
-                  e.stopPropagation();
-                  this.selectLocation(location);
-              };
-              console.log(`  ✅ ボタン${index + 1}: onclick設定完了`);
-          } catch (error) {
-              console.error(`  ❌ ボタン${index + 1}: onclick失敗`, error);
-          }
-
-          // 方法3: 属性設定 (最終フォールバック)
-          try {
-              actualBtn.setAttribute('onclick', `window.aiCleaningAdvisor.selectLocation('${location}')`);
-              console.log(`  ✅ ボタン${index + 1}: 属性onclick設定完了`);
-          } catch (error) {
-              console.error(`  ❌ ボタン${index + 1}: 属性onclick失敗`, error);
-          }
-      }
-
-      // ボタン設定のテスト
-      testButtonSetup() {
-          console.log('🧪 ボタン設定テスト開始');
-
-          const locationButtons = document.querySelectorAll('.location-btn');
-          locationButtons.forEach((btn, index) => {
-              const location = btn.getAttribute('data-location');
-              console.log(`テスト${index + 1}: ${location}`);
-              console.log(`  - disabled: ${btn.disabled}`);
-              console.log(`  - pointerEvents: ${btn.style.pointerEvents}`);
-              console.log(`  - hasClickListener: ${btn.onclick !== null}`);
           });
-
-          console.log('🧪 ボタン設定テスト完了');
       }
 
-      // 🎯 場所選択処理（デバッグ強化版）
+
+      // 場所選択処理
       selectLocation(locationId) {
-          console.log(`🎯 場所選択処理開始: "${locationId}"`);
-
           if (!locationId) {
-              console.error('❌ 場所IDが未定義またはnull');
               return;
           }
 
-          // 状態を即座に更新
+          // 状態を更新
           this.state.preSelectedLocation = locationId;
-          console.log(`💾 状態更新完了: preSelectedLocation = "${locationId}"`);
 
           // 全ボタンをリセット
           this.resetAllLocationButtons();
@@ -280,18 +119,10 @@
           // UI更新
           this.updateSelectedLocationDisplay();
           this.updateClearButtonVisibility();
-
-          console.log(`🎉 場所選択完了: "${locationId}"`);
-
-          // 成功通知
-          this.showSuccessNotification(`場所選択: ${locationId}`);
       }
 
       // 成功通知表示
       showSuccessNotification(message) {
-          console.log(`✅ ${message}`);
-
-          // 視覚的フィードバック
           try {
               const notification = document.createElement('div');
               notification.style.cssText = `
@@ -313,7 +144,7 @@
                   notification.remove();
               }, 2000);
           } catch (error) {
-              console.warn('通知表示エラー:', error);
+              // エラーは無視
           }
       }
 
@@ -322,12 +153,10 @@
           try {
               const locationButtons = document.querySelectorAll('.location-btn');
               locationButtons.forEach(btn => {
-                  btn.className = 'location-btn p-3 border-2 rounded-lg transition-colors text-sm text-left border-gray-200 hover:border-blue-300
-  hover:bg-blue-50';
+                  btn.className = 'location-btn p-3 border-2 rounded-lg transition-colors text-sm text-left border-gray-200 hover:border-blue-300 hover:bg-blue-50';
               });
-              console.log(`🔄 ${locationButtons.length}個のボタンをリセット`);
           } catch (error) {
-              console.error('ボタンリセットエラー:', error);
+              // エラーは無視
           }
       }
 
@@ -344,12 +173,9 @@
                   }
 
                   selectedBtn.className = `location-btn p-3 border-2 rounded-lg transition-colors text-sm text-left ${colorClass}`;
-                  console.log(`✅ ボタンハイライト完了: ${locationId}`);
-              } else {
-                  console.warn(`⚠️ 選択ボタンが見つかりません: ${locationId}`);
               }
           } catch (error) {
-              console.error('ボタンハイライトエラー:', error);
+              // エラーは無視
           }
       }
 
@@ -362,7 +188,6 @@
               if (locationId === 'custom') {
                   if (customInput) {
                       customInput.classList.remove('hidden');
-                      console.log('✅ カスタム入力表示');
                   }
                   setTimeout(() => {
                       if (customLocationInput) {
@@ -372,7 +197,6 @@
               } else {
                   if (customInput) {
                       customInput.classList.add('hidden');
-                      console.log('✅ カスタム入力非表示');
                   }
                   this.state.customLocation = '';
                   if (customLocationInput) {
@@ -380,7 +204,7 @@
                   }
               }
           } catch (error) {
-              console.error('カスタム入力制御エラー:', error);
+              // エラーは無視
           }
       }
 

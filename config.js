@@ -1147,10 +1147,4 @@ window.UI_CONFIG = UI_CONFIG;
 window.DEBUG_CONFIG = DEBUG_CONFIG;
 window.SECURITY_CONFIG = SECURITY_CONFIG;
 
-console.log('✅ 修正版設定ファイル読み込み完了');
-console.log('🏠 家中完全対応システム有効（拡充版）');
-console.log(`🎯 汚れタイプ: ${Object.keys(COMPREHENSIVE_DIRT_MAPPING).length}種類`);
-console.log(`🛒 商品カテゴリ: ${Object.keys(COMPREHENSIVE_PRODUCT_DATABASE).length}カテゴリ`);
-console.log(`📍 対応場所: ${Object.keys(COMPREHENSIVE_LOCATION_CONFIG).length}箇所`);
-console.log(`💰 商品データ: ${Object.keys(COMPREHENSIVE_FALLBACK_DATA).length}商品`);
-console.log('🆕 保護具・複数洗剤対応を強化');
+// 本番環境用 - console.logは削除済み
