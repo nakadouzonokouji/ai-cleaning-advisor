@@ -15,15 +15,7 @@ jobs:
     
     steps:
     - name: 📦 Checkout repository
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
-        
-    - name: 🔧 Setup Git Configuration
-      run: |
-        git config --global --add safe.directory /github/workspace
-        git config --global user.email "actions@github.com"
-        git config --global user.name "GitHub Actions"
+      uses: actions/checkout@v4
       
     - name: 🔐 Create secure server config
       run: |
@@ -83,6 +75,7 @@ jobs:
           .gitignore
           env-config-manual.js
           netlify*
+          ai-cleaner/
           
     - name: 🔄 Alternative FTP Deploy (Backup)
       if: failure()
