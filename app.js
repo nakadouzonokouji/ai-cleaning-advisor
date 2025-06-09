@@ -86,13 +86,13 @@ class AICleaningAdvisor {
     init() {
         console.log('🚀 AI掃除アドバイザー初期化開始');
         
-        // 統合サーバー設定
+        // 本番環境設定（サーバーレス構成）
         this.serverConfig = {
-            baseUrl: 'https://glowing-couscous-pv7g96gpj47f69r9-3001.app.github.dev', // GitHub Codespaces URL
+            baseUrl: '', // 相対パス使用
             endpoints: {
-                analyze: '/api/analyze',
-                product: '/api/product',
-                health: '/api/health'
+                analyze: '/tools/ai-cleaner/server/amazon-proxy.php',
+                product: '/tools/ai-cleaner/server/amazon-proxy.php',
+                health: '/tools/ai-cleaner/server/amazon-proxy.php'
             }
         };
         
@@ -1459,8 +1459,17 @@ class AICleaningAdvisor {
         try {
             if (window.ENV?.API_ENDPOINT) {
                 
-                // サンプルASINでテスト
-                const testAsins = ['B000E6G8K2', 'B01GDWX0Q4'];
+                // 実際の商品ASINを収集してテスト
+                const baseProducts = this.getBaseProductData(dirtType);
+                const testAsins = [];
+                ['cleaners', 'tools', 'protection'].forEach(category => {
+                    if (baseProducts[category]) {
+                        baseProducts[category].slice(0,2).forEach(product => {
+                            if (product.asin) testAsins.push(product.asin);
+                        });
+                    }
+                });
+                
                 const response = await fetch(window.ENV.API_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
