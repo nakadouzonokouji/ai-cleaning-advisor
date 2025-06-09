@@ -31,6 +31,8 @@ jobs:
           VERSION: '3.1.0',
           AMAZON_ASSOCIATE_TAG: '${{ secrets.AMAZON_ASSOCIATE_TAG }}'
         };
+        console.log('🔐 本番環境設定読み込み完了');
+        console.log('🛒 Repository Secrets適用済み');
         EOF
         
         cat > upload/server/config.php << 'EOF'

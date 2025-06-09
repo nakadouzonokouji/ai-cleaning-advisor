@@ -36,7 +36,7 @@ function initializeAmazonConfig() {
         // フォールバック設定
         console.log('💡 フォールバック設定使用');
         config.useProxy = false;
-        config.associateTag = 'yourtagname-22'; // デフォルトタグ
+        config.associateTag = 'cxmainte-22'; // 本番用アソシエイトタグ
     }
 
     window.AMAZON_CONFIG = config;

@@ -3,7 +3,7 @@ window.ENV = {
   // セキュリティのため、機密情報はクライアントサイドに保存しません
   API_ENDPOINT: '/tools/ai-cleaner/server/amazon-proxy.php',
   VERSION: '3.0.0',
-  AMAZON_ASSOCIATE_TAG: 'yourtagname-22' // アソシエイトタグのみ公開
+  AMAZON_ASSOCIATE_TAG: 'cxmainte-22' // 本番用アソシエイトタグ
 };
 
 console.log('🔐 セキュア設定読み込み完了');
