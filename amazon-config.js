@@ -131,7 +131,7 @@ async function fetchViaProxy(asinList, config) {
 function testAmazonAPI() {
     console.log('🧪 Amazon APIテスト開始');
     
-    const testAsins = ['B000E6G8K2', 'B01GDWX0Q4'];
+    const testAsins = ['B08X6GQ2H1', 'B09K7XLQF3']; // 正規商品ASIN使用
     
     getAmazonProductInfo(testAsins)
         .then(result => {

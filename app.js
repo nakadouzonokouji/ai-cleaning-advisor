@@ -1497,7 +1497,7 @@ class AICleaningAdvisor {
             '油汚れ': {
                 cleaners: [
                     {
-                        asin: "B000E6G8K2",
+                        asin: "B08X6GQ2H1",
                         name: "花王 マジックリン ハンディスプレー 400ml",
                         badge: "🏆 換気扇No.1",
                         emoji: "🧴",
@@ -1506,7 +1506,7 @@ class AICleaningAdvisor {
                         reviews: 2847
                     },
                     {
-                        asin: "B01GDWX0Q4",
+                        asin: "B09K7XLQF3",
                         name: "ライオン ママレモン 大容量 800ml",
                         badge: "💪 強力洗浄",
                         emoji: "🍋",
@@ -1515,7 +1515,7 @@ class AICleaningAdvisor {
                         reviews: 3456
                     },
                     {
-                        asin: "B07K8ZRJYX",
+                        asin: "B08X6P5YM2",
                         name: "重曹ちゃん キッチン泡スプレー 300ml",
                         badge: "🌿 天然成分",
                         emoji: "💚",
