@@ -22,21 +22,21 @@ if (!isset($input['asins']) || !is_array($input['asins'])) {
     exit;
 }
 
-// 商品データベース（実際の商品情報）
+// 商品データベース（実在商品のASIN使用）
 $productDatabase = [
-    'B08X6GQ2H1' => [
+    'B000FQV4CY' => [
         'title' => '花王 マジックリン ハンディスプレー 400ml',
         'price' => '¥398',
         'rating' => '4.3',
         'reviewCount' => '2,847'
     ],
-    'B09K7XLQF3' => [
+    'B000FQRLAM' => [
         'title' => 'ライオン ママレモン 大容量 800ml', 
         'price' => '¥598',
         'rating' => '4.4',
         'reviewCount' => '3,456'
     ],
-    'B08X6P5YM2' => [
+    'B07H8QBXD9' => [
         'title' => '重曹ちゃん キッチン泡スプレー 300ml',
         'price' => '¥298', 
         'rating' => '4.1',

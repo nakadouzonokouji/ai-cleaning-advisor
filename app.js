@@ -1497,7 +1497,7 @@ class AICleaningAdvisor {
             '油汚れ': {
                 cleaners: [
                     {
-                        asin: "B08X6GQ2H1",
+                        asin: "B000FQV4CY",
                         name: "花王 マジックリン ハンディスプレー 400ml",
                         badge: "🏆 換気扇No.1",
                         emoji: "🧴",
@@ -1506,7 +1506,7 @@ class AICleaningAdvisor {
                         reviews: 2847
                     },
                     {
-                        asin: "B09K7XLQF3",
+                        asin: "B000FQRLAM",
                         name: "ライオン ママレモン 大容量 800ml",
                         badge: "💪 強力洗浄",
                         emoji: "🍋",
@@ -1515,7 +1515,7 @@ class AICleaningAdvisor {
                         reviews: 3456
                     },
                     {
-                        asin: "B08X6P5YM2",
+                        asin: "B07H8QBXD9",
                         name: "重曹ちゃん キッチン泡スプレー 300ml",
                         badge: "🌿 天然成分",
                         emoji: "💚",
@@ -1971,11 +1971,11 @@ class AICleaningAdvisor {
             `;
             
             products.cleaners.forEach((product) => {
-                // Amazon画像URL（API取得画像を優先、フォールバック画像で補完）
+                // Amazon画像URL（複数フォーマット対応）
                 const apiImage = product.image || '';
-                const imageUrl1 = apiImage || `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX300_.jpg`;
-                const imageUrl2 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SX300_SY300_.jpg`;
-                const imageUrl3 = `https://images-fe.ssl-images-amazon.com/images/P/${product.asin}.01._SCMZZZZZZZ_.jpg`;
+                const imageUrl1 = apiImage || `https://m.media-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
+                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.jpg`;
                 
                 
                 html += `
@@ -2005,10 +2005,10 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="console.log('🛒 Amazonリンク:', '${product.asin}', window.ENV?.AMAZON_ASSOCIATE_TAG); window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=' + (window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'), '_blank')" 
-                                class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
+                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}" target="_blank" rel="noopener noreferrer" class="block w-full" 
+style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); color: white; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s;">
                             🛒 Amazonで購入
-                        </button>
+                        </a>
                     </div>
                 `;
             });
@@ -2028,8 +2028,8 @@ class AICleaningAdvisor {
             `;
             
             products.tools.forEach((product) => {
-                const imageUrl1 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX300_.jpg`;
-                const imageUrl2 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SX300_SY300_.jpg`;
+                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
+                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
                 
                 html += `
                     <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
@@ -2058,7 +2058,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="console.log('🛒 Amazonリンク:', '${product.asin}', window.ENV?.AMAZON_ASSOCIATE_TAG); window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=' + (window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'), '_blank')" 
+                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}" target="_blank" rel="noopener noreferrer" class="block w-full" 
                                 class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </button>
@@ -2081,8 +2081,8 @@ class AICleaningAdvisor {
             `;
             
             products.protection.forEach((product) => {
-                const imageUrl1 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX300_.jpg`;
-                const imageUrl2 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SX300_SY300_.jpg`;
+                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
+                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
                 
                 html += `
                     <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
@@ -2111,7 +2111,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="console.log('🛒 Amazonリンク:', '${product.asin}', window.ENV?.AMAZON_ASSOCIATE_TAG); window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=' + (window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'), '_blank')" 
+                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}" target="_blank" rel="noopener noreferrer" class="block w-full" 
                                 class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </button>
