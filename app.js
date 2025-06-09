@@ -6,6 +6,66 @@
  * 🔧 修正：場所選択ボタンの徹底的なデバッグとテスト
  */
 
+// 🗄️ 統合設定データベース
+window.COMPREHENSIVE_DIRT_MAPPING = {
+    'カビ': { category: 'mold', priority: 'high', difficulty: 3 },
+    '油汚れ': { category: 'grease', priority: 'high', difficulty: 2 },
+    '水垢': { category: 'scale', priority: 'medium', difficulty: 2 },
+    '石鹸カス': { category: 'soap_scum', priority: 'medium', difficulty: 2 },
+    '黄ばみ': { category: 'stain', priority: 'medium', difficulty: 2 },
+    'ほこり': { category: 'dust', priority: 'low', difficulty: 1 },
+    '汗染み': { category: 'sweat', priority: 'medium', difficulty: 2 },
+    '食べかす': { category: 'food_debris', priority: 'medium', difficulty: 1 },
+    '皮脂汚れ': { category: 'sebum', priority: 'medium', difficulty: 2 },
+    '赤錆': { category: 'rust', priority: 'high', difficulty: 3 },
+    '黒カビ': { category: 'black_mold', priority: 'high', difficulty: 4 },
+    '白カビ': { category: 'white_mold', priority: 'high', difficulty: 3 },
+    '青カビ': { category: 'blue_mold', priority: 'high', difficulty: 3 },
+    '焦げ': { category: 'burn', priority: 'high', difficulty: 4 },
+    '泥汚れ': { category: 'mud', priority: 'medium', difficulty: 2 },
+    '血液': { category: 'blood', priority: 'high', difficulty: 3 },
+    'ワイン汚れ': { category: 'wine_stain', priority: 'high', difficulty: 3 },
+    'コーヒー汚れ': { category: 'coffee_stain', priority: 'medium', difficulty: 2 },
+    '口紅': { category: 'lipstick', priority: 'medium', difficulty: 2 },
+    'インク': { category: 'ink', priority: 'high', difficulty: 4 },
+    '尿汚れ': { category: 'urine', priority: 'high', difficulty: 3 },
+    '便汚れ': { category: 'feces', priority: 'high', difficulty: 4 },
+    'ペットの毛': { category: 'pet_hair', priority: 'low', difficulty: 1 },
+    'ニコチン汚れ': { category: 'nicotine', priority: 'high', difficulty: 3 }
+};
+
+window.COMPREHENSIVE_PRODUCT_DATABASE = {
+    'multi_cleaner': { name: '万能洗剤', category: 'cleaner' },
+    'degreaser': { name: '油汚れ用洗剤', category: 'cleaner' },
+    'mold_remover': { name: 'カビ取り剤', category: 'cleaner' },
+    'scale_remover': { name: '水垢取り', category: 'cleaner' },
+    'toilet_cleaner': { name: 'トイレ用洗剤', category: 'cleaner' },
+    'glass_cleaner': { name: 'ガラス用洗剤', category: 'cleaner' },
+    'floor_cleaner': { name: 'フロア用洗剤', category: 'cleaner' },
+    'disinfectant': { name: '除菌スプレー', category: 'cleaner' },
+    'rust_remover': { name: 'サビ取り剤', category: 'cleaner' },
+    'stain_remover': { name: 'シミ抜き剤', category: 'cleaner' },
+    'sponge': { name: 'スポンジ', category: 'tool' },
+    'brush': { name: 'ブラシ', category: 'tool' },
+    'cloth': { name: 'マイクロファイバークロス', category: 'tool' },
+    'scraper': { name: 'スクレーパー', category: 'tool' },
+    'vacuum': { name: '掃除機', category: 'tool' },
+    'rubber_gloves': { name: 'ゴム手袋', category: 'protection' },
+    'mask': { name: 'マスク', category: 'protection' },
+    'apron': { name: 'エプロン', category: 'protection' }
+};
+
+window.COMPREHENSIVE_LOCATION_CONFIG = {
+    'kitchen': { name: 'キッチン', icon: '🔥', difficulty: 3 },
+    'bathroom': { name: 'バスルーム', icon: '🛁', difficulty: 4 },
+    'toilet': { name: 'トイレ', icon: '🚽', difficulty: 3 },
+    'window': { name: '窓・ガラス', icon: '🪟', difficulty: 2 },
+    'floor': { name: '床・フローリング', icon: '🧹', difficulty: 2 },
+    'aircon': { name: 'エアコン', icon: '❄️', difficulty: 4 },
+    'washer': { name: '洗濯機', icon: '🧺', difficulty: 3 },
+    'living': { name: 'リビング', icon: '🛋️', difficulty: 2 }
+};
+
 class AICleaningAdvisor {
     constructor() {
         this.state = {
