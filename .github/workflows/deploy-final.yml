@@ -45,6 +45,18 @@ jobs:
         
         echo "✅ Config files created"
         
+    - name: Clean unnecessary files
+      run: |
+        echo "Removing unnecessary files..."
+        rm -rf .git
+        rm -rf .github
+        rm -rf ai-cleaner
+        rm -rf *.md
+        rm -rf .env*
+        rm -rf manual-*
+        echo "✅ Cleanup completed"
+        ls -la
+        
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
@@ -54,12 +66,15 @@ jobs:
         local-dir: "./"
         server-dir: "/public_html/tools/ai-cleaner/"
         exclude: |
-          .git*
-          .github*
-          ai-cleaner/
-          *.md
-          .env*
-          manual-*
+          **/.git/**
+          **/.github/**
+          **/ai-cleaner/**
+          **/*.md
+          **/.env*
+          **/manual-*
+          **/node_modules/**
+          **/.DS_Store
+          **/Thumbs.db
           
     - name: Success Notification
       run: |
