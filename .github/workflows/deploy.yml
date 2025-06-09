@@ -19,9 +19,39 @@ jobs:
         cp app.js upload/
         cp styles.css upload/
         cp amazon-config.js upload/
+        cp env-config.js upload/
         
         mkdir upload/server
         cp server/*.js upload/server/
+        
+        # Amazon proxy PHPファイルを作成
+        cat > upload/server/amazon-proxy.php << 'EOF'
+<?php
+require_once 'config.php';
+
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (isset($input['asins']) && is_array($input['asins'])) {
+        // Amazon PA-API呼び出し処理をここに実装
+        echo json_encode([
+            'success' => true,
+            'products' => [],
+            'message' => 'Amazon API統合準備完了'
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Invalid input']);
+    }
+} else {
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+}
+?>
+EOF
         
         # Config files
         cat > upload/env-config.js << 'EOF'
