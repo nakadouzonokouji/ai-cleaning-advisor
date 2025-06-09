@@ -22,12 +22,14 @@ jobs:
         
         mkdir upload/server
         cp server/*.js upload/server/
+        cp server/*.php upload/server/ || echo "No PHP files to copy"
         
         # Config files
         cat > upload/env-config.js << 'EOF'
         window.ENV = {
           API_ENDPOINT: '/tools/ai-cleaner/server/amazon-proxy.php',
-          VERSION: '3.1.0'
+          VERSION: '3.1.0',
+          AMAZON_ASSOCIATE_TAG: '${{ secrets.AMAZON_ASSOCIATE_TAG }}'
         };
         EOF
         

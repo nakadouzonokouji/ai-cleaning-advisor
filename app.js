@@ -1914,7 +1914,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=yourtagname-22', '_blank')" 
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'yourtagname-22'}', '_blank')" 
                                 class="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </button>
@@ -1967,7 +1967,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=yourtagname-22', '_blank')" 
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'yourtagname-22'}', '_blank')" 
                                 class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </button>
@@ -2020,7 +2020,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=yourtagname-22', '_blank')" 
+                        <button onclick="window.open('https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'yourtagname-22'}', '_blank')" 
                                 class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </button>
