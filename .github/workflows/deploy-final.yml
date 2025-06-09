@@ -16,13 +16,31 @@ jobs:
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         
-    - name: Checkout Code
+    - name: Checkout Code and Create Deploy Directory
       run: |
+        # 新しいディレクトリを作成してクリーンな環境を構築
+        mkdir -p deploy-temp
+        cd deploy-temp
         git clone https://github.com/nakadouzonokouji/ai-cleaner.git .
+        
+        # 必要なファイルのみを親ディレクトリにコピー
+        cd ..
+        mkdir -p deploy
+        
+        # 必要なファイルをコピー（.gitは含まない）
+        cp deploy-temp/index.html deploy/
+        cp deploy-temp/app.js deploy/
+        cp deploy-temp/styles.css deploy/
+        cp deploy-temp/amazon-config.js deploy/
+        cp -r deploy-temp/server deploy/
+        
+        # 作業ディレクトリを変更
+        cd deploy
         ls -la
         
     - name: Create Config Files
       run: |
+        cd deploy
         echo "Creating server config..."
         mkdir -p server
         
@@ -44,17 +62,6 @@ jobs:
         EOF
         
         echo "✅ Config files created"
-        
-    - name: Clean unnecessary files
-      run: |
-        echo "Removing unnecessary files..."
-        rm -rf .git
-        rm -rf .github
-        rm -rf ai-cleaner
-        rm -rf *.md
-        rm -rf .env*
-        rm -rf manual-*
-        echo "✅ Cleanup completed"
         ls -la
         
     - name: Deploy via FTP
@@ -63,18 +70,8 @@ jobs:
         server: ${{ secrets.XSERVER_FTP_HOST }}
         username: ${{ secrets.XSERVER_FTP_USER }}
         password: ${{ secrets.XSERVER_FTP_PASS }}
-        local-dir: "./"
+        local-dir: "deploy/"
         server-dir: "/public_html/tools/ai-cleaner/"
-        exclude: |
-          **/.git/**
-          **/.github/**
-          **/ai-cleaner/**
-          **/*.md
-          **/.env*
-          **/manual-*
-          **/node_modules/**
-          **/.DS_Store
-          **/Thumbs.db
           
     - name: Success Notification
       run: |
