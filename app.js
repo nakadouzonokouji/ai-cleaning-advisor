@@ -1689,9 +1689,25 @@ class AICleaningAdvisor {
             console.log(`📦 Amazon API呼び出し: ${allAsins.length}商品`);
             
             // Amazon APIで商品情報取得
-            const amazonData = await window.getAmazonProductInfo(allAsins);
+            let amazonData = null;
+            try {
+                const response = await fetch(window.ENV.API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ asins: allAsins })
+                });
+                
+                if (response.ok) {
+                    amazonData = await response.json();
+                    console.log('✅ Amazon API拡張用データ取得成功:', amazonData);
+                } else {
+                    console.log('⚠️ Amazon API応答エラー:', response.status);
+                }
+            } catch (error) {
+                console.log('⚠️ Amazon API接続失敗:', error.message);
+            }
             
-            if (!amazonData) {
+            if (!amazonData || !amazonData.success) {
                 console.log('⚠️ Amazon API応答なし - 基本データを使用');
                 return baseProducts;
             }
@@ -1702,7 +1718,8 @@ class AICleaningAdvisor {
             ['cleaners', 'tools', 'protection'].forEach(category => {
                 if (enrichedProducts[category]) {
                     enrichedProducts[category] = enrichedProducts[category].map(product => {
-                        const amazonInfo = amazonData[product.asin];
+                        // Amazon APIレスポンスのproducts配列から該当ASINを検索
+                        const amazonInfo = amazonData.products?.find(p => p.asin === product.asin);
                         if (amazonInfo) {
                             return {
                                 ...product,
@@ -1710,7 +1727,8 @@ class AICleaningAdvisor {
                                 price: amazonInfo.price || product.price,
                                 rating: amazonInfo.rating || product.rating,
                                 reviews: amazonInfo.reviewCount || product.reviews,
-                                image: amazonInfo.images?.large || amazonInfo.images?.medium,
+                                image: amazonInfo.image,
+                                url: amazonInfo.url,
                                 availability: amazonInfo.availability,
                                 isRealData: true
                             };
