@@ -567,13 +567,34 @@
     
     <!-- Security Script -->
     <script>
+        // 開発者モード機能
+        window.devMode = {
+            enabled: false,
+            toggle: function() {
+                this.enabled = !this.enabled;
+                if (this.enabled) {
+                    console.log('🔧 開発者モード有効化 - セキュリティ機能無効');
+                    document.body.classList.add('dev-mode');
+                } else {
+                    console.log('🔐 開発者モード無効化 - セキュリティ機能有効');
+                    document.body.classList.remove('dev-mode');
+                }
+                return this.enabled;
+            }
+        };
+        
+        // コンソールで window.devMode.toggle() を実行して切り替え可能
+        console.log('💡 開発者向け: window.devMode.toggle() でデバッグモード切り替え');
+
         // セキュリティ対策の初期化
         document.addEventListener('DOMContentLoaded', function() {
             // 右クリック防止
             document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                showSecurityAlert('右クリックは無効化されています');
-                return false;
+                if (!window.devMode.enabled) {
+                    e.preventDefault();
+                    showSecurityAlert('右クリックは無効化されています');
+                    return false;
+                }
             });
             
             // テキスト選択防止
@@ -605,13 +626,15 @@
             
             // キーボードショートカット防止
             document.addEventListener('keydown', function(e) {
-                // F12, Ctrl+Shift+I, Ctrl+U などを無効化
-                if (e.key === 'F12' || 
-                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C')) ||
-                    (e.ctrlKey && e.key === 'u')) {
-                    e.preventDefault();
-                    showSecurityAlert('このキーコンビネーションは無効化されています');
-                    return false;
+                if (!window.devMode.enabled) {
+                    // F12, Ctrl+Shift+I, Ctrl+U などを無効化
+                    if (e.key === 'F12' || 
+                        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C')) ||
+                        (e.ctrlKey && e.key === 'u')) {
+                        e.preventDefault();
+                        showSecurityAlert('このキーコンビネーションは無効化されています');
+                        return false;
+                    }
                 }
             });
             
@@ -634,5 +657,8 @@
             }, 3000);
         }
     </script>
+    
+    <!-- セキュリティ機能（分離・開発者モード対応） -->
+    <script src="security.js"></script>
 </body>
 </html>

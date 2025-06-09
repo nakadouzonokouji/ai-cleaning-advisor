@@ -19,6 +19,7 @@ jobs:
         cp app.js upload/
         cp styles.css upload/
         cp amazon-config.js upload/
+        cp security.js upload/
         
         mkdir upload/server
         cp server/*.js upload/server/
