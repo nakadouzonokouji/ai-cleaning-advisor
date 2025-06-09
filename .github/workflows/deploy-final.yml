@@ -64,14 +64,25 @@ jobs:
         echo "✅ Config files created"
         ls -la
         
-    - name: Deploy via FTP
-      uses: SamKirkland/FTP-Deploy-Action@4.3.3
-      with:
-        server: ${{ secrets.XSERVER_FTP_HOST }}
-        username: ${{ secrets.XSERVER_FTP_USER }}
-        password: ${{ secrets.XSERVER_FTP_PASS }}
-        local-dir: "deploy/"
-        server-dir: "/public_html/tools/ai-cleaner/"
+    - name: Deploy via LFTP
+      run: |
+        cd deploy
+        
+        # LFTPをインストール
+        sudo apt-get update
+        sudo apt-get install -y lftp
+        
+        # FTP接続とファイル転送
+        lftp -c "
+        set ftp:ssl-allow no;
+        open ftp://${{ secrets.XSERVER_FTP_USER }}:${{ secrets.XSERVER_FTP_PASS }}@${{ secrets.XSERVER_FTP_HOST }};
+        lcd .;
+        cd /public_html/tools/ai-cleaner/;
+        mirror --reverse --delete --verbose ./ ./;
+        quit;
+        "
+        
+        echo "✅ LFTP deployment completed"
           
     - name: Success Notification
       run: |
