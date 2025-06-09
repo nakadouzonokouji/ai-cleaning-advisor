@@ -1,0 +1,54 @@
+name: Simple Deploy
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      
+    - name: Create clean files
+      run: |
+        mkdir clean
+        cp index.html clean/
+        cp app.js clean/
+        cp styles.css clean/
+        cp amazon-config.js clean/
+        
+        mkdir clean/server
+        cp server/amazon-proxy.js clean/server/
+        cp server/proxy.js clean/server/
+        cp server/unified-proxy.js clean/server/
+        
+        cat > clean/env-config.js << 'EOF'
+        window.ENV = {
+          API_ENDPOINT: '/tools/ai-cleaner/server/amazon-proxy.php',
+          VERSION: '3.1.0'
+        };
+        console.log('設定読み込み完了');
+        EOF
+        
+        cat > clean/server/config.php << 'EOF'
+        <?php
+        define('AMAZON_ACCESS_KEY', '${{ secrets.AMAZON_ACCESS_KEY }}');
+        define('AMAZON_SECRET_KEY', '${{ secrets.AMAZON_SECRET_KEY }}');
+        define('AMAZON_ASSOCIATE_TAG', '${{ secrets.AMAZON_ASSOCIATE_TAG }}');
+        define('GEMINI_API_KEY', '${{ secrets.GEMINI_API_KEY }}');
+        ?>
+        EOF
+        
+        ls -la clean/
+        
+    - name: FTP Upload
+      uses: sebastianpopp/ftp-action@releases/v2
+      with:
+        host: ${{ secrets.XSERVER_FTP_HOST }}
+        user: ${{ secrets.XSERVER_FTP_USER }}
+        password: ${{ secrets.XSERVER_FTP_PASS }}
+        localDir: "clean"
+        remoteDir: "/public_html/tools/ai-cleaner"
