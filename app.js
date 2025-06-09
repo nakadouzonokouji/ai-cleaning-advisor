@@ -1458,8 +1458,6 @@ class AICleaningAdvisor {
         // Amazon API統合テスト
         try {
             if (window.ENV?.API_ENDPOINT) {
-                console.log('🔗 Amazon API統合テスト開始');
-                console.log('📡 エンドポイント:', window.ENV.API_ENDPOINT);
                 
                 // サンプルASINでテスト
                 const testAsins = ['B000E6G8K2', 'B01GDWX0Q4'];
@@ -1471,16 +1469,13 @@ class AICleaningAdvisor {
                 
                 if (response.ok) {
                     const apiData = await response.json();
-                    console.log('✅ Amazon API応答:', apiData);
                     
                     if (apiData.success && apiData.products) {
-                        console.log('🎉 Amazon API統合成功 - リアルタイムデータ使用');
                         return await this.enrichProductsWithAmazonData(baseProducts);
                     }
                 }
             }
         } catch (error) {
-            console.log('⚠️ Amazon API接続失敗:', error.message);
         }
         
         // フォールバック：静的データ
@@ -1728,7 +1723,6 @@ class AICleaningAdvisor {
 
     // 🔗 Amazon APIでの商品データ拡張
     async enrichProductsWithAmazonData(baseProducts) {
-        console.log('🔗 Amazon APIで商品データ拡張開始');
         
         try {
             // 全カテゴリのASIN収集
@@ -1764,8 +1758,7 @@ class AICleaningAdvisor {
                     console.log('⚠️ Amazon API応答エラー:', response.status);
                 }
             } catch (error) {
-                console.log('⚠️ Amazon API接続失敗:', error.message);
-            }
+                }
             
             if (!amazonData || !amazonData.success) {
                 console.log('⚠️ Amazon API応答なし - 基本データを使用');
@@ -1780,12 +1773,7 @@ class AICleaningAdvisor {
                     enrichedProducts[category] = enrichedProducts[category].map(product => {
                         // Amazon APIレスポンスのproducts配列から該当ASINを検索
                         const amazonInfo = amazonData.products?.find(p => p.asin === product.asin);
-                        console.log(`🔍 商品確認: ${product.asin} - Amazon情報: ${amazonInfo ? 'あり' : 'なし'}`);
-                        
                         if (amazonInfo) {
-                            console.log(`✅ Amazon商品更新: ${product.name} → ${amazonInfo.title || product.name}`);
-                            console.log(`📷 画像URL: ${amazonInfo.image}`);
-                            console.log(`💰 価格: ${amazonInfo.price || product.price}`);
                             
                             return {
                                 ...product,
@@ -1798,8 +1786,6 @@ class AICleaningAdvisor {
                                 availability: amazonInfo.availability,
                                 isRealData: true
                             };
-                        } else {
-                            console.log(`⚠️ Amazon情報なし: ${product.asin} - 基本データ使用`);
                         }
                         return product;
                     });
@@ -1974,7 +1960,6 @@ class AICleaningAdvisor {
                 const imageUrl2 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SX300_SY300_.jpg`;
                 const imageUrl3 = `https://images-fe.ssl-images-amazon.com/images/P/${product.asin}.01._SCMZZZZZZZ_.jpg`;
                 
-                console.log(`🖼️ 商品画像URL - API: ${apiImage}, フォールバック1: ${imageUrl1}`);
                 
                 html += `
                     <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
