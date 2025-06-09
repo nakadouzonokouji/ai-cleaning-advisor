@@ -51,7 +51,7 @@ jobs:
         username: ${{ secrets.XSERVER_FTP_USER }}
         password: ${{ secrets.XSERVER_FTP_PASS }}
         local-dir: "upload/"
-        server-dir: "/public_html/tools/ai-cleaner/"
+        server-dir: "/cxmainte.com/public_html/tools/ai-cleaner/"
         
     - name: Completed
       run: echo "Deployment completed"
