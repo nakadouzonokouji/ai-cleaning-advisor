@@ -19,51 +19,26 @@ jobs:
         cp app.js upload/
         cp styles.css upload/
         cp amazon-config.js upload/
-        cp env-config.js upload/
         
         mkdir upload/server
         cp server/*.js upload/server/
         
-        cat > upload/server/amazon-proxy.php << 'PHPEOF'
-        <?php
-        require_once 'config.php';
-        header('Content-Type: application/json');
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: POST');
-        header('Access-Control-Allow-Headers: Content-Type');
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $input = json_decode(file_get_contents('php://input'), true);
-            if (isset($input['asins']) && is_array($input['asins'])) {
-                echo json_encode([
-                    'success' => true,
-                    'products' => [],
-                    'message' => 'Amazon API統合準備完了'
-                ]);
-            } else {
-                echo json_encode(['success' => false, 'error' => 'Invalid input']);
-            }
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
-        }
-        ?>
-        PHPEOF
-        
-        cat > upload/env-config.js << 'JSEOF'
+        # Config files
+        cat > upload/env-config.js << 'EOF'
         window.ENV = {
           API_ENDPOINT: '/tools/ai-cleaner/server/amazon-proxy.php',
           VERSION: '3.1.0'
         };
-        JSEOF
+        EOF
         
-        cat > upload/server/config.php << 'CONFIGEOF'
+        cat > upload/server/config.php << 'EOF'
         <?php
         define('AMAZON_ACCESS_KEY', '${{ secrets.AMAZON_ACCESS_KEY }}');
         define('AMAZON_SECRET_KEY', '${{ secrets.AMAZON_SECRET_KEY }}');
         define('AMAZON_ASSOCIATE_TAG', '${{ secrets.AMAZON_ASSOCIATE_TAG }}');
         define('GEMINI_API_KEY', '${{ secrets.GEMINI_API_KEY }}');
         ?>
-        CONFIGEOF
+        EOF
         
         echo "Files prepared:"
         ls -la upload/
