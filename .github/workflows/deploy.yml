@@ -44,6 +44,12 @@ jobs:
         ls -la upload/
         ls -la upload/server/
         
+        echo "=== ファイル内容確認 ==="
+        echo "app.js first 10 lines:"
+        head -10 upload/app.js
+        echo "env-config.js content:"
+        cat upload/env-config.js
+        
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
@@ -52,6 +58,13 @@ jobs:
         password: ${{ secrets.XSERVER_FTP_PASS }}
         local-dir: "upload/"
         server-dir: "/cxmainte.com/public_html/tools/ai-cleaner/"
+        dry-run: false
+        log-level: verbose
         
-    - name: Completed
-      run: echo "Deployment completed"
+    - name: Post-deployment verification
+      run: |
+        echo "=== デプロイ完了確認 ==="
+        echo "デプロイ先: /cxmainte.com/public_html/tools/ai-cleaner/"
+        echo "確認URL: https://cxmainte.com/tools/ai-cleaner/"
+        echo "ファイルマネージャー: https://webftp-sv6095.xserver.jp/cxmainte.com/public_html/tools/ai-cleaner"
+        date
