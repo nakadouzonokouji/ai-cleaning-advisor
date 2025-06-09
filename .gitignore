@@ -42,4 +42,7 @@ build/
 
 # Server specific
 server/.env
-server/node_modules/ai-cleaner/
+server/node_modules/
+
+# Exclude nested project directory
+ai-cleaner/ai-cleaner/
