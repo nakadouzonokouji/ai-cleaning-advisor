@@ -1395,9 +1395,36 @@ class AICleaningAdvisor {
         // 基本商品データを取得
         const baseProducts = this.getBaseProductData(dirtType);
         
-        // 本番環境用：安定した商品データを提供
-        console.log('✅ 本番環境向け商品データ提供');
-        console.log('🛒 静的商品データで確実な動作を保証');
+        // Amazon API統合テスト
+        try {
+            if (window.ENV?.API_ENDPOINT) {
+                console.log('🔗 Amazon API統合テスト開始');
+                console.log('📡 エンドポイント:', window.ENV.API_ENDPOINT);
+                
+                // サンプルASINでテスト
+                const testAsins = ['B000E6G8K2', 'B01GDWX0Q4'];
+                const response = await fetch(window.ENV.API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ asins: testAsins })
+                });
+                
+                if (response.ok) {
+                    const apiData = await response.json();
+                    console.log('✅ Amazon API応答:', apiData);
+                    
+                    if (apiData.success && apiData.products) {
+                        console.log('🎉 Amazon API統合成功 - リアルタイムデータ使用');
+                        return await this.enrichProductsWithAmazonData(baseProducts);
+                    }
+                }
+            }
+        } catch (error) {
+            console.log('⚠️ Amazon API接続失敗:', error.message);
+        }
+        
+        // フォールバック：静的データ
+        console.log('📦 静的商品データを使用');
         return baseProducts;
     }
 
@@ -1855,10 +1882,10 @@ class AICleaningAdvisor {
             `;
             
             products.cleaners.forEach((product) => {
-                // 本番環境用Amazon画像URL（確実に動作する形式）
-                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
-                const imageUrl3 = `https://m.media-amazon.com/images/I/${product.asin}._SL300_.jpg`;
+                // 確実に動作するAmazon画像URL
+                const imageUrl1 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX300_.jpg`;
+                const imageUrl2 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SX300_SY300_.jpg`;
+                const imageUrl3 = `https://images-fe.ssl-images-amazon.com/images/P/${product.asin}.01._SCMZZZZZZZ_.jpg`;
                 
                 html += `
                     <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
@@ -1910,8 +1937,8 @@ class AICleaningAdvisor {
             `;
             
             products.tools.forEach((product) => {
-                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
+                const imageUrl1 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX300_.jpg`;
+                const imageUrl2 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SX300_SY300_.jpg`;
                 
                 html += `
                     <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
@@ -1963,8 +1990,8 @@ class AICleaningAdvisor {
             `;
             
             products.protection.forEach((product) => {
-                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
+                const imageUrl1 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX300_.jpg`;
+                const imageUrl2 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SX300_SY300_.jpg`;
                 
                 html += `
                     <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
