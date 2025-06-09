@@ -42,4 +42,4 @@ build/
 
 # Server specific
 server/.env
-server/node_modules/
+server/node_modules/ai-cleaner/
