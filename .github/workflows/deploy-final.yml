@@ -1,0 +1,68 @@
+name: Deploy to XServer (Final)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Setup Git
+      run: |
+        git config --global init.defaultBranch main
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        
+    - name: Checkout Code
+      run: |
+        git clone https://github.com/nakadouzonokouji/ai-cleaner.git .
+        ls -la
+        
+    - name: Create Config Files
+      run: |
+        echo "Creating server config..."
+        mkdir -p server
+        
+        cat > server/config.php << 'EOF'
+        <?php
+        define('AMAZON_ACCESS_KEY', '${{ secrets.AMAZON_ACCESS_KEY }}');
+        define('AMAZON_SECRET_KEY', '${{ secrets.AMAZON_SECRET_KEY }}');
+        define('AMAZON_ASSOCIATE_TAG', '${{ secrets.AMAZON_ASSOCIATE_TAG }}');
+        define('GEMINI_API_KEY', '${{ secrets.GEMINI_API_KEY }}');
+        ?>
+        EOF
+        
+        cat > env-config.js << 'EOF'
+        window.ENV = {
+          API_ENDPOINT: '/tools/ai-cleaner/server/amazon-proxy.php',
+          VERSION: '3.1.0'
+        };
+        console.log('🔐 本番環境設定読み込み完了');
+        EOF
+        
+        echo "✅ Config files created"
+        
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      with:
+        server: ${{ secrets.XSERVER_FTP_HOST }}
+        username: ${{ secrets.XSERVER_FTP_USER }}
+        password: ${{ secrets.XSERVER_FTP_PASS }}
+        local-dir: "./"
+        server-dir: "/public_html/tools/ai-cleaner/"
+        exclude: |
+          .git*
+          .github*
+          ai-cleaner/
+          *.md
+          .env*
+          manual-*
+          
+    - name: Success Notification
+      run: |
+        echo "🎉 デプロイ完了!"
+        echo "🌐 URL: https://cxmainte.com/tools/ai-cleaner/"
+        echo "⏰ 時刻: $(date '+%Y-%m-%d %H:%M:%S')"
