@@ -1780,7 +1780,13 @@ class AICleaningAdvisor {
                     enrichedProducts[category] = enrichedProducts[category].map(product => {
                         // Amazon APIレスポンスのproducts配列から該当ASINを検索
                         const amazonInfo = amazonData.products?.find(p => p.asin === product.asin);
+                        console.log(`🔍 商品確認: ${product.asin} - Amazon情報: ${amazonInfo ? 'あり' : 'なし'}`);
+                        
                         if (amazonInfo) {
+                            console.log(`✅ Amazon商品更新: ${product.name} → ${amazonInfo.title || product.name}`);
+                            console.log(`📷 画像URL: ${amazonInfo.image}`);
+                            console.log(`💰 価格: ${amazonInfo.price || product.price}`);
+                            
                             return {
                                 ...product,
                                 name: amazonInfo.title || product.name,
@@ -1792,6 +1798,8 @@ class AICleaningAdvisor {
                                 availability: amazonInfo.availability,
                                 isRealData: true
                             };
+                        } else {
+                            console.log(`⚠️ Amazon情報なし: ${product.asin} - 基本データ使用`);
                         }
                         return product;
                     });
@@ -1960,10 +1968,13 @@ class AICleaningAdvisor {
             `;
             
             products.cleaners.forEach((product) => {
-                // 確実に動作するAmazon画像URL
-                const imageUrl1 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX300_.jpg`;
+                // Amazon画像URL（API取得画像を優先、フォールバック画像で補完）
+                const apiImage = product.image || '';
+                const imageUrl1 = apiImage || `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01._SCLZZZZZZZ_SX300_.jpg`;
                 const imageUrl2 = `https://m.media-amazon.com/images/I/${product.asin}._AC_SX300_SY300_.jpg`;
                 const imageUrl3 = `https://images-fe.ssl-images-amazon.com/images/P/${product.asin}.01._SCMZZZZZZZ_.jpg`;
+                
+                console.log(`🖼️ 商品画像URL - API: ${apiImage}, フォールバック1: ${imageUrl1}`);
                 
                 html += `
                     <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
