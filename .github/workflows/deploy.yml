@@ -24,51 +24,46 @@ jobs:
         mkdir upload/server
         cp server/*.js upload/server/
         
-        # Amazon proxy PHPファイルを作成
-        cat > upload/server/amazon-proxy.php << 'EOF'
-<?php
-require_once 'config.php';
-
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true);
-    
-    if (isset($input['asins']) && is_array($input['asins'])) {
-        // Amazon PA-API呼び出し処理をここに実装
-        echo json_encode([
-            'success' => true,
-            'products' => [],
-            'message' => 'Amazon API統合準備完了'
-        ]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Invalid input']);
-    }
-} else {
-    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
-}
-?>
-EOF
+        cat > upload/server/amazon-proxy.php << 'PHPEOF'
+        <?php
+        require_once 'config.php';
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: POST');
+        header('Access-Control-Allow-Headers: Content-Type');
         
-        # Config files
-        cat > upload/env-config.js << 'EOF'
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (isset($input['asins']) && is_array($input['asins'])) {
+                echo json_encode([
+                    'success' => true,
+                    'products' => [],
+                    'message' => 'Amazon API統合準備完了'
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid input']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+        }
+        ?>
+        PHPEOF
+        
+        cat > upload/env-config.js << 'JSEOF'
         window.ENV = {
           API_ENDPOINT: '/tools/ai-cleaner/server/amazon-proxy.php',
           VERSION: '3.1.0'
         };
-        EOF
+        JSEOF
         
-        cat > upload/server/config.php << 'EOF'
+        cat > upload/server/config.php << 'CONFIGEOF'
         <?php
         define('AMAZON_ACCESS_KEY', '${{ secrets.AMAZON_ACCESS_KEY }}');
         define('AMAZON_SECRET_KEY', '${{ secrets.AMAZON_SECRET_KEY }}');
         define('AMAZON_ASSOCIATE_TAG', '${{ secrets.AMAZON_ASSOCIATE_TAG }}');
         define('GEMINI_API_KEY', '${{ secrets.GEMINI_API_KEY }}');
         ?>
-        EOF
+        CONFIGEOF
         
         echo "Files prepared:"
         ls -la upload/
