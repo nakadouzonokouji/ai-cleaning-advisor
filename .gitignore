@@ -42,6 +42,8 @@ build/
 
 # Server specific
 server/.env
+server/.env.*
+server/config.php
 server/node_modules/
 
 # Exclude nested project directory
