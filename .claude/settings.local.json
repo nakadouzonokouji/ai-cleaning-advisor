@@ -28,7 +28,8 @@
       "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"B000FQTJZW\" /mnt/c/Users/knaka/Desktop/ai-cleaner/config.js)",
       "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"window.ENV.API_ENDPOINT\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)",
       "WebFetch(domain:m.media-amazon.com)",
-      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n -A2 -B2 'class=\"block w-full\".*class=' /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)"
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n -A2 -B2 'class=\"block w-full\".*class=' /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"cxmainte-22\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)"
     ],
     "deny": []
   }

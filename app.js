@@ -1967,8 +1967,14 @@ class AICleaningAdvisor {
         console.log('🔧 ENV設定確認:', {
             ENV_defined: typeof window.ENV !== 'undefined',
             ASSOCIATE_TAG: window.ENV?.AMAZON_ASSOCIATE_TAG,
-            fallback_tag: 'cxmainte-22'
+            tag_valid: !!(window.ENV?.AMAZON_ASSOCIATE_TAG)
         });
+        
+        // Associate Tag未設定の場合は警告
+        if (!window.ENV?.AMAZON_ASSOCIATE_TAG) {
+            console.warn('⚠️ AMAZON_ASSOCIATE_TAG未設定 - Amazonリンクが正しく動作しません');
+            return; // 商品表示を中止
+        }
         
         let html = `<div class="space-y-8">`;
         
@@ -1989,7 +1995,7 @@ class AICleaningAdvisor {
                 const imageUrl1 = apiImage || `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
                 const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
                 const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
+                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
                 
                 
                 html += `
@@ -2019,7 +2025,7 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}" target="_blank" rel="noopener noreferrer" class="block w-full" 
+                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" class="block w-full" 
 style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); color: white; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s;">
                             🛒 Amazonで購入
                         </a>
@@ -2045,7 +2051,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
                 const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
                 const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
+                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
                 
                 html += `
                     <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
@@ -2074,7 +2080,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}" target="_blank" rel="noopener noreferrer" 
+                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
                            class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </a>
@@ -2100,7 +2106,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
                 const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
                 const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
+                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
                 
                 html += `
                     <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
@@ -2129,7 +2135,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         
                         <div class="text-xs text-gray-500 mb-4">${product.reviews || '1000'}件のレビュー</div>
                         
-                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}" target="_blank" rel="noopener noreferrer" 
+                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
                            class="block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
                             🛒 Amazonで購入
                         </a>
@@ -2228,13 +2234,13 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
         };
         
         const imageUrl1 = `https://m.media-amazon.com/images/P/${testProduct.asin}.01._SL300_.jpg`;
-        const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${testProduct.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
-        const amazonLink = `https://www.amazon.co.jp/dp/${testProduct.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
+        const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${testProduct.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
+        const amazonLink = `https://www.amazon.co.jp/dp/${testProduct.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
         
         console.log('画像URL1:', imageUrl1);
         console.log('画像URL4:', imageUrl4);
         console.log('Amazon Link:', amazonLink);
-        console.log('Associate Tag:', window.ENV?.AMAZON_ASSOCIATE_TAG || 'フォールバック:cxmainte-22');
+        console.log('Associate Tag:', window.ENV?.AMAZON_ASSOCIATE_TAG || 'タグ未設定');
         
         return { imageUrl1, imageUrl4, amazonLink };
     }
