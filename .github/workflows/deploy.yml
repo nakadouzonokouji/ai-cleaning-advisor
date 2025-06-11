@@ -25,14 +25,31 @@ jobs:
         cp server/*.php upload/server/ || echo "No PHP files to copy"
         
         # Config files
-        cat > upload/env-config.js << 'EOF'
+        # デバッグ: シークレット展開確認
+        echo "=== シークレット展開確認 ==="
+        echo "AMAZON_ASSOCIATE_TAG length: ${#AMAZON_ASSOCIATE_TAG}"
+        echo "AMAZON_ACCESS_KEY set: ${{ secrets.AMAZON_ACCESS_KEY != '' }}"
+        echo "AMAZON_SECRET_KEY set: ${{ secrets.AMAZON_SECRET_KEY != '' }}"
+        echo "AMAZON_ASSOCIATE_TAG set: ${{ secrets.AMAZON_ASSOCIATE_TAG != '' }}"
+        echo "GEMINI_API_KEY set: ${{ secrets.GEMINI_API_KEY != '' }}"
+        
+        # Associate Tag設定（フォールバック対応）
+        ASSOCIATE_TAG="${{ secrets.AMAZON_ASSOCIATE_TAG }}"
+        if [ -z "$ASSOCIATE_TAG" ]; then
+          ASSOCIATE_TAG="cxmainte-22"
+          echo "⚠️ AMAZON_ASSOCIATE_TAG未設定 - フォールバック値使用: $ASSOCIATE_TAG"
+        else
+          echo "✅ AMAZON_ASSOCIATE_TAG設定済み: ${ASSOCIATE_TAG:0:8}..."
+        fi
+        
+        cat > upload/env-config.js << EOF
         window.ENV = {
           API_ENDPOINT: '/tools/ai-cleaner/server/amazon-proxy.php',
           VERSION: '3.1.0',
-          AMAZON_ASSOCIATE_TAG: '${{ secrets.AMAZON_ASSOCIATE_TAG }}'
+          AMAZON_ASSOCIATE_TAG: '$ASSOCIATE_TAG'
         };
         console.log('🔐 本番環境設定読み込み完了');
-        console.log('🛒 Repository Secrets適用済み');
+        console.log('🛒 Repository Secrets適用済み - Associate Tag:', window.ENV.AMAZON_ASSOCIATE_TAG);
         EOF
         
         cat > upload/server/config.php << 'EOF'
