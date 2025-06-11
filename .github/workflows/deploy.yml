@@ -33,13 +33,14 @@ jobs:
         echo "AMAZON_ASSOCIATE_TAG set: ${{ secrets.AMAZON_ASSOCIATE_TAG != '' }}"
         echo "GEMINI_API_KEY set: ${{ secrets.GEMINI_API_KEY != '' }}"
         
-        # Associate Tag設定（フォールバック対応）
+        # Repository Secrets強制使用（フォールバック無し）
         ASSOCIATE_TAG="${{ secrets.AMAZON_ASSOCIATE_TAG }}"
         if [ -z "$ASSOCIATE_TAG" ]; then
-          ASSOCIATE_TAG="cxmainte-22"
-          echo "⚠️ AMAZON_ASSOCIATE_TAG未設定 - フォールバック値使用: $ASSOCIATE_TAG"
+          echo "❌ ERROR: AMAZON_ASSOCIATE_TAG not set in Repository Secrets"
+          echo "Repository Secretsでアソシエイツタグを設定してください"
+          exit 1
         else
-          echo "✅ AMAZON_ASSOCIATE_TAG設定済み: ${ASSOCIATE_TAG:0:8}..."
+          echo "✅ Repository Secrets使用: ${ASSOCIATE_TAG:0:8}..."
         fi
         
         cat > upload/env-config.js << EOF
@@ -51,6 +52,20 @@ jobs:
         console.log('🔐 本番環境設定読み込み完了');
         console.log('🛒 Repository Secrets適用済み - Associate Tag:', window.ENV.AMAZON_ASSOCIATE_TAG);
         EOF
+        
+        # Repository Secrets検証
+        if [ -z "${{ secrets.AMAZON_ACCESS_KEY }}" ]; then
+          echo "❌ ERROR: AMAZON_ACCESS_KEY not set in Repository Secrets"
+          exit 1
+        fi
+        if [ -z "${{ secrets.AMAZON_SECRET_KEY }}" ]; then
+          echo "❌ ERROR: AMAZON_SECRET_KEY not set in Repository Secrets"
+          exit 1
+        fi
+        if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+          echo "❌ ERROR: GEMINI_API_KEY not set in Repository Secrets"
+          exit 1
+        fi
         
         cat > upload/server/config.php << 'EOF'
         <?php
