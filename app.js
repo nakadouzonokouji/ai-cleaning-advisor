@@ -1956,6 +1956,11 @@ class AICleaningAdvisor {
     // 🛒 商品表示（完全版：洗剤・ツール・保護具）
     displayProducts(products) {
         console.log('🛒 商品表示開始', products);
+        console.log('🔧 ENV設定確認:', {
+            ENV_defined: typeof window.ENV !== 'undefined',
+            ASSOCIATE_TAG: window.ENV?.AMAZON_ASSOCIATE_TAG,
+            fallback_tag: 'cxmainte-22'
+        });
         
         let html = `<div class="space-y-8">`;
         
@@ -1971,18 +1976,19 @@ class AICleaningAdvisor {
             `;
             
             products.cleaners.forEach((product) => {
-                // Amazon画像URL（複数フォーマット対応）
+                // Amazon画像URL（2025年対応版・複数フォーマット）
                 const apiImage = product.image || '';
-                const imageUrl1 = apiImage || `https://m.media-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
-                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.jpg`;
+                const imageUrl1 = apiImage || `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
+                const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
                 
                 
                 html += `
                     <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
                         <div class="relative mb-4">
                             <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
-                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}">
+                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
                             <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
                                 <div class="text-center">
                                     <div class="text-5xl mb-2">${product.emoji}</div>
@@ -2028,14 +2034,16 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             `;
             
             products.tools.forEach((product) => {
-                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
-                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
+                const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
                 
                 html += `
                     <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
                         <div class="relative mb-4">
                             <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
-                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}">
+                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
                             <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
                                 <div class="text-center">
                                     <div class="text-5xl mb-2">${product.emoji}</div>
@@ -2081,14 +2089,16 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             `;
             
             products.protection.forEach((product) => {
-                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01.MZZZZZZZ.jpg`;
-                const imageUrl2 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
+                const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
+                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
                 
                 html += `
                     <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
                         <div class="relative mb-4">
                             <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
-                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}">
+                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
                             <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
                                 <div class="text-center">
                                     <div class="text-5xl mb-2">${product.emoji}</div>
@@ -2195,10 +2205,44 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
     toggleCorrection() { console.log('修正切替（簡略版）'); }
     refreshProductPrices() { console.log('価格更新（簡略版）'); }
     applyComprehensiveCorrection(type) { console.log(`修正適用: ${type}（簡略版）`); }
+    
+    // 🔧 デバッグ用：Amazon画像とリンクのテスト
+    debugAmazonHTML() {
+        console.log('🔧 Amazon HTML生成デバッグ');
+        const testProduct = {
+            asin: "B000FQTJZW",
+            name: "テスト商品",
+            price: "¥298",
+            rating: 4.4,
+            reviews: 1000,
+            emoji: "🧴",
+            badge: "テスト"
+        };
+        
+        const imageUrl1 = `https://m.media-amazon.com/images/P/${testProduct.asin}.01._SL300_.jpg`;
+        const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${testProduct.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
+        const amazonLink = `https://www.amazon.co.jp/dp/${testProduct.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'cxmainte-22'}`;
+        
+        console.log('画像URL1:', imageUrl1);
+        console.log('画像URL4:', imageUrl4);
+        console.log('Amazon Link:', amazonLink);
+        console.log('Associate Tag:', window.ENV?.AMAZON_ASSOCIATE_TAG || 'フォールバック:cxmainte-22');
+        
+        return { imageUrl1, imageUrl4, amazonLink };
+    }
 }
 
 // グローバルアクセス用
 window.AICleaningAdvisor = AICleaningAdvisor;
+
+// デバッグ用グローバル関数
+window.debugAmazonLinks = function() {
+    if (window.advisor) {
+        return window.advisor.debugAmazonHTML();
+    } else {
+        console.error('AIクリーニングアドバイザーが初期化されていません');
+    }
+};
 
 // DOMContentLoaded時に初期化
 document.addEventListener('DOMContentLoaded', () => {

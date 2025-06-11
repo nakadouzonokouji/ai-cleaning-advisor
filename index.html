@@ -522,6 +522,9 @@
         console.log('🚀 AI掃除アドバイザー読み込み開始');
     </script>
     
+    <!-- 環境設定（優先読み込み） -->
+    <script src="env-config.js"></script>
+    
     <!-- メインアプリケーション -->
     <script src="app.js"></script>
     
@@ -648,7 +651,6 @@
     <!-- セキュリティ機能（分離・開発者モード対応） -->
     <script src="security.js"></script>
     
-    <!-- 環境設定（GitHubActionsで生成） -->
-    <script src="env-config.js"></script>
+    <!-- 環境設定（すでに上部で読み込み済み） -->
 </body>
 </html>
