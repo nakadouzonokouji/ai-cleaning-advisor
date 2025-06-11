@@ -1470,7 +1470,11 @@ class AICleaningAdvisor {
                     }
                 });
                 
-                const response = await fetch(window.ENV.API_ENDPOINT, {
+                // API_ENDPOINT確認とフォールバック
+                const apiEndpoint = window.ENV?.API_ENDPOINT || '/tools/ai-cleaner/server/amazon-proxy.php';
+                console.log('🔗 API_ENDPOINT確認:', apiEndpoint);
+                
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ asins: testAsins })
@@ -1762,7 +1766,11 @@ class AICleaningAdvisor {
             // Amazon APIで商品情報取得
             let amazonData = null;
             try {
-                const response = await fetch(window.ENV.API_ENDPOINT, {
+                // API_ENDPOINT確認とフォールバック
+                const apiEndpoint = window.ENV?.API_ENDPOINT || '/tools/ai-cleaner/server/amazon-proxy.php';
+                console.log('🔗 Amazon API呼び出し先:', apiEndpoint);
+                
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ asins: allAsins })

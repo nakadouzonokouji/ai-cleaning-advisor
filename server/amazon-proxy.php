@@ -22,6 +22,21 @@ if (!isset($input['asins']) || !is_array($input['asins'])) {
     exit;
 }
 
+// 🔧 デバッグ: 設定確認
+error_log("🔧 Amazon API設定確認:");
+error_log("ACCESS_KEY defined: " . (defined('AMAZON_ACCESS_KEY') ? 'YES' : 'NO'));
+error_log("SECRET_KEY defined: " . (defined('AMAZON_SECRET_KEY') ? 'YES' : 'NO'));
+error_log("ASSOCIATE_TAG defined: " . (defined('AMAZON_ASSOCIATE_TAG') ? 'YES' : 'NO'));
+error_log("ASSOCIATE_TAG value: " . (defined('AMAZON_ASSOCIATE_TAG') ? AMAZON_ASSOCIATE_TAG : 'UNDEFINED'));
+
+// Amazon PA-API実装チェック
+if (!defined('AMAZON_ACCESS_KEY') || !defined('AMAZON_SECRET_KEY') || !defined('AMAZON_ASSOCIATE_TAG')) {
+    error_log("⚠️ Amazon API設定不完全 - フォールバックデータ使用");
+    // フォールバックモードで続行
+} else {
+    error_log("✅ Amazon API設定完了 - 本番モード");
+}
+
 // 商品データベース（ベストセラー商品ASIN使用）
 $productDatabase = [
     'B07YLFTMQL' => [
