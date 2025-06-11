@@ -48,19 +48,19 @@ if (!defined('AMAZON_ACCESS_KEY') || !defined('AMAZON_SECRET_KEY') || !defined('
 
 // 商品データベース（ベストセラー商品ASIN使用）
 $productDatabase = [
-    'B07YLFTMQL' => [
+    'B07CKWLMM5' => [
         'title' => '花王 マジックリン ハンディスプレー 400ml',
         'price' => '¥398',
         'rating' => '4.3',
         'reviewCount' => '2,847'
     ],
-    'B07YNGH8Z3' => [
+    'B005AILJ3O' => [
         'title' => 'ライオン ママレモン 大容量 800ml', 
         'price' => '¥598',
         'rating' => '4.4',
         'reviewCount' => '3,456'
     ],
-    'B07YNHTJJ5' => [
+    'B00EOHQPHC' => [
         'title' => '重曹ちゃん キッチン泡スプレー 300ml',
         'price' => '¥298', 
         'rating' => '4.1',
