@@ -416,7 +416,7 @@ const COMPREHENSIVE_PRODUCT_DATABASE = {
     bathroom_mold: {
         cleaners: [
             {
-                asin: "B000FQTJZW",
+                asin: "B005AILJ3O",
                 name: "ジョンソン カビキラー 400g",
                 badge: "🏆 カビ除去No.1",
                 emoji: "🦠",
@@ -551,7 +551,7 @@ const COMPREHENSIVE_PRODUCT_DATABASE = {
     toilet_general: {
         cleaners: [
             {
-                asin: "B000FQM123",
+                asin: "B00OOCWP44",
                 name: "花王 トイレマジックリン 消臭洗浄スプレー",
                 badge: "🏆 トイレ専用No.1",
                 emoji: "🚽",
@@ -676,7 +676,7 @@ const COMPREHENSIVE_PRODUCT_DATABASE = {
                 targetDirt: ["ホコリ", "髪の毛"]
             },
             {
-                asin: "B07NBA84F5",
+                asin: "B00EOHQPHC",
                 name: "クイックルワイパー ウエットシート 32枚",
                 badge: "💧 水拭き効果",
                 emoji: "💧",
@@ -976,7 +976,7 @@ const COMPREHENSIVE_FALLBACK_DATA = {
     "B08NOP1234": { name: "クレンザー 研磨剤入り 400g", price: "¥298", rating: 4.0, reviews: 1876, availability: "在庫あり" },
     
     // 浴室系
-    "B000FQTJZW": { name: "ジョンソン カビキラー 400g", price: "¥298", rating: 4.4, reviews: 3456, availability: "在庫あり" },
+    "B005AILJ3O": { name: "ジョンソン カビキラー 400g", price: "¥298", rating: 4.4, reviews: 3456, availability: "在庫あり" },
     "B07K8LM123": { name: "強力 カビ取り ジェルスプレー 500ml", price: "¥498", rating: 4.2, reviews: 1987, availability: "在庫あり" },
     "B08PKM7890": { name: "防カビ コーティングスプレー 300ml", price: "¥598", rating: 4.0, reviews: 567, availability: "在庫あり" },
     "B07KLM5678": { name: "茂木和哉 水垢洗剤 200ml", price: "¥1,298", rating: 4.6, reviews: 2134, availability: "在庫あり" },
@@ -984,7 +984,7 @@ const COMPREHENSIVE_FALLBACK_DATA = {
     "B09TUV1234": { name: "石鹸カス除去 アルカリ洗剤 500ml", price: "¥498", rating: 4.2, reviews: 756, availability: "在庫あり" },
     
     // トイレ系
-    "B000FQM123": { name: "花王 トイレマジックリン 消臭洗浄スプレー", price: "¥248", rating: 4.3, reviews: 2134, availability: "在庫あり" },
+    "B00OOCWP44": { name: "花王 トイレマジックリン 消臭洗浄スプレー", price: "¥248", rating: 4.3, reviews: 2134, availability: "在庫あり" },
     "B07YHL4567": { name: "サンポール 尿石除去 強力クリーナー 500ml", price: "¥398", rating: 4.1, reviews: 876, availability: "在庫あり" },
     "B08YTR8901": { name: "トイレ用 除菌シート 50枚入", price: "¥198", rating: 4.2, reviews: 1543, availability: "在庫あり" },
     "B09WXY2345": { name: "尿石とり 業務用 1000ml", price: "¥798", rating: 4.4, reviews: 432, availability: "在庫あり" },
@@ -995,7 +995,7 @@ const COMPREHENSIVE_FALLBACK_DATA = {
     
     // 床掃除系
     "B00EOHQPHC": { name: "花王 クイックルワイパー 立体吸着ドライシート 40枚", price: "¥598", rating: 4.5, reviews: 4567, availability: "在庫あり" },
-    "B07NBA84F5": { name: "クイックルワイパー ウエットシート 32枚", price: "¥498", rating: 4.3, reviews: 3210, availability: "在庫あり" },
+    "B00EOHQPHC": { name: "クイックルワイパー ウエットシート 32枚", price: "¥498", rating: 4.3, reviews: 3210, availability: "在庫あり" },
     "B005AILJ3O": { name: "花王 クイックルワイパー 本体 + シート", price: "¥1,298", rating: 4.4, reviews: 2876, availability: "在庫あり" },
     
     // ペット系

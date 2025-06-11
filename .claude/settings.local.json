@@ -21,7 +21,11 @@
       "Bash(git submodule:*)",
       "Bash(git rm:*)",
       "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"generateProductCard|amazon.*img|product.*img|src.*amazon\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "WebFetch(domain:www.amazon.co.jp)",
+      "WebFetch(domain:www.amazon.co.jp)",
+      "WebFetch(domain:www.amazon.co.jp)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"B000FQTJZW\" /mnt/c/Users/knaka/Desktop/ai-cleaner/config.js)"
     ],
     "deny": []
   }

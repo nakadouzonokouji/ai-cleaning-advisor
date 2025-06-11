@@ -1559,7 +1559,7 @@ class AICleaningAdvisor {
             'カビ汚れ': {
                 cleaners: [
                     {
-                        asin: "B000FQTJZW",
+                        asin: "B005AILJ3O",
                         name: "ジョンソン カビキラー 400g",
                         badge: "🏆 カビ除去No.1",
                         emoji: "🦠",
@@ -1655,7 +1655,7 @@ class AICleaningAdvisor {
                         reviews: 4567
                     },
                     {
-                        asin: "B07NBA84F5",
+                        asin: "B00EOHQPHC",
                         name: "クイックルワイパー ウエットシート 32枚",
                         badge: "💧 水拭き効果",
                         emoji: "💧",
@@ -2210,7 +2210,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
     debugAmazonHTML() {
         console.log('🔧 Amazon HTML生成デバッグ');
         const testProduct = {
-            asin: "B000FQTJZW",
+            asin: "B005AILJ3O",
             name: "テスト商品",
             price: "¥298",
             rating: 4.4,
