@@ -95,15 +95,25 @@ class AmazonRealtimeSearch {
      * 🛒 Amazon PA-API SearchItems 実行
      */
     private function searchProducts($params) {
-        $payload = json_encode([
+        $payloadData = [
             'Keywords' => $params['Keywords'],
             'SearchIndex' => $params['SearchIndex'],
             'ItemCount' => $params['ItemCount'],
             'PartnerTag' => $this->associateTag,
             'PartnerType' => 'Associates',
             'SortBy' => $params['SortBy'],
+            'Availability' => $params['Availability'] ?? 'Available',
+            'Condition' => $params['Condition'] ?? 'New',
             'Resources' => $params['Resources']
-        ]);
+        ];
+        
+        // Optional parameters (only add if not null)
+        if (isset($params['MinPrice'])) $payloadData['MinPrice'] = $params['MinPrice'];
+        if (isset($params['MaxPrice'])) $payloadData['MaxPrice'] = $params['MaxPrice'];
+        if (isset($params['Merchant'])) $payloadData['Merchant'] = $params['Merchant'];
+        
+        $payload = json_encode($payloadData);
+        error_log("🔍 Amazon API Payload: " . $payload);
         
         $headers = $this->getSignedHeaders('SearchItems', $payload);
         
@@ -119,14 +129,29 @@ class AmazonRealtimeSearch {
         
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
         curl_close($ch);
         
+        error_log("🔍 Amazon API Response: HTTP $httpCode");
+        error_log("🔍 Response body: " . substr($response, 0, 500));
+        
+        if ($curlError) {
+            error_log("🚨 CURL Error: $curlError");
+            throw new Exception("CURL error: $curlError");
+        }
+        
         if ($httpCode !== 200) {
-            error_log("Amazon API Error: HTTP $httpCode");
+            error_log("Amazon API Error: HTTP $httpCode - Response: $response");
             throw new Exception("Amazon API request failed: HTTP $httpCode");
         }
         
-        return json_decode($response, true);
+        $decoded = json_decode($response, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("🚨 JSON Decode Error: " . json_last_error_msg());
+            throw new Exception("JSON decode error: " . json_last_error_msg());
+        }
+        
+        return $decoded;
     }
     
     /**
