@@ -2361,9 +2361,9 @@ class AICleaningAdvisor {
                 html += `
                     <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
                         <div class="relative mb-4">
-                            <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
+                            <img src="${imageUrl1}" alt="${product.name}" class="product-image" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
+                            <div class="product-image bg-gray-50 flex items-center justify-center" style="display:none;">
                                 <div class="text-center">
                                     <div class="text-5xl mb-2">${product.emoji}</div>
                                     <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
@@ -2375,12 +2375,8 @@ class AICleaningAdvisor {
                         
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
-                        <div class="mb-3 flex items-center justify-between">
+                        <div class="mb-3">
                             <span class="product-price text-lg font-bold text-red-600">${product.price}</span>
-                            <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
-                               class="text-xs text-blue-600 hover:text-blue-800 underline">
-                                📊 レビューを見る
-                            </a>
                         </div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" class="block w-full" 
@@ -2414,9 +2410,9 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 html += `
                     <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
                         <div class="relative mb-4">
-                            <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
+                            <img src="${imageUrl1}" alt="${product.name}" class="product-image" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
+                            <div class="product-image bg-gray-50 flex items-center justify-center" style="display:none;">
                                 <div class="text-center">
                                     <div class="text-5xl mb-2">${product.emoji}</div>
                                     <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
@@ -2428,12 +2424,8 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
-                        <div class="mb-3 flex items-center justify-between">
+                        <div class="mb-3">
                             <span class="product-price text-lg font-bold text-green-600">${product.price}</span>
-                            <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
-                               class="text-xs text-blue-600 hover:text-blue-800 underline">
-                                📊 レビューを見る
-                            </a>
                         </div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
@@ -2467,9 +2459,9 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 html += `
                     <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
                         <div class="relative mb-4">
-                            <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
+                            <img src="${imageUrl1}" alt="${product.name}" class="product-image" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="w-full h-40 bg-gray-50 rounded-lg flex items-center justify-center" style="display:none;">
+                            <div class="product-image bg-gray-50 flex items-center justify-center" style="display:none;">
                                 <div class="text-center">
                                     <div class="text-5xl mb-2">${product.emoji}</div>
                                     <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
@@ -2481,12 +2473,8 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
-                        <div class="mb-3 flex items-center justify-between">
+                        <div class="mb-3">
                             <span class="product-price text-lg font-bold text-purple-600">${product.price}</span>
-                            <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
-                               class="text-xs text-blue-600 hover:text-blue-800 underline">
-                                📊 レビューを見る
-                            </a>
                         </div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
@@ -2508,7 +2496,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                     <p>✅ 汚れタイプに最適化された専用商品を厳選</p>
                     <p>✅ 効果・安全性・コストパフォーマンスを総合評価</p>
                     <p>✅ 洗剤・道具・保護具をセットで提案</p>
-                    <p>📊 レビュー・評価・最新価格は「レビューを見る」リンクからご確認ください</p>
+                    <p>📊 レビュー・評価・最新価格はAmazon商品ページでご確認ください</p>
                     <p>🔗 商品詳細・購入は各商品のAmazonページでお願いします</p>
                 </div>
             </div>
@@ -2826,7 +2814,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 price: priceInfo,
                 image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
                 url: item.DetailPageURL,
-                badge: isAmazonFulfilled ? '🚚 Prime対応' : '🆕 リアルタイム',
+                badge: isAmazonFulfilled ? '🚚 Prime対応' : '✨ 最新情報',
                 emoji: this.getProductEmoji(productType),
                 availability: availabilityMessage || '在庫確認済み'
             };
