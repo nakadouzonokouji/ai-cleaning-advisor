@@ -3077,6 +3077,20 @@ class AICleaningAdvisor {
                 return; // この商品をスキップ
             }
             
+            // レビュー情報の取得
+            const reviewCount = item.CustomerReviews?.Count || 0;
+            const starRating = item.CustomerReviews?.StarRating?.Value || 0;
+            
+            // ベストセラーバッジの判定
+            let badge = '✨ 最新情報';
+            if (reviewCount > 1000) {
+                badge = '🏆 ベストセラー';
+            } else if (starRating >= 4.5 && reviewCount > 100) {
+                badge = '⭐ 高評価';
+            } else if (isAmazonFulfilled) {
+                badge = '🚚 Prime対応';
+            }
+            
             const product = {
                 name: title,
                 asin: item.ASIN,
@@ -3084,17 +3098,19 @@ class AICleaningAdvisor {
                 price: priceInfo,
                 image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
                 url: item.DetailPageURL,
-                badge: isAmazonFulfilled ? '🚚 Prime対応' : '✨ 最新情報',
+                badge: badge,
                 emoji: this.getProductEmoji(productType),
-                availability: availabilityMessage || '在庫確認済み'
+                availability: availabilityMessage || '在庫確認済み',
+                rating: starRating,
+                reviews: reviewCount
             };
             
             if (converted[category]) {
                 converted[category].push(product);
-                console.log(`✅ ${category}カテゴリに追加: ${product.name} (価格: ${product.price})`);
+                console.log(`✅ ${category}カテゴリに追加: ${product.name} (価格: ${product.price}, 評価: ${starRating}⭐, レビュー: ${reviewCount}件, バッジ: ${badge})`);
             } else {
                 // カテゴリが不明な場合は cleaners に入れる
-                console.log(`⚠️ 不明カテゴリ "${category}" → cleanersに分類: ${product.name} (価格: ${product.price})`);
+                console.log(`⚠️ 不明カテゴリ "${category}" → cleanersに分類: ${product.name} (価格: ${product.price}, 評価: ${starRating}⭐, レビュー: ${reviewCount}件)`);
                 converted.cleaners.push(product);
             }
         });

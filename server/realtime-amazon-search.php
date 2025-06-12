@@ -73,11 +73,13 @@ class AmazonRealtimeSearch {
             'Keywords' => $cleanerKeywords,
             'SearchIndex' => 'All',
             'ItemCount' => $itemCount,
-            'SortBy' => 'Relevance',
+            'SortBy' => 'AvgCustomerReviews', // ベストセラー・高評価順
             'Resources' => [
                 'Images.Primary.Large',
                 'ItemInfo.Title',
-                'Offers.Listings.Price'
+                'Offers.Listings.Price',
+                'CustomerReviews.Count',
+                'CustomerReviews.StarRating'
             ]
         ]);
     }
@@ -103,11 +105,13 @@ class AmazonRealtimeSearch {
             'Keywords' => $toolKeywords[$dirtType] ?? 'スポンジ ブラシ 掃除 -洗剤',
             'SearchIndex' => 'All',
             'ItemCount' => $itemCount,
-            'SortBy' => 'Relevance',
+            'SortBy' => 'AvgCustomerReviews', // ベストセラー・高評価順
             'Resources' => [
                 'Images.Primary.Large',
                 'ItemInfo.Title',
-                'Offers.Listings.Price'
+                'Offers.Listings.Price',
+                'CustomerReviews.Count',
+                'CustomerReviews.StarRating'
             ]
         ]);
     }
@@ -134,11 +138,13 @@ class AmazonRealtimeSearch {
             'Keywords' => $protectionKeywords[$dirtType] ?? 'ゴム手袋 マスク エプロン 掃除用',
             'SearchIndex' => 'All',
             'ItemCount' => $itemCount,
-            'SortBy' => 'Relevance',
+            'SortBy' => 'AvgCustomerReviews', // ベストセラー・高評価順
             'Resources' => [
                 'Images.Primary.Large',
                 'ItemInfo.Title',
-                'Offers.Listings.Price'
+                'Offers.Listings.Price',
+                'CustomerReviews.Count',
+                'CustomerReviews.StarRating'
             ]
         ]);
     }
