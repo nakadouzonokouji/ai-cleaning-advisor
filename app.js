@@ -970,7 +970,7 @@ class AICleaningAdvisor {
         } else if (locationLower.includes('水垢') || locationLower.includes('ウロコ')) {
             detectedDirtTypes.push('水垢汚れ');
         } else if (locationLower.includes('トイレ') || locationLower.includes('便器')) {
-            detectedDirtTypes.push('トイレ汚れ');
+            detectedDirtTypes.push('尿石');
         } else if (locationLower.includes('窓') || locationLower.includes('ガラス')) {
             detectedDirtTypes.push('窓の水垢');
         } else {
@@ -1492,7 +1492,7 @@ class AICleaningAdvisor {
                     surface = '浴室';
                     break;
                 case 'toilet':
-                    dirtType = 'トイレ汚れ';
+                    dirtType = '尿石';
                     surface = 'トイレ';
                     break;
                 case 'window':
@@ -1747,12 +1747,30 @@ class AICleaningAdvisor {
         };
     }
 
-    // 🛒 おすすめ商品取得（Amazon API統合版）
+    // 🛒 おすすめ商品取得（プロ仕様・頑固汚れ対応版）
     async getRecommendedProducts(dirtType) {
-        console.log(`🛒 商品取得開始: ${dirtType}`);
+        console.log(`🛒 プロ仕様商品取得開始: ${dirtType}`);
+        
+        // 🏆 プロ仕様商品選択ロジック統合
+        let professionalProducts = [];
+        if (window.PROFESSIONAL_PRODUCT_SELECTOR) {
+            try {
+                const location = this.state.preSelectedLocation || 'general';
+                const severity = this.determineDirtSeverity(dirtType);
+                professionalProducts = window.PROFESSIONAL_PRODUCT_SELECTOR.selectProfessionalProducts(location, dirtType, severity);
+                console.log(`🏆 プロ仕様商品選択完了: ${professionalProducts.length}件`);
+            } catch (error) {
+                console.warn('⚠️ プロ仕様商品選択エラー:', error);
+            }
+        }
         
         // 基本商品データを取得
         const baseProducts = this.getBaseProductData(dirtType);
+        
+        // プロ仕様商品を先頭に配置
+        if (professionalProducts.length > 0) {
+            baseProducts.cleaners = [...professionalProducts, ...baseProducts.cleaners];
+        }
         
         // 🚀 リアルタイム検索統合 - Amazon商品を常に取得
         try {
@@ -1769,6 +1787,31 @@ class AICleaningAdvisor {
             console.log('📦 フォールバック: 静的商品データを使用');
             return baseProducts;
         }
+    }
+    
+    // 🔍 汚れの深刻度判定
+    determineDirtSeverity(dirtType) {
+        const severityKeywords = {
+            extreme: ["頑固", "こびりつき", "尿石", "水垢", "カビ", "業務用"],
+            high: ["しつこい", "時間が経った", "積み重なった"],
+            medium: ["少し", "軽い", "最近の"],
+            light: ["日常", "定期", "予防"]
+        };
+        
+        // 特定の汚れタイプは自動的に強度を判定
+        if (dirtType.includes("尿石") || dirtType.includes("水垢") || dirtType.includes("カビ")) {
+            return "extreme";
+        }
+        
+        // キーワードから判定
+        for (const [severity, keywords] of Object.entries(severityKeywords)) {
+            if (keywords.some(keyword => dirtType.includes(keyword))) {
+                return severity;
+            }
+        }
+        
+        // デフォルトは高強度（プロ仕様推薦）
+        return "high";
     }
 
     // 📦 基本商品データ取得
@@ -1996,6 +2039,108 @@ class AICleaningAdvisor {
                     }
                 ]
             },
+            
+            // 🚽 トイレ・尿石系（プロ仕様強化）
+            '尿石': {
+                cleaners: [
+                    {
+                        asin: "B00EOHQPHC",
+                        name: "小林製薬 サンポール 1000ml（業務用）",
+                        badge: "🏆 プロ仕様・超強力",
+                        emoji: "⚡",
+                        price: "¥898",
+                        rating: 4.6,
+                        reviews: 2341,
+                        professional: true,
+                        safety_warning: "強酸性 - 換気必須・手袋必須"
+                    },
+                    {
+                        asin: "B005AILJ3O", 
+                        name: "業務用 トイレ用酸性洗剤 800ml",
+                        badge: "💪 頑固な尿石専用",
+                        emoji: "🧪",
+                        price: "¥1,280",
+                        rating: 4.4,
+                        reviews: 1876,
+                        professional: true,
+                        safety_warning: "酸性洗剤 - 保護具着用推奨"
+                    }
+                ],
+                tools: [
+                    {
+                        asin: "B00OOCWP44",
+                        name: "トイレブラシ 交換ヘッド付 業務用",
+                        badge: "🪥 プロ仕様ブラシ",
+                        emoji: "🪥",
+                        price: "¥1,580",
+                        rating: 4.3,
+                        reviews: 986
+                    }
+                ],
+                protection: [
+                    {
+                        asin: "B005AILJ3O",
+                        name: "耐酸性手袋 ニトリル製 業務用",
+                        badge: "🧤 酸性対応",
+                        emoji: "🧤",
+                        price: "¥980", 
+                        rating: 4.5,
+                        reviews: 1234,
+                        safety_warning: "酸性洗剤使用時必須"
+                    }
+                ]
+            },
+            
+            'トイレ汚れ': {
+                cleaners: [
+                    {
+                        asin: "B00EOHQPHC",
+                        name: "小林製薬 サンポール 1000ml（業務用）",
+                        badge: "🏆 プロ仕様・超強力",
+                        emoji: "⚡",
+                        price: "¥898",
+                        rating: 4.6,
+                        reviews: 2341,
+                        professional: true,
+                        safety_warning: "強酸性 - 換気必須・手袋必須"
+                    },
+                    {
+                        asin: "B005AILJ3O", 
+                        name: "業務用 トイレ用酸性洗剤 800ml",
+                        badge: "💪 頑固な尿石専用",
+                        emoji: "🧪",
+                        price: "¥1,280",
+                        rating: 4.4,
+                        reviews: 1876,
+                        professional: true,
+                        safety_warning: "酸性洗剤 - 保護具着用推奨"
+                    }
+                ],
+                tools: [
+                    {
+                        asin: "B005AILJ3O",
+                        name: "トイレブラシ 流せるブラシ付",
+                        badge: "🪥 使い捨て対応",
+                        emoji: "🪥",
+                        price: "¥898",
+                        rating: 4.3,
+                        reviews: 2134
+                    }
+                ],
+                protection: [
+                    {
+                        asin: "B005AILJ3O",
+                        name: "耐酸性手袋 ニトリル製 業務用",
+                        badge: "🧤 酸性対応",
+                        emoji: "🧤",
+                        price: "¥980", 
+                        rating: 4.5,
+                        reviews: 1234,
+                        safety_warning: "酸性洗剤使用時必須"
+                    }
+                ]
+            },
+            
             'ホコリ': {
                 cleaners: [
                     {
@@ -2051,8 +2196,15 @@ class AICleaningAdvisor {
             }
         };
 
+        // トイレ関連の汚れは尿石商品を使用
+        let selectedProduct = productMap[dirtType];
+        if (!selectedProduct && (dirtType.includes('トイレ') || dirtType.includes('便器') || dirtType.includes('尿石'))) {
+            console.log(`🚽 トイレ関連汚れ "${dirtType}" → 尿石商品を使用`);
+            selectedProduct = productMap['尿石'];
+        }
+        
         // デフォルト値で必ず3カテゴリを返す
-        const defaultProduct = productMap[dirtType] || {
+        const defaultProduct = selectedProduct || {
             cleaners: [
                 {
                     asin: "B000TGNG0W",
@@ -2451,6 +2603,15 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
                         
+                        ${product.safety_warning ? `
+                        <div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">
+                            <div class="flex items-center">
+                                <span class="mr-1">⚠️</span>
+                                <span class="font-bold">${product.safety_warning}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
                         <div class="mb-3">
@@ -2508,6 +2669,15 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
                         
+                        ${product.safety_warning ? `
+                        <div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">
+                            <div class="flex items-center">
+                                <span class="mr-1">⚠️</span>
+                                <span class="font-bold">${product.safety_warning}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
                         <div class="mb-3">
@@ -2564,6 +2734,15 @@ class AICleaningAdvisor {
                         </div>
                         
                         <div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
+                        
+                        ${product.safety_warning ? `
+                        <div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">
+                            <div class="flex items-center">
+                                <span class="mr-1">⚠️</span>
+                                <span class="font-bold">${product.safety_warning}</span>
+                            </div>
+                        </div>
+                        ` : ''}
                         
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
@@ -2805,7 +2984,7 @@ class AICleaningAdvisor {
                 surface = '浴室・お風呂';
                 break;
             case 'toilet':
-                dirtType = '尿石・水垢';
+                dirtType = '尿石';
                 surface = 'トイレ';
                 break;
             case 'window':

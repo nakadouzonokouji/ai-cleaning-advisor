@@ -76,28 +76,34 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
         ]
     },
 
-    // 💧 水垢・ウロコ汚れ系  
+    // 💧 水垢・ウロコ汚れ系（プロ仕様強化）
     limescale: {
-        category: "水垢・ウロコ汚れ",
+        category: "水垢・ウロコ汚れ（プロ仕様）",
         products: [
             {
-                name: "茂木和哉 水垢洗剤",
-                asin: "B00EOHQPHC", // 有効確認済み（代替使用）
+                name: "茂木和哉 水垢洗剤（プロ仕様）",
+                asin: "B00EOHQPHC", 
                 type: "洗剤", 
-                target: ["水垢", "ウロコ汚れ", "蛇口"],
-                strength: "強力",
-                chemical_type: "酸性"
+                target: ["頑固な水垢", "ウロコ汚れ", "蛇口", "シャワーヘッド"],
+                strength: "超強力",
+                chemical_type: "酸性",
+                professional: true,
+                usage_level: "頑固汚れ専用",
+                safety_warning: "酸性洗剤 - 必ず手袋着用"
             },
             {
-                name: "バスマジックリン 水垢落とし",
-                asin: "B005AILJ3O", // 有効確認済み（代替使用）
+                name: "サンポール 尿石除去（業務用）",
+                asin: "B005AILJ3O", 
                 type: "洗剤",
-                target: ["水垢", "ウロコ汚れ", "浴室", "鏡"],
-                strength: "強力",
-                chemical_type: "酸性"
+                target: ["尿石", "頑固な水垢", "便器", "タイル目地"],
+                strength: "超強力",
+                chemical_type: "強酸性",
+                professional: true,
+                usage_level: "プロ・頑固汚れ専用",
+                safety_warning: "強酸性 - 換気必須・手袋必須"
             },
             {
-                name: "クエン酸クリーナー 水垢専用",
+                name: "業務用クエン酸クリーナー 水垢専用",
                 asin: "B00OOCWP44", // 有効確認済み（代替使用）
                 type: "洗剤",
                 target: ["水垢", "石灰汚れ", "蛇口"],
@@ -125,12 +131,25 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
     detergents: {
         acidic: [
             {
-                name: "サンポール 尿石除去",
-                asin: "B00EOHQPHC", // 代替使用
+                name: "サンポール 尿石除去（業務用）",
+                asin: "B00EOHQPHC", 
+                type: "強酸性洗剤",
+                target: ["頑固な尿石", "水垢", "便器", "タイル目地"],
+                strength: "超強力",
+                ph: "強酸性",
+                professional: true,
+                usage_level: "プロ・頑固汚れ専用",
+                safety_warning: "強酸性 - 換気必須・保護具着用必須"
+            },
+            {
+                name: "プロ仕様 トイレ用酸性洗剤",
+                asin: "B005AILJ3O", 
                 type: "酸性洗剤",
-                target: ["尿石", "水垢", "便器"],
+                target: ["尿石", "黄ばみ", "水垢", "便器"],
                 strength: "強力",
-                ph: "酸性"
+                ph: "酸性",
+                professional: true,
+                usage_level: "プロ・頑固汚れ専用"
             }
         ],
         alkaline: [
@@ -281,10 +300,107 @@ const IMPLEMENTATION_STRATEGY = {
     }
 };
 
-export { 
-    COMPREHENSIVE_CLEANING_PRODUCTS, 
-    DIRT_TYPE_MAPPING, 
-    LOCATION_PRODUCTS,
-    REALTIME_SEARCH_CONFIG,
-    IMPLEMENTATION_STRATEGY 
+/**
+ * 🏆 プロ仕様・頑固汚れ対応商品選択ロジック
+ */
+const PROFESSIONAL_PRODUCT_SELECTOR = {
+    // 汚れの深刻度判定キーワード
+    severity_keywords: {
+        extreme: ["頑固", "こびりつき", "何年も", "取れない", "強力", "業務用", "プロ"],
+        high: ["しつこい", "なかなか", "時間が経った", "積み重なった"],
+        medium: ["少し", "軽い", "最近の", "薄い"],
+        light: ["日常", "定期", "予防", "軽く"]
+    },
+    
+    // 場所別プロ仕様商品優先度
+    location_professional_priority: {
+        toilet: {
+            extreme: "detergents.acidic", // サンポール業務用
+            high: "detergents.acidic",
+            medium: "detergents.neutral",
+            light: "detergents.neutral"
+        },
+        bathroom: {
+            extreme: "detergents.chlorine", // プロ仕様カビキラー
+            high: "mold_bathroom",
+            medium: "mold_bathroom", 
+            light: "detergents.neutral"
+        },
+        kitchen: {
+            extreme: "detergents.alkaline", // 強力マジックリン
+            high: "oil_grease",
+            medium: "oil_grease",
+            light: "detergents.neutral"
+        }
+    },
+    
+    // プロ仕様商品の自動選択
+    selectProfessionalProducts: function(location, dirtType, severity = "high") {
+        const products = [];
+        
+        // 尿石・水垢は必ずプロ仕様
+        if (dirtType.includes("尿石") || dirtType.includes("水垢")) {
+            severity = "extreme";
+        }
+        
+        // カビは必ずプロ仕様
+        if (dirtType.includes("カビ")) {
+            severity = "extreme";
+        }
+        
+        // 優先度に基づく商品選択
+        const priorityMapping = this.location_professional_priority[location];
+        if (priorityMapping && priorityMapping[severity]) {
+            const categoryPath = priorityMapping[severity];
+            const category = this.getProductCategory(categoryPath);
+            if (category && category.products) {
+                // プロ仕様商品を優先
+                const professionalProducts = category.products.filter(p => p.professional === true);
+                const regularProducts = category.products.filter(p => !p.professional);
+                
+                products.push(...professionalProducts);
+                if (severity === "medium" || severity === "light") {
+                    products.push(...regularProducts.slice(0, 2));
+                }
+            }
+        }
+        
+        return products;
+    },
+    
+    // 商品カテゴリ取得ヘルパー
+    getProductCategory: function(categoryPath) {
+        const parts = categoryPath.split('.');
+        let category = COMPREHENSIVE_CLEANING_PRODUCTS;
+        
+        for (const part of parts) {
+            if (category[part]) {
+                category = category[part];
+            } else {
+                return null;
+            }
+        }
+        return category;
+    },
+    
+    // 安全警告の生成
+    generateSafetyWarning: function(products) {
+        const warnings = [];
+        
+        products.forEach(product => {
+            if (product.safety_warning) {
+                warnings.push(product.safety_warning);
+            }
+        });
+        
+        return [...new Set(warnings)]; // 重複除去
+    }
 };
+
+// モジュールエクスポート（ブラウザ対応）
+if (typeof window !== 'undefined') {
+    window.COMPREHENSIVE_CLEANING_PRODUCTS = COMPREHENSIVE_CLEANING_PRODUCTS;
+    window.DIRT_TYPE_MAPPING = DIRT_TYPE_MAPPING;
+    window.LOCATION_PRODUCTS = LOCATION_PRODUCTS;
+    window.PROFESSIONAL_PRODUCT_SELECTOR = PROFESSIONAL_PRODUCT_SELECTOR;
+}
