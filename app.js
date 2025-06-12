@@ -2810,30 +2810,33 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
         
         realtimeProducts.SearchResult.Items.forEach((item, index) => {
             const title = item.ItemInfo?.Title?.DisplayValue || 'Amazon商品';
-            console.log(`🔍 商品${index + 1}: ${title}`);
+            console.log(`🔍 商品${index + 1}: "${title}"`);
+            
+            // 分類ロジックの詳細ログ
+            const productType = this.categorizeProduct(title);
+            const category = this.getProductCategory(productType);
+            
+            console.log(`📂 詳細分析: 商品名="${title}" → タイプ="${productType}" → カテゴリ="${category}"`);
             
             const product = {
                 name: title,
                 asin: item.ASIN,
-                type: this.categorizeProduct(title),
+                type: productType,
                 price: item.Offers?.Listings?.[0]?.Price?.DisplayAmount || '価格確認中',
                 rating: item.CustomerReviews?.StarRating?.Value || 4.0,
                 reviewCount: item.CustomerReviews?.Count || 0,
                 image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
                 url: item.DetailPageURL,
                 badge: '🆕 リアルタイム',
-                emoji: this.getProductEmoji(this.categorizeProduct(title))
+                emoji: this.getProductEmoji(productType)
             };
-            
-            // 🚨 すべての商品を cleaners に分類（確実に表示されるように）
-            const category = this.getProductCategory(product.type);
-            console.log(`📂 商品分類: ${product.name} → ${product.type} → ${category}`);
             
             if (converted[category]) {
                 converted[category].push(product);
+                console.log(`✅ ${category}カテゴリに追加: ${product.name}`);
             } else {
                 // カテゴリが不明な場合は cleaners に入れる
-                console.log(`⚠️ 不明カテゴリ、cleanersに分類: ${category}`);
+                console.log(`⚠️ 不明カテゴリ "${category}" → cleanersに分類: ${product.name}`);
                 converted.cleaners.push(product);
             }
         });
@@ -2841,12 +2844,38 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
         console.log('🔄 リアルタイム商品変換完了:', {
             cleaners: converted.cleaners.length,
             tools: converted.tools.length,
-            protection: converted.protection.length
+            protection: converted.protection.length,
+            cleaners_list: converted.cleaners.map(p => `"${p.name}"`),
+            tools_list: converted.tools.map(p => `"${p.name}"`),
+            protection_list: converted.protection.map(p => `"${p.name}"`)
         });
         
         return converted;
     }
     
+    // 🧪 商品分類テスト機能
+    testProductCategorization() {
+        const testProducts = [
+            'スポンジ 食器洗い用',
+            'ブラシ 掃除用',
+            'ニトリル手袋 50枚入',
+            'マスク 防塵用',
+            'マジックリン 油汚れ用洗剤',
+            'カビキラー 浴室用',
+            'エプロン 防水',
+            'クロス マイクロファイバー',
+            'モップ 床掃除用',
+            'ゴム手袋 台所用'
+        ];
+        
+        console.log('🧪 商品分類テスト開始:');
+        testProducts.forEach(title => {
+            const type = this.categorizeProduct(title);
+            const category = this.getProductCategory(type);
+            console.log(`"${title}" → ${type} → ${category}`);
+        });
+    }
+
     // 📂 商品タイトルからタイプを推定
     categorizeProduct(title) {
         const titleLower = title.toLowerCase();
