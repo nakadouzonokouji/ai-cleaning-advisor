@@ -1621,44 +1621,21 @@ class AICleaningAdvisor {
         // 基本商品データを取得
         const baseProducts = this.getBaseProductData(dirtType);
         
-        // Amazon API統合テスト
+        // 🚀 リアルタイム検索統合 - Amazon商品を常に取得
         try {
-            if (window.ENV?.API_ENDPOINT) {
-                
-                // 実際の商品ASINを収集してテスト
-                const baseProducts = this.getBaseProductData(dirtType);
-                const testAsins = [];
-                ['cleaners', 'tools', 'protection'].forEach(category => {
-                    if (baseProducts[category]) {
-                        baseProducts[category].slice(0,2).forEach(product => {
-                            if (product.asin) testAsins.push(product.asin);
-                        });
-                    }
-                });
-                
-                // API_ENDPOINT確認とフォールバック
-                const apiEndpoint = window.ENV?.API_ENDPOINT || '/tools/ai-cleaner/server/amazon-proxy.php';
-                console.log('🔗 API_ENDPOINT確認:', apiEndpoint);
-                
-                const response = await fetch(apiEndpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ asins: testAsins })
-                });
-                
-                if (response.ok) {
-                    const apiData = await response.json();
-                    
-                    if (apiData.success && apiData.products) {
-                        return await this.enrichProductsWithAmazonData(baseProducts);
-                    }
-                }
-            }
+            console.log('🔗 Amazon API統合開始');
+            
+            // enrichProductsWithAmazonData に dirtType を渡してリアルタイム検索を有効化
+            const enrichedProducts = await this.enrichProductsWithAmazonData(baseProducts, dirtType);
+            
+            console.log('✅ Amazon商品データ統合完了');
+            return enrichedProducts;
+            
         } catch (error) {
+            console.error('❌ Amazon API統合失敗:', error);
+            console.log('📦 フォールバック: 静的商品データを使用');
+            return baseProducts;
         }
-        
-        // フォールバック：静的データ  
-        return baseProducts;
     }
 
     // 📦 基本商品データ取得
@@ -2465,7 +2442,11 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
         console.log(`🔍 リアルタイム検索開始: ${dirtType}`);
         
         try {
-            const response = await fetch('/tools/ai-cleaner/server/amazon-proxy.php', {
+            // API_ENDPOINTの確認とフォールバック
+            const apiEndpoint = window.ENV?.API_ENDPOINT || '/tools/ai-cleaner/server/amazon-proxy.php';
+            console.log('🔗 リアルタイム検索API:', apiEndpoint);
+            
+            const response = await fetch(apiEndpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -2474,6 +2455,10 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                     item_count: itemCount
                 })
             });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
             
             const result = await response.json();
             
@@ -2484,6 +2469,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 console.error('⚠️ リアルタイム検索失敗:', result.error);
                 
                 // フォールバック: 既存の静的データを使用
+                console.log('📦 フォールバック: 静的商品データベースを使用');
                 return this.getStaticProductsByDirtType(dirtType);
             }
             
@@ -2491,6 +2477,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             console.error('❌ リアルタイム検索エラー:', error);
             
             // フォールバック: 既存の静的データを使用
+            console.log('📦 フォールバック: 静的商品データベースを使用');
             return this.getStaticProductsByDirtType(dirtType);
         }
     }
@@ -2498,12 +2485,17 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
     // 📦 静的データベースからの商品取得（フォールバック用）
     getStaticProductsByDirtType(dirtType) {
         if (!window.COMPREHENSIVE_CLEANING_PRODUCTS) {
-            console.warn('⚠️ 商品データベースが見つかりません');
-            return [];
+            console.warn('⚠️ 新商品データベースが見つかりません - 従来データで代替');
+            // 従来の商品データを返す
+            return this.getBaseProductData(dirtType);
         }
         
         const mapping = window.DIRT_TYPE_MAPPING[dirtType] || [];
-        const products = [];
+        const convertedProducts = {
+            cleaners: [],
+            tools: [],
+            protection: []
+        };
         
         mapping.forEach(categoryPath => {
             const pathParts = categoryPath.split('.');
@@ -2516,15 +2508,33 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 }
             });
             
+            let products = [];
             if (Array.isArray(category)) {
-                products.push(...category);
+                products = category;
             } else if (category && category.products) {
-                products.push(...category.products);
+                products = category.products;
             }
+            
+            // 商品をカテゴリ別に分類
+            products.forEach(product => {
+                const categoryType = this.getProductCategory(product.type || '洗剤');
+                if (convertedProducts[categoryType]) {
+                    convertedProducts[categoryType].push({
+                        ...product,
+                        badge: product.strength === '強力' ? '🏆 強力' : '💪 効果的',
+                        emoji: this.getProductEmoji(product.type || '洗剤')
+                    });
+                }
+            });
         });
         
-        console.log(`📦 静的データから取得: ${products.length}商品`);
-        return products;
+        console.log(`📦 静的データから取得:`, {
+            cleaners: convertedProducts.cleaners.length,
+            tools: convertedProducts.tools.length,
+            protection: convertedProducts.protection.length
+        });
+        
+        return convertedProducts;
     }
     
     // 🔄 リアルタイム検索結果を既存フォーマットに変換
@@ -2597,6 +2607,20 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             case '道具': return 'tools';
             case '保護具': return 'protection';
             default: return 'cleaners';
+        }
+    }
+    
+    // 🎨 商品タイプから絵文字取得
+    getProductEmoji(type) {
+        switch (type) {
+            case '洗剤': return '🧴';
+            case '道具': return '🧽';
+            case 'スポンジ': return '🧽';
+            case 'ブラシ': return '🧹';
+            case '保護具': return '🧤';
+            case '手袋': return '🧤';
+            case 'マスク': return '😷';
+            default: return '🧴';
         }
     }
     

@@ -525,6 +525,9 @@
     <!-- 環境設定（優先読み込み） -->
     <script src="env-config.js"></script>
     
+    <!-- 包括的清掃用品データベース -->
+    <script src="comprehensive-cleaning-products.js"></script>
+    
     <!-- メインアプリケーション -->
     <script src="app.js"></script>
     
@@ -539,15 +542,24 @@
                 const productCount = Object.keys(window.COMPREHENSIVE_PRODUCT_DATABASE || {}).length;
                 const locationCount = Object.keys(window.COMPREHENSIVE_LOCATION_CONFIG || {}).length;
                 
+                // 🚀 新しいリアルタイム検索データベース確認
+                const newProductsCount = Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS || {}).length;
+                const dirtMappingCount = Object.keys(window.DIRT_TYPE_MAPPING || {}).length;
+                const locationProductsCount = Object.keys(window.LOCATION_PRODUCTS || {}).length;
+                
                 console.log('🏠 AI掃除アドバイザーシステム状況:');
                 console.log(`  🎯 汚れタイプ: ${dirtCount}種類`);
                 console.log(`  🛒 商品カテゴリ: ${productCount}カテゴリ`);
                 console.log(`  📍 対応場所: ${locationCount}箇所`);
+                console.log(`  🚀 新商品DB: ${newProductsCount}カテゴリ`);
+                console.log(`  🔗 汚れマッピング: ${dirtMappingCount}種類`);
+                console.log(`  📍 場所別商品: ${locationProductsCount}箇所`);
                 
-                if (dirtCount >= 15 && productCount >= 10 && locationCount >= 7) {
-                    console.log('✅ システム正常稼働中');
+                if (dirtCount >= 15 && productCount >= 10 && locationCount >= 7 && 
+                    newProductsCount >= 5 && dirtMappingCount >= 8) {
+                    console.log('✅ システム正常稼働中（リアルタイム検索対応）');
                 } else {
-                    console.warn('⚠️ システム不完全');
+                    console.warn('⚠️ システム不完全 - データベース統合確認が必要');
                 }
             };
             
