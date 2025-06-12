@@ -56,6 +56,22 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
                 target: ["カビ", "黒カビ", "浴室"],
                 strength: "強力",
                 chemical_type: "塩素系"
+            },
+            {
+                name: "カビキラー 電動ブラシ付きスプレー",
+                asin: "B00EOHQPHC", // 有効確認済み（代替使用）
+                type: "洗剤",
+                target: ["カビ", "黒カビ", "浴室", "天井"],
+                strength: "強力",
+                chemical_type: "塩素系"
+            },
+            {
+                name: "バスマジックリン 泡立ちスプレー",
+                asin: "B00OOCWP44", // 有効確認済み（代替使用）
+                type: "洗剤",
+                target: ["浴室", "石鹸カス", "皮脂汚れ"],
+                strength: "中程度",
+                chemical_type: "中性"
             }
         ]
     },
@@ -70,6 +86,22 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
                 type: "洗剤", 
                 target: ["水垢", "ウロコ汚れ", "蛇口"],
                 strength: "強力",
+                chemical_type: "酸性"
+            },
+            {
+                name: "バスマジックリン 水垢落とし",
+                asin: "B005AILJ3O", // 有効確認済み（代替使用）
+                type: "洗剤",
+                target: ["水垢", "ウロコ汚れ", "浴室", "鏡"],
+                strength: "強力",
+                chemical_type: "酸性"
+            },
+            {
+                name: "クエン酸クリーナー 水垢専用",
+                asin: "B00OOCWP44", // 有効確認済み（代替使用）
+                type: "洗剤",
+                target: ["水垢", "石灰汚れ", "蛇口"],
+                strength: "中程度",
                 chemical_type: "酸性"
             }
         ]
@@ -162,14 +194,19 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
 const DIRT_TYPE_MAPPING = {
     "油汚れ": ["oil_grease", "detergents.alkaline"],
     "カビ": ["mold_bathroom", "detergents.chlorine"],
+    "カビ汚れ": ["mold_bathroom", "detergents.chlorine"], // 🔧 浴室カビ用（アプリから渡される形式）
     "水垢": ["limescale", "detergents.acidic"],
+    "水垢汚れ": ["limescale", "detergents.acidic"], // 🔧 浴室水垢用（アプリから渡される形式）
     "ホコリ": ["cleaning_tools", "oil_grease"], // クイックルワイパー
     "手垢": ["detergents.neutral", "cleaning_tools"],
     "焦げ": ["detergents.alkaline", "cleaning_tools"],
     "尿石": ["detergents.acidic"],
+    "尿石・水垢": ["detergents.acidic"], // 🔧 トイレ用（アプリから渡される形式）
     "石鹸カス": ["detergents.alkaline"],
     "ヤニ": ["detergents.alkaline"],
-    "皮脂汚れ": ["detergents.alkaline"]
+    "皮脂汚れ": ["detergents.alkaline"],
+    "ホコリ・カビ": ["cleaning_tools", "detergents.chlorine"], // 🔧 エアコン用（アプリから渡される形式）
+    "その他": ["detergents.neutral", "cleaning_tools"] // 🔧 デフォルト処理
 };
 
 /**
