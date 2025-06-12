@@ -2473,7 +2473,40 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             
-            const result = await response.json();
+            // JSON応答の安全なパース処理
+            let result;
+            try {
+                const responseText = await response.text();
+                console.log('🔍 Raw response length:', responseText.length);
+                
+                // 重複JSONの場合は最初の有効な部分のみを使用
+                const firstBraceIndex = responseText.indexOf('{');
+                const lastBraceIndex = responseText.lastIndexOf('}');
+                
+                if (firstBraceIndex !== -1 && lastBraceIndex !== -1) {
+                    // 最初の完全なJSONオブジェクトを抽出
+                    let braceCount = 0;
+                    let validJsonEnd = firstBraceIndex;
+                    
+                    for (let i = firstBraceIndex; i < responseText.length; i++) {
+                        if (responseText[i] === '{') braceCount++;
+                        if (responseText[i] === '}') braceCount--;
+                        if (braceCount === 0) {
+                            validJsonEnd = i;
+                            break;
+                        }
+                    }
+                    
+                    const cleanJson = responseText.substring(firstBraceIndex, validJsonEnd + 1);
+                    console.log('🔧 Cleaned JSON length:', cleanJson.length);
+                    result = JSON.parse(cleanJson);
+                } else {
+                    throw new Error('Invalid JSON structure');
+                }
+            } catch (parseError) {
+                console.error('❌ JSON parse error:', parseError);
+                throw new Error(`JSONパースエラー: ${parseError.message}`);
+            }
             
             if (result.success) {
                 console.log('✅ リアルタイム検索成功:', result.results);

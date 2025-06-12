@@ -1,19 +1,8 @@
 <?php
 /**
- * 🚀 完全リアルタイムAmazon PA-API検索システム
+ * 🚀 リアルタイムAmazon PA-API検索クラスライブラリ
  * ユーザーファースト: 正確な価格・在庫・売れ筋情報をリアルタイム取得
  */
-
-require_once 'config.php';
-
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
-}
 
 /**
  * Amazon PA-API v5 SearchItems リアルタイム検索
@@ -171,62 +160,6 @@ class AmazonRealtimeSearch {
     }
 }
 
-/**
- * 🎯 メインAPI処理
- */
-try {
-    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        // 設定確認テスト
-        echo json_encode([
-            'success' => true,
-            'message' => 'Realtime Amazon Search API Ready',
-            'features' => [
-                'realtime_pricing' => true,
-                'bestseller_ranking' => true,
-                'accurate_inventory' => true,
-                'customer_reviews' => true
-            ],
-            'search_capabilities' => [
-                'dirt_type_search' => '汚れタイプ別検索',
-                'keyword_generation' => '最適キーワード生成',
-                'sort_by_popularity' => '売れ筋順ソート'
-            ]
-        ]);
-        exit;
-    }
-    
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception('POST method required for search');
-    }
-    
-    $input = json_decode(file_get_contents('php://input'), true);
-    
-    if (!isset($input['dirt_type'])) {
-        throw new Exception('dirt_type parameter required');
-    }
-    
-    $searcher = new AmazonRealtimeSearch();
-    $results = $searcher->searchByDirtType(
-        $input['dirt_type'],
-        $input['item_count'] ?? 10
-    );
-    
-    echo json_encode([
-        'success' => true,
-        'search_type' => 'realtime',
-        'dirt_type' => $input['dirt_type'],
-        'results' => $results,
-        'timestamp' => date('Y-m-d H:i:s'),
-        'user_first' => true
-    ]);
-    
-} catch (Exception $e) {
-    error_log("Realtime Search Error: " . $e->getMessage());
-    
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage(),
-        'fallback_message' => 'リアルタイム検索が利用できません'
-    ]);
-}
+// このファイルはクラスライブラリとして使用されます
+// HTTP処理は amazon-proxy.php で行います
 ?>
