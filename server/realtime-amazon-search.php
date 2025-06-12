@@ -26,28 +26,35 @@ class AmazonRealtimeSearch {
     }
     
     /**
-     * 🔍 汚れタイプ別基本セット商品検索
+     * 🔍 汚れタイプ別基本セット商品検索（洗剤6種類、道具数種類、保護具数種類）
      */
     public function searchByDirtType($dirtType, $itemCount = 30) {
         error_log("🔍 基本セット検索開始: $dirtType");
         
-        // 汚れタイプ別の基本セットキーワード
-        $basicSetKeywords = $this->generateBasicSetKeywords($dirtType);
-        
         try {
-            $results = $this->searchProducts([
-                'Keywords' => $basicSetKeywords,
-                'SearchIndex' => 'All', // より広範囲で検索
-                'ItemCount' => $itemCount,
-                'SortBy' => 'Relevance', // 関連性順
-                'Resources' => [
-                    'Images.Primary.Large',
-                    'ItemInfo.Title',
-                    'Offers.Listings.Price'
-                ]
-            ]);
+            // 3つのカテゴリを並行検索
+            $cleanerResults = $this->searchCleaners($dirtType, 6);
+            $toolResults = $this->searchTools($dirtType, 5);
+            $protectionResults = $this->searchProtection($dirtType, 4);
             
-            error_log("🔍 基本セット検索完了: " . count($results['SearchResult']['Items'] ?? []) . "個の商品取得");
+            // 結果をマージ
+            $mergedItems = array_merge(
+                $cleanerResults['SearchResult']['Items'] ?? [],
+                $toolResults['SearchResult']['Items'] ?? [],
+                $protectionResults['SearchResult']['Items'] ?? []
+            );
+            
+            $results = [
+                'SearchResult' => [
+                    'Items' => $mergedItems,
+                    'TotalResultCount' => count($mergedItems)
+                ]
+            ];
+            
+            error_log("🔍 基本セット検索完了: 洗剤" . count($cleanerResults['SearchResult']['Items'] ?? []) . 
+                     "個、道具" . count($toolResults['SearchResult']['Items'] ?? []) . 
+                     "個、保護具" . count($protectionResults['SearchResult']['Items'] ?? []) . "個");
+            
             return $results;
             
         } catch (Exception $e) {
@@ -57,24 +64,90 @@ class AmazonRealtimeSearch {
     }
     
     /**
+     * 🧴 洗剤専用検索
+     */
+    private function searchCleaners($dirtType, $itemCount) {
+        $cleanerKeywords = $this->generateBasicSetKeywords($dirtType);
+        
+        return $this->searchProducts([
+            'Keywords' => $cleanerKeywords,
+            'SearchIndex' => 'HealthPersonalCare',
+            'ItemCount' => $itemCount,
+            'SortBy' => 'Featured',
+            'Resources' => [
+                'Images.Primary.Large',
+                'ItemInfo.Title',
+                'Offers.Listings.Price'
+            ]
+        ]);
+    }
+    
+    /**
+     * 🧽 道具専用検索
+     */
+    private function searchTools($dirtType, $itemCount) {
+        $toolKeywords = [
+            '油汚れ' => 'スポンジ ブラシ 換気扇 -洗剤',
+            'カビ' => 'カビ取り ブラシ スポンジ -洗剤',
+            '水垢' => 'ブラシ スポンジ 浴室 -洗剤',
+            'ホコリ' => 'マイクロファイバー クロス ダスター',
+            '手垢' => 'クロス タオル 雑巾',
+            '焦げ' => 'たわし スポンジ 研磨 -洗剤',
+            '尿石' => 'トイレブラシ スポンジ -洗剤',
+            '石鹸カス' => '浴室 ブラシ スポンジ -洗剤',
+            'ヤニ' => 'クロス タオル 掃除 -洗剤',
+            '皮脂汚れ' => 'クロス スポンジ -洗剤'
+        ];
+        
+        return $this->searchProducts([
+            'Keywords' => $toolKeywords[$dirtType] ?? 'スポンジ ブラシ 掃除 -洗剤',
+            'SearchIndex' => 'HomeGarden',
+            'ItemCount' => $itemCount,
+            'SortBy' => 'Featured',
+            'Resources' => [
+                'Images.Primary.Large',
+                'ItemInfo.Title',
+                'Offers.Listings.Price'
+            ]
+        ]);
+    }
+    
+    /**
+     * 🧤 保護具専用検索
+     */
+    private function searchProtection($dirtType, $itemCount) {
+        return $this->searchProducts([
+            'Keywords' => 'ゴム手袋 マスク エプロン 掃除 保護',
+            'SearchIndex' => 'HealthPersonalCare',
+            'ItemCount' => $itemCount,
+            'SortBy' => 'Featured',
+            'Resources' => [
+                'Images.Primary.Large',
+                'ItemInfo.Title',
+                'Offers.Listings.Price'
+            ]
+        ]);
+    }
+    
+    /**
      * 🎯 汚れタイプ別基本セットキーワード生成
      */
     private function generateBasicSetKeywords($dirtType) {
-        // シンプルなキーワードで成功率を上げる
+        // 汚れタイプ別に具体的なキーワードで正確な商品を検索
         $basicSets = [
-            '油汚れ' => 'キッチン 洗剤',
-            'カビ' => 'カビ取り 洗剤', 
-            '水垢' => '浴室 洗剤',
-            'ホコリ' => '掃除 クロス',
-            '手垢' => '中性 洗剤',
-            '焦げ' => 'クレンザー',
-            '尿石' => 'トイレ 洗剤',
-            '石鹸カス' => '浴室 洗剤',
-            'ヤニ' => '住宅 洗剤',
-            '皮脂汚れ' => '中性 洗剤'
+            '油汚れ' => 'マジックリン 換気扇 油汚れ 洗剤 -食器用',
+            'カビ' => 'カビキラー 浴室 カビ取り 塩素系', 
+            '水垢' => '茂木和哉 水垢 クエン酸 風呂',
+            'ホコリ' => 'マイクロファイバー クロス 掃除',
+            '手垢' => 'ウタマロ 中性 住宅 洗剤',
+            '焦げ' => 'クレンザー ジフ 研磨',
+            '尿石' => 'サンポール 酸性 トイレ',
+            '石鹸カス' => 'バスマジックリン 浴室 石鹸カス',
+            'ヤニ' => 'マイペット 住宅 ヤニ取り',
+            '皮脂汚れ' => 'セスキ炭酸ソーダ アルカリ 皮脂'
         ];
         
-        return $basicSets[$dirtType] ?? "洗剤";
+        return $basicSets[$dirtType] ?? "住宅用 洗剤 -食器用";
     }
     
     
