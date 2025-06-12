@@ -864,7 +864,23 @@ class AICleaningAdvisor {
             }
             
             const location = window.COMPREHENSIVE_LOCATION_CONFIG[this.state.preSelectedLocation];
-            if (!location) {
+            
+            // フォールバック用の基本的な場所マッピング
+            const basicLocationMapping = {
+                'kitchen': { label: 'キッチン・換気扇', dirtTypes: ['油汚れ'] },
+                'bathroom': { label: '浴室・お風呂', dirtTypes: ['カビ汚れ'] },
+                'toilet': { label: 'トイレ', dirtTypes: ['尿石'] },
+                'window': { label: '窓・ガラス', dirtTypes: ['水垢'] },
+                'floor': { label: '床・フローリング', dirtTypes: ['ホコリ'] },
+                'aircon': { label: 'エアコン', dirtTypes: ['ホコリ'] },
+                'washer': { label: '洗濯機', dirtTypes: ['カビ汚れ'] },
+                'custom': { label: 'その他（自由記述）', dirtTypes: [] },
+                'general': { label: '一般的な掃除', dirtTypes: ['ホコリ'] }
+            };
+            
+            const locationInfo = location || basicLocationMapping[this.state.preSelectedLocation];
+            
+            if (!locationInfo) {
                 console.warn(`⚠️ 場所設定が見つかりません: ${this.state.preSelectedLocation}`);
                 return;
             }
@@ -882,10 +898,10 @@ class AICleaningAdvisor {
                     }
                 }
             } else {
-                text = `選択中: ${location.label}`;
+                text = `選択中: ${locationInfo.label}`;
                 
-                if (location.dirtTypes && location.dirtTypes.length > 0) {
-                    text += ` (対応: ${location.dirtTypes.slice(0, 2).join(', ')})`;
+                if (locationInfo.dirtTypes && locationInfo.dirtTypes.length > 0) {
+                    text += ` (対応: ${locationInfo.dirtTypes.slice(0, 2).join(', ')})`;
                 }
             }
             
@@ -900,8 +916,10 @@ class AICleaningAdvisor {
                 const display = document.getElementById('selectedLocationDisplay');
                 if (display) {
                     const p = display.querySelector('p');
-                    if (p) {
+                    if (p && text) {
                         p.textContent = `📍 選択した場所: ${text.replace('選択中: ', '')}`;
+                    } else if (p) {
+                        p.textContent = `📍 選択した場所: ${locationInfo.label || '不明'}`;
                     }
                     display.classList.remove('hidden');
                 }
