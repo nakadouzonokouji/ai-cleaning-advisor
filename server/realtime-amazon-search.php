@@ -71,9 +71,9 @@ class AmazonRealtimeSearch {
         
         return $this->searchProducts([
             'Keywords' => $cleanerKeywords,
-            'SearchIndex' => 'HealthPersonalCare',
+            'SearchIndex' => 'All',
             'ItemCount' => $itemCount,
-            'SortBy' => 'Featured',
+            'SortBy' => 'Relevance',
             'Resources' => [
                 'Images.Primary.Large',
                 'ItemInfo.Title',
@@ -101,9 +101,9 @@ class AmazonRealtimeSearch {
         
         return $this->searchProducts([
             'Keywords' => $toolKeywords[$dirtType] ?? 'スポンジ ブラシ 掃除 -洗剤',
-            'SearchIndex' => 'HomeGarden',
+            'SearchIndex' => 'All',
             'ItemCount' => $itemCount,
-            'SortBy' => 'Featured',
+            'SortBy' => 'Relevance',
             'Resources' => [
                 'Images.Primary.Large',
                 'ItemInfo.Title',
@@ -118,9 +118,9 @@ class AmazonRealtimeSearch {
     private function searchProtection($dirtType, $itemCount) {
         return $this->searchProducts([
             'Keywords' => 'ゴム手袋 マスク エプロン 掃除 保護',
-            'SearchIndex' => 'HealthPersonalCare',
+            'SearchIndex' => 'All',
             'ItemCount' => $itemCount,
-            'SortBy' => 'Featured',
+            'SortBy' => 'Relevance',
             'Resources' => [
                 'Images.Primary.Large',
                 'ItemInfo.Title',
