@@ -28,7 +28,7 @@ class AmazonRealtimeSearch {
     /**
      * 🔍 汚れタイプ別リアルタイム商品検索
      */
-    public function searchByDirtType($dirtType, $itemCount = 10) {
+    public function searchByDirtType($dirtType, $itemCount = 20) {
         $keywords = $this->generateSearchKeywords($dirtType);
         
         error_log("🔍 リアルタイム検索開始: $dirtType -> $keywords");

@@ -2317,92 +2317,12 @@ class AICleaningAdvisor {
             products = { cleaners: [], tools: [], protection: [] };
         }
         
-        // 各カテゴリで商品数不足の場合は補完用商品を追加
-        const supplementProducts = {
-            cleaners: [
-                {
-                    asin: "B00OOCWP44",
-                    name: "マジックリン ハンディスプレー 400ml",
-                    badge: "🏆 万能",
-                    emoji: "🧴",
-                    price: "価格はAmazonでご確認ください",
-                    type: "洗剤"
-                },
-                {
-                    asin: "B005AILJ3O", 
-                    name: "重曹ちゃん キッチン泡スプレー 300ml",
-                    badge: "🌿 天然",
-                    emoji: "🧴",
-                    price: "価格はAmazonでご確認ください",
-                    type: "洗剤"
-                },
-                {
-                    asin: "B00EOHQPHC",
-                    name: "カビキラー 浴室用カビ除去スプレー",
-                    badge: "💪 強力",
-                    emoji: "🧴", 
-                    price: "価格はAmazonでご確認ください",
-                    type: "洗剤"
-                }
-            ],
-            tools: [
-                {
-                    asin: "B07D7BXQZX",
-                    name: "激落ちくん メラミンスポンジ 20個入",
-                    badge: "🧽 定番",
-                    emoji: "🧽",
-                    price: "価格はAmazonでご確認ください",
-                    type: "道具"
-                },
-                {
-                    asin: "B01LWYQPNY",
-                    name: "掃除用ブラシセット 3本組",
-                    badge: "🧹 セット",
-                    emoji: "🧹",
-                    price: "価格はAmazonでご確認ください",
-                    type: "道具"
-                }
-            ],
-            protection: [
-                {
-                    asin: "B08Y7N3K2M",
-                    name: "ニトリル手袋 パウダーフリー 50枚",
-                    badge: "🧤 安全",
-                    emoji: "🧤",
-                    price: "価格はAmazonでご確認ください",
-                    type: "保護具"
-                },
-                {
-                    asin: "B09XZW123K",
-                    name: "防塵マスク N95相当 10枚入",
-                    badge: "😷 防護",
-                    emoji: "😷",
-                    price: "価格はAmazonでご確認ください", 
-                    type: "保護具"
-                }
-            ]
-        };
+        // 補完商品機能を削除 - リアルタイム検索で購入可能な商品のみ表示
         
-        // 洗剤が3種類未満の場合は補完
-        if (products.cleaners.length < 3) {
-            const needed = 3 - products.cleaners.length;
-            products.cleaners = [...products.cleaners, ...supplementProducts.cleaners.slice(0, needed)];
-            console.log(`🔧 洗剤補完: ${needed}種類追加 (合計${products.cleaners.length}種類)`);
-        }
-        
-        // 道具が不足の場合は補完
-        if (products.tools.length < 2) {
-            const needed = 2 - products.tools.length;
-            products.tools = [...products.tools, ...supplementProducts.tools.slice(0, needed)];
-            console.log(`🔧 道具補完: ${needed}種類追加 (合計${products.tools.length}種類)`);
-        }
-        
-        // 保護具が不足の場合は補完
-        if (products.protection.length < 1) {
-            const needed = 1 - products.protection.length;
-            products.protection = [...products.protection, ...supplementProducts.protection.slice(0, needed)];
-            console.log(`🔧 保護具補完: ${needed}種類追加 (合計${products.protection.length}種類)`);
-        }
+        // 補完機能を無効化（購入可能性を最優先）
+        // リアルタイム検索で購入可能な商品のみを表示
+        console.log(`🎯 商品数確認: 洗剤${products.cleaners.length}種類, 道具${products.tools.length}種類, 保護具${products.protection.length}種類`);
+        console.log(`ℹ️ 補完機能無効 - リアルタイム検索で購入可能な商品のみ表示`);
         
         console.log('🔧 ENV設定確認:', {
             ENV_defined: typeof window.ENV !== 'undefined',
