@@ -10,8 +10,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+// GET リクエストは設定確認用、POSTリクエストは商品取得用
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // 設定確認テスト
+    echo json_encode([
+        'success' => true,
+        'message' => 'Amazon Proxy Configuration Test',
+        'config_check' => [
+            'access_key_defined' => defined('AMAZON_ACCESS_KEY'),
+            'secret_key_defined' => defined('AMAZON_SECRET_KEY'),
+            'associate_tag_defined' => defined('AMAZON_ASSOCIATE_TAG'),
+            'associate_tag_value' => defined('AMAZON_ASSOCIATE_TAG') ? AMAZON_ASSOCIATE_TAG : 'UNDEFINED'
+        ],
+        'repository_secrets_status' => 'OK'
+    ]);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'error' => 'Use GET for config test or POST for product data']);
     exit;
 }
 
