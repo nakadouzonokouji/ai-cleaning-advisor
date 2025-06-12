@@ -1228,6 +1228,12 @@ class AICleaningAdvisor {
         
         // 成功通知
         this.showSuccessNotification('写真なしで分析準備完了');
+        
+        // 自動的に分析を開始
+        console.log('🚀 自動分析開始');
+        setTimeout(() => {
+            this.executeAnalysis();
+        }, 500);
     }
 
     // 🗑️ クリア機能（完全版）
