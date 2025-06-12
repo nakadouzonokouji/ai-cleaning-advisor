@@ -2325,7 +2325,7 @@ class AICleaningAdvisor {
                     name: "マジックリン ハンディスプレー 400ml",
                     badge: "🏆 万能",
                     emoji: "🧴",
-                    price: null,
+                    price: "価格はAmazonでご確認ください",
                     type: "洗剤"
                 },
                 {
@@ -2333,7 +2333,7 @@ class AICleaningAdvisor {
                     name: "重曹ちゃん キッチン泡スプレー 300ml",
                     badge: "🌿 天然",
                     emoji: "🧴",
-                    price: null,
+                    price: "価格はAmazonでご確認ください",
                     type: "洗剤"
                 },
                 {
@@ -2341,7 +2341,7 @@ class AICleaningAdvisor {
                     name: "カビキラー 浴室用カビ除去スプレー",
                     badge: "💪 強力",
                     emoji: "🧴", 
-                    price: null,
+                    price: "価格はAmazonでご確認ください",
                     type: "洗剤"
                 }
             ],
@@ -2351,7 +2351,7 @@ class AICleaningAdvisor {
                     name: "激落ちくん メラミンスポンジ 20個入",
                     badge: "🧽 定番",
                     emoji: "🧽",
-                    price: null,
+                    price: "価格はAmazonでご確認ください",
                     type: "道具"
                 },
                 {
@@ -2359,7 +2359,7 @@ class AICleaningAdvisor {
                     name: "掃除用ブラシセット 3本組",
                     badge: "🧹 セット",
                     emoji: "🧹",
-                    price: null,
+                    price: "価格はAmazonでご確認ください",
                     type: "道具"
                 }
             ],
@@ -2369,7 +2369,7 @@ class AICleaningAdvisor {
                     name: "ニトリル手袋 パウダーフリー 50枚",
                     badge: "🧤 安全",
                     emoji: "🧤",
-                    price: null,
+                    price: "価格はAmazonでご確認ください",
                     type: "保護具"
                 },
                 {
@@ -2377,7 +2377,7 @@ class AICleaningAdvisor {
                     name: "防塵マスク N95相当 10枚入",
                     badge: "😷 防護",
                     emoji: "😷",
-                    price: null, 
+                    price: "価格はAmazonでご確認ください", 
                     type: "保護具"
                 }
             ]
@@ -2456,7 +2456,7 @@ class AICleaningAdvisor {
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
                         <div class="mb-3 flex items-center justify-between">
-                            <span class="product-price text-lg font-bold text-red-600">${product.price || '価格確認中'}</span>
+                            <span class="product-price text-lg font-bold text-red-600">${product.price}</span>
                             <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
                                class="text-xs text-blue-600 hover:text-blue-800 underline">
                                 📊 レビューを見る
@@ -2509,7 +2509,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
                         <div class="mb-3 flex items-center justify-between">
-                            <span class="product-price text-lg font-bold text-green-600">${product.price || '価格確認中'}</span>
+                            <span class="product-price text-lg font-bold text-green-600">${product.price}</span>
                             <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
                                class="text-xs text-blue-600 hover:text-blue-800 underline">
                                 📊 レビューを見る
@@ -2562,7 +2562,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
                         <div class="mb-3 flex items-center justify-between">
-                            <span class="product-price text-lg font-bold text-purple-600">${product.price || '価格確認中'}</span>
+                            <span class="product-price text-lg font-bold text-purple-600">${product.price}</span>
                             <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
                                class="text-xs text-blue-600 hover:text-blue-800 underline">
                                 📊 レビューを見る
@@ -2865,11 +2865,20 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             
             console.log(`📂 詳細分析: 商品名="${title}" → タイプ="${productType}" → カテゴリ="${category}"`);
             
+            // 価格情報の確認（出品されているかチェック）
+            const priceInfo = item.Offers?.Listings?.[0]?.Price?.DisplayAmount;
+            const isAvailableForPurchase = priceInfo && priceInfo.trim() !== '';
+            
+            if (!isAvailableForPurchase) {
+                console.log(`⚠️ 商品除外（出品されていません）: ${title}`);
+                return; // この商品をスキップ
+            }
+            
             const product = {
                 name: title,
                 asin: item.ASIN,
                 type: productType,
-                price: item.Offers?.Listings?.[0]?.Price?.DisplayAmount || null,
+                price: priceInfo,
                 image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
                 url: item.DetailPageURL,
                 badge: '🆕 リアルタイム',
@@ -2878,10 +2887,10 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             
             if (converted[category]) {
                 converted[category].push(product);
-                console.log(`✅ ${category}カテゴリに追加: ${product.name}`);
+                console.log(`✅ ${category}カテゴリに追加: ${product.name} (価格: ${product.price})`);
             } else {
                 // カテゴリが不明な場合は cleaners に入れる
-                console.log(`⚠️ 不明カテゴリ "${category}" → cleanersに分類: ${product.name}`);
+                console.log(`⚠️ 不明カテゴリ "${category}" → cleanersに分類: ${product.name} (価格: ${product.price})`);
                 converted.cleaners.push(product);
             }
         });
