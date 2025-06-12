@@ -469,10 +469,11 @@ html, body {
     .location-btn {
         padding: 1rem;
         font-size: 0.9rem;
-        min-height: 3rem; /* 48px タッチターゲット */
+        min-height: 3.5rem; /* 56px より大きなタッチターゲット */
         margin: 0.25rem 0;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
+        line-height: 1.4;
     }
     
     .amazon-btn {
