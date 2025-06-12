@@ -59,6 +59,45 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_decode(file_get_contents('php://input'), true);
 
+// リアルタイム検索モード判定
+if (isset($input['search_mode']) && $input['search_mode'] === 'realtime') {
+    // リアルタイム検索処理
+    if (!isset($input['dirt_type'])) {
+        echo json_encode(['success' => false, 'error' => 'dirt_type parameter required for realtime search']);
+        exit;
+    }
+    
+    // リアルタイム検索クラスを読み込み
+    require_once 'realtime-amazon-search.php';
+    
+    try {
+        $searcher = new AmazonRealtimeSearch();
+        $results = $searcher->searchByDirtType(
+            $input['dirt_type'],
+            $input['item_count'] ?? 10
+        );
+        
+        echo json_encode([
+            'success' => true,
+            'search_type' => 'realtime',
+            'dirt_type' => $input['dirt_type'],
+            'results' => $results,
+            'timestamp' => date('Y-m-d H:i:s')
+        ]);
+        exit;
+        
+    } catch (Exception $e) {
+        error_log("Realtime Search Error: " . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'fallback_message' => 'リアルタイム検索が利用できません'
+        ]);
+        exit;
+    }
+}
+
+// 従来のASIN検索モード
 if (!isset($input['asins']) || !is_array($input['asins'])) {
     echo json_encode(['success' => false, 'error' => 'Invalid ASINs']);
     exit;

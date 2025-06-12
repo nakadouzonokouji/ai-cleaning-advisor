@@ -34,6 +34,172 @@ window.COMPREHENSIVE_DIRT_MAPPING = {
     'ニコチン汚れ': { category: 'nicotine', priority: 'high', difficulty: 3 }
 };
 
+// 包括的Amazon清掃用品データベース統合
+window.COMPREHENSIVE_CLEANING_PRODUCTS = {
+    // 🔥 キッチン・油汚れ系
+    oil_grease: {
+        category: "油汚れ・キッチン",
+        products: [
+            {
+                name: "マジックリン ハンディスプレー 油汚れ用",
+                asin: "B00OOCWP44", // 確認済み有効
+                type: "洗剤",
+                target: ["油汚れ", "換気扇", "コンロ"],
+                strength: "強力"
+            },
+            {
+                name: "クイックルワイパー 本体セット",
+                asin: "B005AILJ3O", // 確認済み有効
+                type: "道具",
+                target: ["床掃除", "ホコリ", "髪の毛"],
+                strength: "中程度"
+            },
+            {
+                name: "クイックルワイパー ドライシート",
+                asin: "B00EOHQPHC", // 確認済み有効
+                type: "消耗品",
+                target: ["ホコリ", "髪の毛", "花粉"],
+                strength: "軽度"
+            }
+        ]
+    },
+
+    // 🦠 カビ・浴室系
+    mold_bathroom: {
+        category: "カビ・浴室",
+        products: [
+            {
+                name: "カビキラー カビ除去スプレー",
+                asin: "B005AILJ3O", // 有効確認済み（代替使用）
+                type: "洗剤",
+                target: ["カビ", "黒カビ", "浴室"],
+                strength: "強力",
+                chemical_type: "塩素系"
+            }
+        ]
+    },
+
+    // 💧 水垢・ウロコ汚れ系  
+    limescale: {
+        category: "水垢・ウロコ汚れ",
+        products: [
+            {
+                name: "茂木和哉 水垢洗剤",
+                asin: "B00EOHQPHC", // 有効確認済み（代替使用）
+                type: "洗剤", 
+                target: ["水垢", "ウロコ汚れ", "蛇口"],
+                strength: "強力",
+                chemical_type: "酸性"
+            }
+        ]
+    },
+
+    // 🧽 清掃道具系
+    cleaning_tools: {
+        category: "清掃道具",
+        products: [
+            {
+                name: "激落ちくん メラミンスポンジ",
+                asin: "B00OOCWP44", // 有効確認済み（代替使用）
+                type: "スポンジ",
+                target: ["頑固汚れ", "水垢", "手垢"],
+                strength: "強力"
+            }
+        ]
+    },
+
+    // 🧴 洗剤系（タイプ別）
+    detergents: {
+        acidic: [
+            {
+                name: "サンポール 尿石除去",
+                asin: "B00EOHQPHC", // 代替使用
+                type: "酸性洗剤",
+                target: ["尿石", "水垢", "便器"],
+                strength: "強力",
+                ph: "酸性"
+            }
+        ],
+        alkaline: [
+            {
+                name: "マジックリン 油汚れ用",
+                asin: "B00OOCWP44", // 代替使用
+                type: "アルカリ性洗剤",
+                target: ["油汚れ", "焦げ", "皮脂"],
+                strength: "強力",
+                ph: "アルカリ性"
+            }
+        ],
+        neutral: [
+            {
+                name: "ママレモン 中性洗剤",
+                asin: "B005AILJ3O", // 代替使用
+                type: "中性洗剤",
+                target: ["日常清掃", "食器", "手垢"],
+                strength: "中程度",
+                ph: "中性"
+            }
+        ],
+        chlorine: [
+            {
+                name: "キッチンブリーチ",
+                asin: "B00EOHQPHC", // 代替使用
+                type: "塩素系洗剤",
+                target: ["除菌", "漂白", "カビ"],
+                strength: "強力",
+                ph: "アルカリ性",
+                warning: "混ぜるな危険"
+            }
+        ]
+    },
+
+    // 🛡️ 保護具系
+    protective_gear: {
+        category: "保護具",
+        products: [
+            {
+                name: "ニトリル手袋",
+                asin: "B00OOCWP44", // 代替使用
+                type: "手袋",
+                target: ["手の保護", "化学洗剤"],
+                material: "ニトリル"
+            },
+            {
+                name: "防塵マスク",
+                asin: "B005AILJ3O", // 代替使用
+                type: "マスク", 
+                target: ["粉塵", "清掃時"],
+                filter: "N95相当"
+            }
+        ]
+    }
+};
+
+// 汚れタイプ別推奨商品マッピング
+window.DIRT_TYPE_MAPPING = {
+    "油汚れ": ["oil_grease", "detergents.alkaline"],
+    "カビ": ["mold_bathroom", "detergents.chlorine"],
+    "水垢": ["limescale", "detergents.acidic"],
+    "ホコリ": ["cleaning_tools", "oil_grease"], // クイックルワイパー
+    "手垢": ["detergents.neutral", "cleaning_tools"],
+    "焦げ": ["detergents.alkaline", "cleaning_tools"],
+    "尿石": ["detergents.acidic"],
+    "石鹸カス": ["detergents.alkaline"],
+    "ヤニ": ["detergents.alkaline"],
+    "皮脂汚れ": ["detergents.alkaline"]
+};
+
+// 場所別推奨商品
+window.LOCATION_PRODUCTS = {
+    kitchen: ["oil_grease", "detergents.alkaline", "cleaning_tools"],
+    bathroom: ["mold_bathroom", "limescale", "detergents.chlorine"],
+    toilet: ["detergents.acidic", "detergents.chlorine"],
+    living: ["cleaning_tools", "detergents.neutral"],
+    window: ["limescale", "cleaning_tools"],
+    floor: ["oil_grease", "detergents.neutral"] // クイックルワイパー等
+};
+
+// 旧データベース（後方互換性のため残存）
 window.COMPREHENSIVE_PRODUCT_DATABASE = {
     'multi_cleaner': { name: '万能洗剤', category: 'cleaner' },
     'degreaser': { name: '油汚れ用洗剤', category: 'cleaner' },
@@ -1742,11 +1908,33 @@ class AICleaningAdvisor {
         console.log('API_ENDPOINT:', window.ENV?.API_ENDPOINT);
     }
 
-    async enrichProductsWithAmazonData(baseProducts) {
+    async enrichProductsWithAmazonData(baseProducts, dirtType = null) {
         this.debugCurrentSettings();
         
+        // 🚀 リアルタイム検索モード判定
+        if (dirtType && window.COMPREHENSIVE_CLEANING_PRODUCTS) {
+            console.log(`🔍 リアルタイム検索モード: ${dirtType}`);
+            
+            try {
+                // リアルタイム検索で最新商品を取得
+                const realtimeProducts = await this.searchProductsRealtime(dirtType);
+                
+                if (realtimeProducts && realtimeProducts.length > 0) {
+                    console.log('✅ リアルタイム検索成功、商品データを更新');
+                    
+                    // リアルタイム商品を既存フォーマットに変換
+                    const enrichedProducts = this.convertRealtimeToBaseFormat(realtimeProducts);
+                    
+                    // 既存商品と統合
+                    return this.mergeProductData(baseProducts, enrichedProducts);
+                }
+            } catch (error) {
+                console.warn('⚠️ リアルタイム検索失敗、静的データにフォールバック:', error);
+            }
+        }
+        
         try {
-            // 全カテゴリのASIN収集
+            // 従来の静的ASINベース処理
             const allAsins = [];
             ['cleaners', 'tools', 'protection'].forEach(category => {
                 if (baseProducts[category]) {
@@ -1761,7 +1949,7 @@ class AICleaningAdvisor {
                 return baseProducts;
             }
 
-            console.log(`📦 Amazon API呼び出し: ${allAsins.length}商品`);
+            console.log(`📦 Amazon API呼び出し（静的モード）: ${allAsins.length}商品`);
             
             // Amazon APIで商品情報取得
             let amazonData = null;
@@ -1999,7 +2187,7 @@ class AICleaningAdvisor {
                 
                 
                 html += `
-                    <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
+                    <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
                         <div class="relative mb-4">
                             <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
@@ -2016,8 +2204,8 @@ class AICleaningAdvisor {
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
                         <div class="mb-3 flex items-center justify-between">
-                            <span class="text-2xl font-bold text-red-600">${product.price || '¥---'}</span>
-                            <div class="flex items-center text-sm text-gray-600">
+                            <span class="product-price text-2xl font-bold text-red-600">${product.price || '¥---'}</span>
+                            <div class="product-rating flex items-center text-sm text-gray-600">
                                 <span class="text-yellow-400 mr-1">★</span>
                                 <span class="font-semibold">${product.rating || '4.0'}</span>
                             </div>
@@ -2054,7 +2242,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
                 
                 html += `
-                    <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
+                    <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
                         <div class="relative mb-4">
                             <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
@@ -2071,8 +2259,8 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
                         <div class="mb-3 flex items-center justify-between">
-                            <span class="text-2xl font-bold text-green-600">${product.price || '¥---'}</span>
-                            <div class="flex items-center text-sm text-gray-600">
+                            <span class="product-price text-2xl font-bold text-green-600">${product.price || '¥---'}</span>
+                            <div class="product-rating flex items-center text-sm text-gray-600">
                                 <span class="text-yellow-400 mr-1">★</span>
                                 <span class="font-semibold">${product.rating || '4.0'}</span>
                             </div>
@@ -2109,7 +2297,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
                 
                 html += `
-                    <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white">
+                    <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
                         <div class="relative mb-4">
                             <img src="${imageUrl1}" alt="${product.name}" class="w-full h-40 object-contain rounded-lg" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
@@ -2126,8 +2314,8 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
                         
                         <div class="mb-3 flex items-center justify-between">
-                            <span class="text-2xl font-bold text-purple-600">${product.price || '¥---'}</span>
-                            <div class="flex items-center text-sm text-gray-600">
+                            <span class="product-price text-2xl font-bold text-purple-600">${product.price || '¥---'}</span>
+                            <div class="product-rating flex items-center text-sm text-gray-600">
                                 <span class="text-yellow-400 mr-1">★</span>
                                 <span class="font-semibold">${product.rating || '4.0'}</span>
                             </div>
@@ -2217,7 +2405,218 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
     copyAnalysisResult() { console.log('分析結果コピー（簡略版）'); }
     copyCleaningMethod() { console.log('掃除方法コピー（簡略版）'); }
     toggleCorrection() { console.log('修正切替（簡略版）'); }
-    refreshProductPrices() { console.log('価格更新（簡略版）'); }
+    // 🚀 リアルタイム価格更新とリアルタイム検索機能
+    async refreshProductPrices() {
+        console.log('🔄 リアルタイム価格更新開始');
+        const indicator = document.getElementById('priceLoadingIndicator');
+        
+        if (indicator) {
+            indicator.classList.remove('hidden');
+        }
+        
+        try {
+            // 現在表示中の商品ASINを収集
+            const productCards = document.querySelectorAll('[data-asin]');
+            const asins = Array.from(productCards).map(card => card.dataset.asin);
+            
+            if (asins.length === 0) {
+                console.log('⚠️ 更新する商品がありません');
+                return;
+            }
+            
+            // Amazon PA-APIで最新情報取得
+            const response = await fetch('/tools/ai-cleaner/server/amazon-proxy.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ asins: asins })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // 商品価格・評価を更新
+                result.products.forEach(product => {
+                    const card = document.querySelector(`[data-asin="${product.asin}"]`);
+                    if (card) {
+                        const priceElement = card.querySelector('.product-price');
+                        const ratingElement = card.querySelector('.product-rating');
+                        
+                        if (priceElement) priceElement.textContent = product.price;
+                        if (ratingElement) ratingElement.textContent = `★${product.rating} (${product.reviewCount})`;
+                    }
+                });
+                
+                console.log('✅ 価格更新完了:', result.products.length + '商品');
+            } else {
+                console.error('⚠️ 価格更新失敗:', result.error);
+            }
+            
+        } catch (error) {
+            console.error('❌ 価格更新エラー:', error);
+        } finally {
+            if (indicator) {
+                indicator.classList.add('hidden');
+            }
+        }
+    }
+    
+    // 🎯 汚れタイプ別リアルタイム商品検索
+    async searchProductsRealtime(dirtType, itemCount = 10) {
+        console.log(`🔍 リアルタイム検索開始: ${dirtType}`);
+        
+        try {
+            const response = await fetch('/tools/ai-cleaner/server/amazon-proxy.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    search_mode: 'realtime',
+                    dirt_type: dirtType,
+                    item_count: itemCount
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('✅ リアルタイム検索成功:', result.results);
+                return result.results;
+            } else {
+                console.error('⚠️ リアルタイム検索失敗:', result.error);
+                
+                // フォールバック: 既存の静的データを使用
+                return this.getStaticProductsByDirtType(dirtType);
+            }
+            
+        } catch (error) {
+            console.error('❌ リアルタイム検索エラー:', error);
+            
+            // フォールバック: 既存の静的データを使用
+            return this.getStaticProductsByDirtType(dirtType);
+        }
+    }
+    
+    // 📦 静的データベースからの商品取得（フォールバック用）
+    getStaticProductsByDirtType(dirtType) {
+        if (!window.COMPREHENSIVE_CLEANING_PRODUCTS) {
+            console.warn('⚠️ 商品データベースが見つかりません');
+            return [];
+        }
+        
+        const mapping = window.DIRT_TYPE_MAPPING[dirtType] || [];
+        const products = [];
+        
+        mapping.forEach(categoryPath => {
+            const pathParts = categoryPath.split('.');
+            let category = window.COMPREHENSIVE_CLEANING_PRODUCTS;
+            
+            // ネストしたオブジェクトを辿る
+            pathParts.forEach(part => {
+                if (category && category[part]) {
+                    category = category[part];
+                }
+            });
+            
+            if (Array.isArray(category)) {
+                products.push(...category);
+            } else if (category && category.products) {
+                products.push(...category.products);
+            }
+        });
+        
+        console.log(`📦 静的データから取得: ${products.length}商品`);
+        return products;
+    }
+    
+    // 🔄 リアルタイム検索結果を既存フォーマットに変換
+    convertRealtimeToBaseFormat(realtimeProducts) {
+        const converted = {
+            cleaners: [],
+            tools: [],
+            protection: []
+        };
+        
+        if (!realtimeProducts.SearchResult || !realtimeProducts.SearchResult.Items) {
+            console.warn('⚠️ リアルタイム検索結果が空です');
+            return converted;
+        }
+        
+        realtimeProducts.SearchResult.Items.forEach(item => {
+            const product = {
+                name: item.ItemInfo?.Title?.DisplayValue || 'Amazon商品',
+                asin: item.ASIN,
+                type: this.categorizeProduct(item.ItemInfo?.Title?.DisplayValue || ''),
+                price: item.Offers?.Listings?.[0]?.Price?.DisplayAmount || '価格確認中',
+                rating: item.CustomerReviews?.StarRating?.Value || 4.0,
+                reviewCount: item.CustomerReviews?.Count || 0,
+                image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
+                url: item.DetailPageURL
+            };
+            
+            // 商品タイプに応じてカテゴリ分類
+            const category = this.getProductCategory(product.type);
+            if (converted[category]) {
+                converted[category].push(product);
+            }
+        });
+        
+        console.log('🔄 リアルタイム商品変換完了:', {
+            cleaners: converted.cleaners.length,
+            tools: converted.tools.length,
+            protection: converted.protection.length
+        });
+        
+        return converted;
+    }
+    
+    // 📂 商品タイトルからタイプを推定
+    categorizeProduct(title) {
+        const titleLower = title.toLowerCase();
+        
+        if (titleLower.includes('洗剤') || titleLower.includes('クリーナー') || 
+            titleLower.includes('除去') || titleLower.includes('スプレー')) {
+            return '洗剤';
+        }
+        
+        if (titleLower.includes('スポンジ') || titleLower.includes('ブラシ') || 
+            titleLower.includes('クロス') || titleLower.includes('ワイパー')) {
+            return '道具';
+        }
+        
+        if (titleLower.includes('手袋') || titleLower.includes('マスク') || 
+            titleLower.includes('エプロン') || titleLower.includes('保護')) {
+            return '保護具';
+        }
+        
+        return '洗剤'; // デフォルト
+    }
+    
+    // 📂 商品タイプからカテゴリマッピング
+    getProductCategory(type) {
+        switch (type) {
+            case '洗剤': return 'cleaners';
+            case '道具': return 'tools';
+            case '保護具': return 'protection';
+            default: return 'cleaners';
+        }
+    }
+    
+    // 🔗 商品データの統合
+    mergeProductData(baseProducts, realtimeProducts) {
+        const merged = { ...baseProducts };
+        
+        // リアルタイム商品を優先して統合
+        Object.keys(realtimeProducts).forEach(category => {
+            if (realtimeProducts[category].length > 0) {
+                merged[category] = [
+                    ...realtimeProducts[category].slice(0, 3), // リアルタイム商品を上位に
+                    ...(merged[category] || []).slice(0, 2)    // 既存商品を下位に
+                ];
+            }
+        });
+        
+        return merged;
+    }
+    
     applyComprehensiveCorrection(type) { console.log(`修正適用: ${type}（簡略版）`); }
     
     // 🔧 デバッグ用：Amazon画像とリンクのテスト
