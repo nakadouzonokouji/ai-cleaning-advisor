@@ -13,17 +13,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // GET リクエストは設定確認用、POSTリクエストは商品取得用
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // 設定確認テスト
-    echo json_encode([
+    $response = [
         'success' => true,
         'message' => 'Amazon Proxy Configuration Test',
+        'timestamp' => date('Y-m-d H:i:s'),
+        'php_version' => PHP_VERSION,
         'config_check' => [
             'access_key_defined' => defined('AMAZON_ACCESS_KEY'),
             'secret_key_defined' => defined('AMAZON_SECRET_KEY'),
             'associate_tag_defined' => defined('AMAZON_ASSOCIATE_TAG'),
-            'associate_tag_value' => defined('AMAZON_ASSOCIATE_TAG') ? AMAZON_ASSOCIATE_TAG : 'UNDEFINED'
-        ],
-        'repository_secrets_status' => 'OK'
-    ]);
+            'gemini_key_defined' => defined('GEMINI_API_KEY')
+        ]
+    ];
+    
+    // Associate Tag値を安全に表示
+    if (defined('AMAZON_ASSOCIATE_TAG')) {
+        $response['config_check']['associate_tag_value'] = AMAZON_ASSOCIATE_TAG;
+        $response['config_check']['associate_tag_length'] = strlen(AMAZON_ASSOCIATE_TAG);
+    } else {
+        $response['config_check']['associate_tag_value'] = 'UNDEFINED';
+    }
+    
+    echo json_encode($response, JSON_PRETTY_PRINT);
     exit;
 }
 
