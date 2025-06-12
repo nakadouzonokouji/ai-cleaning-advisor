@@ -195,6 +195,7 @@ class AmazonRealtimeSearch {
         
         $payload = json_encode($payloadData);
         error_log("🔍 Amazon API Payload: " . $payload);
+        error_log("🎯 SortBy設定: " . $payloadData['SortBy']);
         
         $headers = $this->getSignedHeaders('SearchItems', $payload);
         

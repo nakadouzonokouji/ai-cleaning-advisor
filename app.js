@@ -909,6 +909,8 @@ class AICleaningAdvisor {
                 selectedLocationText.textContent = text;
                 selectedLocationText.classList.remove('hidden');
                 console.log(`✅ 選択場所表示更新: ${text}`);
+            } else {
+                console.error('❌ selectedLocationText要素が見つかりません');
             }
 
             // 分析エリアでの表示
@@ -3098,6 +3100,8 @@ class AICleaningAdvisor {
             // レビュー情報の取得
             const reviewCount = item.CustomerReviews?.Count || 0;
             const starRating = item.CustomerReviews?.StarRating?.Value || 0;
+            
+            console.log(`🔍 レビュー情報: ${title} - 評価: ${starRating}⭐, レビュー: ${reviewCount}件`);
             
             // ベストセラーバッジの判定
             let badge = '✨ 最新情報';
