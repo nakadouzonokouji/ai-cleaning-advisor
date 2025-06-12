@@ -749,7 +749,7 @@
             loadFeedbackData() {
                 try {
                     const storage = this.getStorage();
-                    const data = storage.getItem('ai_cleaner_feedbacks');
+                    const data = storage.getItem('aiCleanerFeedback');
                     
                     if (data) {
                         this.feedbackData = JSON.parse(data);
@@ -765,57 +765,70 @@
             }
 
             generateDemoData() {
+                // デモデータを実際のフィードバックデータ形式に合わせる
                 const sampleData = [
                     {
-                        id: 1640000000000,
+                        id: Date.now() - 86400000 * 3,
                         timestamp: new Date(Date.now() - 86400000 * 3).toISOString(),
                         type: 'good',
-                        comment: '換気扇の掃除方法がとても分かりやすかったです！',
+                        comment: '横スクロールのAmazon商品表示がとても使いやすいです！',
+                        userAgent: navigator.userAgent,
+                        url: window.location.origin + '/tools/ai-cleaner/',
                         analysisResult: {
                             dirtType: '油汚れ',
-                            surface: '換気扇・キッチン',
+                            surface: 'キッチン・換気扇',
                             confidence: 95,
                             hasPhoto: true,
-                            isAIAnalyzed: true
+                            isAIAnalyzed: true,
+                            location: 'kitchen'
                         }
                     },
                     {
-                        id: 1640000001000,
+                        id: Date.now() - 86400000 * 2,
                         timestamp: new Date(Date.now() - 86400000 * 2).toISOString(),
                         type: 'good',
-                        comment: 'AIの提案通りに掃除したら本当にピカピカになりました',
+                        comment: 'リアルタイム検索で最新の商品が見つかって助かりました',
+                        userAgent: navigator.userAgent,
+                        url: window.location.origin + '/tools/ai-cleaner/',
                         analysisResult: {
                             dirtType: 'カビ汚れ',
                             surface: '浴室・お風呂',
                             confidence: 88,
                             hasPhoto: true,
-                            isAIAnalyzed: true
+                            isAIAnalyzed: true,
+                            location: 'bathroom'
                         }
                     },
                     {
-                        id: 1640000002000,
+                        id: Date.now() - 86400000 * 1,
                         timestamp: new Date(Date.now() - 86400000 * 1).toISOString(),
                         type: 'bad',
-                        comment: 'もう少し詳しい説明があると良いです',
+                        comment: 'スマホでの商品表示がもう少し大きいと良いです',
+                        userAgent: navigator.userAgent,
+                        url: window.location.origin + '/tools/ai-cleaner/',
                         analysisResult: {
-                            dirtType: '水垢',
+                            dirtType: '尿石・水垢',
                             surface: 'トイレ',
                             confidence: 75,
                             hasPhoto: false,
-                            isAIAnalyzed: true
+                            isAIAnalyzed: true,
+                            location: 'toilet'
                         }
                     },
                     {
-                        id: 1640000003000,
+                        id: Date.now(),
                         timestamp: new Date().toISOString(),
                         type: 'good',
                         comment: '',
+                        userAgent: navigator.userAgent,
+                        url: window.location.origin + '/tools/ai-cleaner/',
                         analysisResult: {
                             dirtType: 'ホコリ',
-                            surface: '床・フローリング',
+                            surface: '一般的な掃除',
                             confidence: 92,
-                            hasPhoto: true,
-                            isAIAnalyzed: true
+                            hasPhoto: false,
+                            isAIAnalyzed: true,
+                            location: 'general'
                         }
                     }
                 ];

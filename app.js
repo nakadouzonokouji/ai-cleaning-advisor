@@ -2616,14 +2616,15 @@ class AICleaningAdvisor {
         const commentText = comment !== null ? comment : 
             (document.getElementById('feedbackComment')?.value || '');
         
-        // フィードバックデータ作成
+        // フィードバックデータ作成（管理画面対応形式）
         const feedbackData = {
+            id: Date.now(),
             type: feedbackType,
             comment: commentText.trim(),
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent,
             url: window.location.href,
-            analysisResult: this.state.lastAnalysisResult || null
+            analysisResult: this.createAnalysisResultSummary()
         };
         
         try {
@@ -2711,6 +2712,69 @@ class AICleaningAdvisor {
             window.lucide.createIcons();
         }
     }
+    
+    // 🎯 分析結果サマリー作成（管理画面対応）
+    createAnalysisResultSummary() {
+        // 現在の状態から分析結果サマリーを作成
+        const location = this.state.preSelectedLocation || 'unknown';
+        const hasPhoto = this.state.selectedImage && this.state.selectedImage !== 'no-photo';
+        
+        // 場所から汚れタイプを推定
+        let dirtType = 'その他';
+        let surface = '不明な場所';
+        
+        switch(location) {
+            case 'kitchen':
+                dirtType = '油汚れ';
+                surface = 'キッチン・換気扇';
+                break;
+            case 'bathroom':
+                dirtType = 'カビ汚れ';
+                surface = '浴室・お風呂';
+                break;
+            case 'toilet':
+                dirtType = '尿石・水垢';
+                surface = 'トイレ';
+                break;
+            case 'window':
+                dirtType = '水垢汚れ';
+                surface = '窓ガラス';
+                break;
+            case 'living':
+                dirtType = 'ホコリ';
+                surface = 'リビング';
+                break;
+            case 'aircon':
+                dirtType = 'ホコリ・カビ';
+                surface = 'エアコン';
+                break;
+            case 'washer':
+                dirtType = 'カビ汚れ';
+                surface = '洗濯機';
+                break;
+            case 'general':
+                dirtType = 'ホコリ';
+                surface = '一般的な掃除';
+                break;
+            case 'custom':
+                surface = this.state.customLocation || 'カスタム場所';
+                dirtType = 'その他';
+                break;
+            default:
+                dirtType = 'その他';
+                surface = '不明な場所';
+        }
+        
+        return {
+            dirtType: dirtType,
+            surface: surface,
+            confidence: hasPhoto ? 90 : 75,
+            hasPhoto: hasPhoto,
+            isAIAnalyzed: true,
+            location: location
+        };
+    }
+    
     saveGeminiApiKey() { console.log('APIキー保存（簡略版）'); }
     testGeminiConnection() { console.log('API接続テスト（簡略版）'); }
     toggleApiKeyVisibility() { console.log('APIキー表示切替（簡略版）'); }
