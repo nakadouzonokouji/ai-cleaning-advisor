@@ -2576,9 +2576,141 @@ class AICleaningAdvisor {
             feedbackBadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
     }
-    showFeedbackModal() { console.log('フィードバックモーダル（簡略版）'); }
-    submitFeedback() { console.log('フィードバック送信（簡略版）'); }
-    closeFeedbackModal() { console.log('フィードバックモーダル閉じる（簡略版）'); }
+    // 🎯 フィードバックモーダル表示
+    showFeedbackModal(type) {
+        console.log(`フィードバックモーダル表示: ${type}`);
+        
+        const modal = document.getElementById('feedbackModal');
+        const title = document.getElementById('feedbackModalTitle');
+        const text = document.getElementById('feedbackModalText');
+        
+        if (!modal || !title || !text) return;
+        
+        // フィードバックタイプを保存
+        this.state.currentFeedbackType = type;
+        
+        // モーダル内容を設定
+        if (type === 'good') {
+            title.textContent = '✨ Good フィードバック';
+            text.textContent = '役に立ったと感じた点や、特に良かった機能について教えてください。';
+        } else {
+            title.textContent = '💭 改善フィードバック';
+            text.textContent = '改善が必要だと感じた点や、期待に合わなかった部分について教えてください。';
+        }
+        
+        // モーダル表示
+        modal.classList.remove('hidden');
+        
+        // コメント欄にフォーカス
+        setTimeout(() => {
+            const comment = document.getElementById('feedbackComment');
+            if (comment) comment.focus();
+        }, 300);
+    }
+    
+    // 🎯 フィードバック送信
+    async submitFeedback(comment = null) {
+        console.log('フィードバック送信開始');
+        
+        const feedbackType = this.state.currentFeedbackType || 'unknown';
+        const commentText = comment !== null ? comment : 
+            (document.getElementById('feedbackComment')?.value || '');
+        
+        // フィードバックデータ作成
+        const feedbackData = {
+            type: feedbackType,
+            comment: commentText.trim(),
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            url: window.location.href,
+            analysisResult: this.state.lastAnalysisResult || null
+        };
+        
+        try {
+            // ローカルストレージに保存（簡易版）
+            const existingFeedback = JSON.parse(localStorage.getItem('aiCleanerFeedback') || '[]');
+            existingFeedback.push(feedbackData);
+            localStorage.setItem('aiCleanerFeedback', JSON.stringify(existingFeedback));
+            
+            console.log('フィードバック保存完了:', feedbackData);
+            
+            // 成功表示
+            this.showFeedbackSuccess(feedbackType);
+            
+        } catch (error) {
+            console.error('フィードバック送信エラー:', error);
+            this.showFeedbackError();
+        }
+        
+        // モーダルを閉じる
+        this.closeFeedbackModal();
+    }
+    
+    // 🎯 フィードバックモーダル閉じる
+    closeFeedbackModal() {
+        console.log('フィードバックモーダル閉じる');
+        
+        const modal = document.getElementById('feedbackModal');
+        const comment = document.getElementById('feedbackComment');
+        
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+        
+        // コメント欄をクリア
+        if (comment) {
+            comment.value = '';
+        }
+        
+        // 状態リセット
+        this.state.currentFeedbackType = null;
+    }
+    
+    // 🎯 フィードバック成功表示
+    showFeedbackSuccess(type) {
+        const status = document.getElementById('feedbackStatus');
+        const goodBtn = document.getElementById('feedbackGoodBtn');
+        const badBtn = document.getElementById('feedbackBadBtn');
+        
+        if (status) {
+            status.classList.remove('hidden');
+            status.innerHTML = `
+                <i data-lucide="check-circle" class="w-4 h-4 inline mr-1 text-green-600"></i>
+                <span class="text-green-600">フィードバックありがとうございました！</span>
+            `;
+        }
+        
+        // ボタンを無効化
+        if (goodBtn && badBtn) {
+            goodBtn.disabled = true;
+            badBtn.disabled = true;
+            goodBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            badBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        
+        // Lucide アイコンを再描画
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    }
+    
+    // 🎯 フィードバックエラー表示
+    showFeedbackError() {
+        const status = document.getElementById('feedbackStatus');
+        
+        if (status) {
+            status.classList.remove('hidden');
+            status.innerHTML = `
+                <i data-lucide="alert-circle" class="w-4 h-4 inline mr-1 text-red-600"></i>
+                <span class="text-red-600">送信に失敗しました。しばらく後でお試しください。</span>
+            `;
+        }
+        
+        // Lucide アイコンを再描画
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    }
     saveGeminiApiKey() { console.log('APIキー保存（簡略版）'); }
     testGeminiConnection() { console.log('API接続テスト（簡略版）'); }
     toggleApiKeyVisibility() { console.log('APIキー表示切替（簡略版）'); }
