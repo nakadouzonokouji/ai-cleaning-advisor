@@ -1888,7 +1888,7 @@ class AICleaningAdvisor {
     async enrichProductsWithAmazonData(baseProducts, dirtType = null) {
         this.debugCurrentSettings();
         
-        // 🚀 リアルタイム検索モード判定
+        // 🚀 リアルタイム検索モード判定（修正版）
         if (dirtType && window.COMPREHENSIVE_CLEANING_PRODUCTS) {
             console.log(`🔍 リアルタイム検索モード: ${dirtType}`);
             
@@ -1896,14 +1896,23 @@ class AICleaningAdvisor {
                 // リアルタイム検索で最新商品を取得
                 const realtimeProducts = await this.searchProductsRealtime(dirtType);
                 
-                if (realtimeProducts && realtimeProducts.length > 0) {
+                if (realtimeProducts && realtimeProducts.SearchResult && realtimeProducts.SearchResult.Items) {
                     console.log('✅ リアルタイム検索成功、商品データを更新');
+                    console.log('🔍 取得した商品数:', realtimeProducts.SearchResult.Items.length);
                     
                     // リアルタイム商品を既存フォーマットに変換
                     const enrichedProducts = this.convertRealtimeToBaseFormat(realtimeProducts);
                     
-                    // 既存商品と統合
-                    return this.mergeProductData(baseProducts, enrichedProducts);
+                    console.log('🔄 変換後の商品:', enrichedProducts);
+                    
+                    // 変換された商品が空でない場合は使用
+                    if (enrichedProducts.cleaners.length > 0 || enrichedProducts.tools.length > 0 || enrichedProducts.protection.length > 0) {
+                        return enrichedProducts;
+                    } else {
+                        console.warn('⚠️ 変換後の商品が空です、静的データにフォールバック');
+                    }
+                } else {
+                    console.warn('⚠️ リアルタイム検索結果が空です');
                 }
             } catch (error) {
                 console.warn('⚠️ リアルタイム検索失敗、静的データにフォールバック:', error);
@@ -2137,10 +2146,44 @@ class AICleaningAdvisor {
     displayProducts(products) {
         console.log('🛒 商品表示開始', products);
         
-        // 商品データの存在確認
-        if (!products) {
-            console.error('❌ 商品データが未定義です');
-            return;
+        // 🚨 緊急対応：商品データが空の場合は強制的に最低限の商品を表示
+        if (!products || (!products.cleaners && !products.tools && !products.protection)) {
+            console.warn('⚠️ 商品データが空です - 緊急フォールバック商品を表示');
+            products = {
+                cleaners: [
+                    {
+                        asin: "B00OOCWP44",
+                        name: "マジックリン ハンディスプレー 400ml",
+                        badge: "🏆 万能",
+                        emoji: "🧴",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 2847
+                    }
+                ],
+                tools: [
+                    {
+                        asin: "B005AILJ3O",
+                        name: "クイックルワイパー 本体セット",
+                        badge: "🧹 定番",
+                        emoji: "🧹",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 3456
+                    }
+                ],
+                protection: [
+                    {
+                        asin: "B00EOHQPHC",
+                        name: "ニトリル手袋 50枚入",
+                        badge: "🧤 保護",
+                        emoji: "🧤",
+                        price: "¥298",
+                        rating: 4.1,
+                        reviews: 1234
+                    }
+                ]
+            };
         }
         
         console.log('🔧 ENV設定確認:', {
@@ -2596,22 +2639,35 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             return converted;
         }
         
-        realtimeProducts.SearchResult.Items.forEach(item => {
+        console.log('🔍 変換開始 - 元データ:', realtimeProducts.SearchResult.Items.length + '商品');
+        
+        realtimeProducts.SearchResult.Items.forEach((item, index) => {
+            const title = item.ItemInfo?.Title?.DisplayValue || 'Amazon商品';
+            console.log(`🔍 商品${index + 1}: ${title}`);
+            
             const product = {
-                name: item.ItemInfo?.Title?.DisplayValue || 'Amazon商品',
+                name: title,
                 asin: item.ASIN,
-                type: this.categorizeProduct(item.ItemInfo?.Title?.DisplayValue || ''),
+                type: this.categorizeProduct(title),
                 price: item.Offers?.Listings?.[0]?.Price?.DisplayAmount || '価格確認中',
                 rating: item.CustomerReviews?.StarRating?.Value || 4.0,
                 reviewCount: item.CustomerReviews?.Count || 0,
                 image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
-                url: item.DetailPageURL
+                url: item.DetailPageURL,
+                badge: '🆕 リアルタイム',
+                emoji: this.getProductEmoji(this.categorizeProduct(title))
             };
             
-            // 商品タイプに応じてカテゴリ分類
+            // 🚨 すべての商品を cleaners に分類（確実に表示されるように）
             const category = this.getProductCategory(product.type);
+            console.log(`📂 商品分類: ${product.name} → ${product.type} → ${category}`);
+            
             if (converted[category]) {
                 converted[category].push(product);
+            } else {
+                // カテゴリが不明な場合は cleaners に入れる
+                console.log(`⚠️ 不明カテゴリ、cleanersに分類: ${category}`);
+                converted.cleaners.push(product);
             }
         });
         
