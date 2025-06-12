@@ -3019,9 +3019,23 @@ class AICleaningAdvisor {
         
         console.log('🔍 変換開始 - 元データ:', realtimeProducts.SearchResult.Items.length + '商品');
         
+        // 重複除去用のセット（商品名の正規化版を保存）
+        const seenProducts = new Set();
+        
         realtimeProducts.SearchResult.Items.forEach((item, index) => {
             const title = item.ItemInfo?.Title?.DisplayValue || 'Amazon商品';
             console.log(`🔍 商品${index + 1}: "${title}"`);
+            
+            // 商品名の正規化（重複チェック用）
+            const normalizedName = this.normalizeProductName(title);
+            console.log(`🔍 正規化名: "${normalizedName}"`);
+            
+            // 重複チェック
+            if (seenProducts.has(normalizedName)) {
+                console.log(`⚠️ 重複商品をスキップ: ${title}`);
+                return;
+            }
+            seenProducts.add(normalizedName);
             
             // 分類ロジックの詳細ログ
             const productType = this.categorizeProduct(title);
@@ -3095,6 +3109,54 @@ class AICleaningAdvisor {
         });
         
         return converted;
+    }
+    
+    // 🔄 商品名の正規化（重複除去用）
+    normalizeProductName(title) {
+        let normalized = title
+            // 基本的な清掃
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase();
+        
+        // 数量・容量・サイズ情報を除去
+        normalized = normalized
+            .replace(/\d+本セット|\d+個セット|\d+枚入|\d+セット/g, '') // セット数
+            .replace(/\d+ml|\d+l|\d+リットル|\d+g|\d+kg/g, '') // 容量・重量
+            .replace(/[smlxl]サイズ|サイズ[smlxl]/g, '') // サイズ
+            .replace(/大容量|詰め替え|つめかえ|レフィル/g, '') // 容量表現
+            .replace(/\d+枚|\d+個|\d+本/g, '') // 数量
+            .replace(/\(\d+[^)]*\)/g, '') // 括弧内の数字情報
+            .replace(/[\(\)]/g, '') // 空の括弧
+            .replace(/\s+/g, ' ') // 複数スペースを1つに
+            .trim();
+        
+        // ブランド名 + 基本商品名を抽出
+        const brandProducts = {
+            'ウタマロ': normalized.includes('ウタマロ') ? 'ウタマロ' : null,
+            'マジックリン': normalized.includes('マジックリン') ? 'マジックリン' : null,
+            'カビキラー': normalized.includes('カビキラー') ? 'カビキラー' : null,
+            'ママレモン': normalized.includes('ママレモン') ? 'ママレモン' : null,
+            'クイックルワイパー': normalized.includes('クイックル') ? 'クイックルワイパー' : null,
+            '茂木和哉': normalized.includes('茂木和哉') ? '茂木和哉' : null,
+            'ジフ': normalized.includes('ジフ') ? 'ジフ' : null,
+            'バスマジックリン': normalized.includes('バスマジックリン') ? 'バスマジックリン' : null
+        };
+        
+        // ブランド商品が見つかった場合はそれを返す
+        for (const [brand, match] of Object.entries(brandProducts)) {
+            if (match) {
+                console.log(`🏷️ ブランド正規化: "${title}" → "${brand}"`);
+                return brand;
+            }
+        }
+        
+        // ブランドが見つからない場合は最初の2-3単語を使用
+        const words = normalized.split(' ').filter(word => word.length > 1);
+        const normalizedResult = words.slice(0, 3).join(' ');
+        
+        console.log(`🔄 一般正規化: "${title}" → "${normalizedResult}"`);
+        return normalizedResult;
     }
     
     // 🧪 商品分類テスト機能
