@@ -1572,20 +1572,45 @@ class AICleaningAdvisor {
         console.log('📍 場所ベース分析実行');
         
         const locationInfo = window.COMPREHENSIVE_LOCATION_CONFIG?.[this.state.preSelectedLocation];
+        console.log('🔍 場所情報:', locationInfo);
+        console.log('🔍 選択された場所:', this.state.preSelectedLocation);
+        
+        // フォールバック処理 - 場所情報が見つからない場合
+        let dirtType, surface;
         if (!locationInfo) {
-            throw new Error('選択された場所の情報が見つかりません');
+            console.warn('⚠️ 場所情報が見つかりません、基本設定を使用');
+            // 基本的な場所マッピング
+            const basicMapping = {
+                'kitchen': { dirtType: '油汚れ', surface: 'キッチン' },
+                'bathroom': { dirtType: 'カビ汚れ', surface: '浴室' },
+                'toilet': { dirtType: '尿石', surface: 'トイレ' },
+                'window': { dirtType: '水垢', surface: '窓ガラス' },
+                'floor': { dirtType: 'ホコリ', surface: 'フローリング' },
+                'aircon': { dirtType: 'ホコリ', surface: 'エアコン' },
+                'washer': { dirtType: 'カビ汚れ', surface: '洗濯機' },
+                'general': { dirtType: 'ホコリ', surface: '一般的な掃除' }
+            };
+            
+            const mapping = basicMapping[this.state.preSelectedLocation] || basicMapping['general'];
+            dirtType = mapping.dirtType;
+            surface = mapping.surface;
+        } else {
+            dirtType = locationInfo.dirtTypes?.[0] || '汚れ';
+            surface = locationInfo.surface || '掃除箇所';
         }
 
         const result = {
-            dirtType: locationInfo.dirtTypes[0] || '汚れ',
-            additionalDirt: locationInfo.dirtTypes.slice(1) || [],
-            surface: locationInfo.surface,
+            dirtType: dirtType,
+            additionalDirt: locationInfo?.dirtTypes?.slice(1) || [],
+            surface: surface,
             confidence: 95,
             isUserSelected: true,
             hasPhoto: false,
             location: this.state.preSelectedLocation,
             analysisVersion: 'location-based'
         };
+
+        console.log('✅ 分析結果:', result);
 
         result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface);
         result.recommendedProducts = await this.getRecommendedProducts(result.dirtType);
