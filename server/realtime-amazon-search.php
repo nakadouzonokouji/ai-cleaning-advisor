@@ -38,6 +38,9 @@ class AmazonRealtimeSearch {
             'SearchIndex' => 'All',
             'ItemCount' => $itemCount,
             'SortBy' => 'Featured', // 売れ筋順
+            'Availability' => 'Available', // 購入可能な商品のみ
+            'Condition' => 'New', // 新品のみ
+            'MinPrice' => 100, // 最低価格100円（無効な商品を除外）
             'Resources' => [
                 'Images.Primary.Large',
                 'Images.Primary.Medium',
@@ -46,6 +49,7 @@ class AmazonRealtimeSearch {
                 'ItemInfo.ContentRating',
                 'Offers.Listings.Price',
                 'Offers.Listings.DeliveryInfo.IsAmazonFulfilled',
+                'Offers.Listings.Availability.Message',
                 'CustomerReviews.StarRating',
                 'CustomerReviews.Count'
             ]

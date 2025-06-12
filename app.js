@@ -2865,12 +2865,29 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             
             console.log(`📂 詳細分析: 商品名="${title}" → タイプ="${productType}" → カテゴリ="${category}"`);
             
-            // 価格情報の確認（出品されているかチェック）
+            // 購入可能性の厳密チェック
             const priceInfo = item.Offers?.Listings?.[0]?.Price?.DisplayAmount;
-            const isAvailableForPurchase = priceInfo && priceInfo.trim() !== '';
+            const availabilityMessage = item.Offers?.Listings?.[0]?.Availability?.Message;
+            const isAmazonFulfilled = item.Offers?.Listings?.[0]?.DeliveryInfo?.IsAmazonFulfilled;
             
-            if (!isAvailableForPurchase) {
-                console.log(`⚠️ 商品除外（出品されていません）: ${title}`);
+            // 厳しい購入可能性チェック
+            const hasValidPrice = priceInfo && priceInfo.trim() !== '';
+            const isInStock = !availabilityMessage || availabilityMessage.includes('在庫あり') || availabilityMessage.includes('通常配送');
+            const hasPrimeOrAmazon = isAmazonFulfilled === true; // Amazon発送またはPrime対象
+            
+            console.log(`🔍 購入可能性チェック: ${title}`);
+            console.log(`  価格: ${hasValidPrice ? priceInfo : '❌なし'}`);
+            console.log(`  在庫: ${availabilityMessage || '❌不明'}`);
+            console.log(`  Amazon発送: ${isAmazonFulfilled ? '✅' : '❌'}`);
+            
+            if (!hasValidPrice) {
+                console.log(`⚠️ 商品除外（価格なし）: ${title}`);
+                return; // この商品をスキップ
+            }
+            
+            // 在庫状況が不明または在庫切れの場合も除外
+            if (availabilityMessage && !isInStock) {
+                console.log(`⚠️ 商品除外（在庫切れ）: ${title} - ${availabilityMessage}`);
                 return; // この商品をスキップ
             }
             
@@ -2881,8 +2898,9 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 price: priceInfo,
                 image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
                 url: item.DetailPageURL,
-                badge: '🆕 リアルタイム',
-                emoji: this.getProductEmoji(productType)
+                badge: isAmazonFulfilled ? '🚚 Prime対応' : '🆕 リアルタイム',
+                emoji: this.getProductEmoji(productType),
+                availability: availabilityMessage || '在庫確認済み'
             };
             
             if (converted[category]) {
