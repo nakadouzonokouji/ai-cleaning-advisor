@@ -19,6 +19,7 @@ jobs:
         cp app.js upload/
         cp styles.css upload/
         cp security.js upload/
+        cp comprehensive-cleaning-products.js upload/
         
         mkdir upload/server
         cp server/*.js upload/server/

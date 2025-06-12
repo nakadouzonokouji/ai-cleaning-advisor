@@ -1948,7 +1948,9 @@ class AICleaningAdvisor {
                     console.log('⚠️ Amazon API応答エラー:', response.status);
                 }
             } catch (error) {
-                }
+                console.error('❌ Amazon API呼び出しエラー:', error);
+                console.log('📦 フォールバック: 基本商品データを使用');
+            }
             
             if (!amazonData || !amazonData.success) {
                 console.log('⚠️ Amazon API応答なし - 基本データを使用');
@@ -2011,7 +2013,12 @@ class AICleaningAdvisor {
         this.displayCleaningMethod(analysis.cleaningMethod);
         
         // 商品表示
-        this.displayProducts(analysis.recommendedProducts);
+        if (analysis.recommendedProducts) {
+            console.log('🛒 商品表示開始:', analysis.recommendedProducts);
+            this.displayProducts(analysis.recommendedProducts);
+        } else {
+            console.warn('⚠️ 推奨商品データがありません - 商品取得処理を確認してください');
+        }
 
         // フィードバック状態リセット
         this.resetFeedbackState();
@@ -2129,16 +2136,22 @@ class AICleaningAdvisor {
     // 🛒 商品表示（完全版：洗剤・ツール・保護具）
     displayProducts(products) {
         console.log('🛒 商品表示開始', products);
+        
+        // 商品データの存在確認
+        if (!products) {
+            console.error('❌ 商品データが未定義です');
+            return;
+        }
+        
         console.log('🔧 ENV設定確認:', {
             ENV_defined: typeof window.ENV !== 'undefined',
             ASSOCIATE_TAG: window.ENV?.AMAZON_ASSOCIATE_TAG,
             tag_valid: !!(window.ENV?.AMAZON_ASSOCIATE_TAG)
         });
         
-        // Associate Tag未設定の場合は警告
+        // Associate Tag確認（警告のみ、表示は継続）
         if (!window.ENV?.AMAZON_ASSOCIATE_TAG) {
-            console.warn('⚠️ AMAZON_ASSOCIATE_TAG未設定 - Amazonリンクが正しく動作しません');
-            return; // 商品表示を中止
+            console.warn('⚠️ AMAZON_ASSOCIATE_TAG未設定 - Amazonリンクが正しく動作しない可能性があります');
         }
         
         let html = `<div class="space-y-8">`;
