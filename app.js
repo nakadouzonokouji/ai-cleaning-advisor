@@ -2343,13 +2343,13 @@ class AICleaningAdvisor {
                 <div>
                     <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
                         🧴 <span class="ml-2">おすすめ洗剤</span>
-                        <span class="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${Math.min(products.cleaners.length, 3)}種類</span>
+                        <span class="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${Math.min(products.cleaners.length, 5)}種類</span>
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             `;
             
-            // 洗剤は3種類に制限
-            products.cleaners.slice(0, 3).forEach((product) => {
+            // 洗剤は最大5種類表示（忖度を避けるため）
+            products.cleaners.slice(0, 5).forEach((product) => {
                 // Amazon画像URL（2025年対応版・複数フォーマット）
                 const apiImage = product.image || '';
                 const imageUrl1 = apiImage || `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
