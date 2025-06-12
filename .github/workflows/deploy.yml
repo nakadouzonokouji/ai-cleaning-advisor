@@ -16,6 +16,7 @@ jobs:
       run: |
         mkdir upload
         cp index.html upload/
+        cp admin.html upload/
         cp app.js upload/
         cp styles.css upload/
         cp security.js upload/
