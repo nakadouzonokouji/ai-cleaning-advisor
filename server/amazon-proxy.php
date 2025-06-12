@@ -1,9 +1,23 @@
 <?php
-require_once 'config.php';
+// config.phpの安全な読み込み
+if (file_exists('config.php')) {
+    require_once 'config.php';
+} else {
+    // config.phpが存在しない場合のエラー処理
+    echo json_encode([
+        'success' => false,
+        'error' => 'config.php not found - Repository Secrets not deployed',
+        'debug' => [
+            'current_directory' => __DIR__,
+            'files_in_directory' => scandir(__DIR__)
+        ]
+    ]);
+    exit;
+}
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
