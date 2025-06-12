@@ -2313,9 +2313,9 @@ class AICleaningAdvisor {
         }
     }
 
-    // 🛒 商品表示（完全版：洗剤・ツール・保護具）
+    // 🛒 商品表示（Amazon風横スクロールUI）
     displayProducts(products) {
-        console.log('🛒 商品表示開始', products);
+        console.log('🛒 商品表示開始（横スクロール版）', products);
         
         // 🚨 商品数不足時の補完処理
         if (!products) {
@@ -2342,15 +2342,17 @@ class AICleaningAdvisor {
         
         let html = `<div class="space-y-8">`;
         
-        // 🧴 洗剤セクション
+        // 🧴 洗剤セクション（横スクロール）
         if (products.cleaners && products.cleaners.length > 0) {
+            const cleanerCount = Math.min(products.cleaners.length, 5);
             html += `
-                <div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                        🧴 <span class="ml-2">おすすめ洗剤</span>
-                        <span class="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${Math.min(products.cleaners.length, 5)}種類</span>
+                <div class="product-category-section">
+                    <h3 class="product-category-title text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        🧴 <span class="ml-2">洗剤</span>
+                        <span class="ml-2 text-sm bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold">${cleanerCount}件</span>
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="relative">
+                        <div class="products-horizontal-scroll">
             `;
             
             // 洗剤は最大5種類表示（忖度を避けるため）
@@ -2362,48 +2364,55 @@ class AICleaningAdvisor {
                 const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
                 const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
                 
-                
                 html += `
-                    <div class="product-card border-2 border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
-                        <div class="relative mb-4">
-                            <img src="${imageUrl1}" alt="${product.name}" class="product-image" 
+                    <div class="product-card-horizontal border-2 border-red-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
+                        <div class="relative mb-3">
+                            <img src="${imageUrl1}" alt="${product.name}" class="product-image-horizontal w-full h-48 object-contain rounded-lg bg-gray-50" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="product-image bg-gray-50 flex items-center justify-center" style="display:none;">
+                            <div class="product-image-horizontal w-full h-48 bg-gray-50 flex items-center justify-center rounded-lg" style="display:none;">
                                 <div class="text-center">
-                                    <div class="text-5xl mb-2">${product.emoji}</div>
+                                    <div class="text-4xl mb-2">${product.emoji}</div>
                                     <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full mb-3 text-center font-bold">${product.badge}</div>
+                        <div class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
                         
-                        <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
+                        <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
                         <div class="mb-3">
                             <span class="product-price text-lg font-bold text-red-600">${product.price}</span>
                         </div>
                         
-                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" class="block w-full" 
-style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); color: white; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s;">
+                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
+                           class="block w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-3 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 text-sm font-bold text-center shadow-lg">
                             🛒 Amazonで購入
                         </a>
                     </div>
                 `;
             });
             
-            html += `</div></div>`;
+            html += `
+                        </div>
+                        <div class="scroll-indicator">
+                            <div class="text-xs text-gray-500">→ スクロール</div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
         
-        // 🧽 ツールセクション
+        // 🧽 ツールセクション（横スクロール）
         if (products.tools && products.tools.length > 0) {
             html += `
-                <div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                        🧽 <span class="ml-2">おすすめ掃除道具</span>
-                        <span class="ml-2 text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">${products.tools.length}種類</span>
+                <div class="product-category-section">
+                    <h3 class="product-category-title text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        🧽 <span class="ml-2">掃除道具</span>
+                        <span class="ml-2 text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">${products.tools.length}件</span>
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="relative">
+                        <div class="products-horizontal-scroll">
             `;
             
             products.tools.forEach((product) => {
@@ -2413,46 +2422,54 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
                 
                 html += `
-                    <div class="product-card border-2 border-green-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
-                        <div class="relative mb-4">
-                            <img src="${imageUrl1}" alt="${product.name}" class="product-image" 
+                    <div class="product-card-horizontal border-2 border-green-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
+                        <div class="relative mb-3">
+                            <img src="${imageUrl1}" alt="${product.name}" class="product-image-horizontal w-full h-48 object-contain rounded-lg bg-gray-50" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="product-image bg-gray-50 flex items-center justify-center" style="display:none;">
+                            <div class="product-image-horizontal w-full h-48 bg-gray-50 flex items-center justify-center rounded-lg" style="display:none;">
                                 <div class="text-center">
-                                    <div class="text-5xl mb-2">${product.emoji}</div>
+                                    <div class="text-4xl mb-2">${product.emoji}</div>
                                     <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full mb-3 text-center font-bold">${product.badge}</div>
+                        <div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
                         
-                        <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
+                        <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
                         <div class="mb-3">
                             <span class="product-price text-lg font-bold text-green-600">${product.price}</span>
                         </div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
-                           class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
+                           class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-2 px-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold text-center shadow-lg">
                             🛒 Amazonで購入
                         </a>
                     </div>
                 `;
             });
             
-            html += `</div></div>`;
+            html += `
+                        </div>
+                        <div class="scroll-indicator">
+                            <div class="text-xs text-gray-500">→ スクロール</div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
         
-        // 🧤 保護具セクション
+        // 🧤 保護具セクション（横スクロール）
         if (products.protection && products.protection.length > 0) {
             html += `
-                <div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                        🧤 <span class="ml-2">安全・保護用品</span>
-                        <span class="ml-2 text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded-full">${products.protection.length}種類</span>
+                <div class="product-category-section">
+                    <h3 class="product-category-title text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        🧤 <span class="ml-2">保護用品</span>
+                        <span class="ml-2 text-sm bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">${products.protection.length}件</span>
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="relative">
+                        <div class="products-horizontal-scroll">
             `;
             
             products.protection.forEach((product) => {
@@ -2462,35 +2479,42 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
                 
                 html += `
-                    <div class="product-card border-2 border-purple-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
-                        <div class="relative mb-4">
-                            <img src="${imageUrl1}" alt="${product.name}" class="product-image" 
+                    <div class="product-card-horizontal border-2 border-purple-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
+                        <div class="relative mb-3">
+                            <img src="${imageUrl1}" alt="${product.name}" class="product-image-horizontal w-full h-48 object-contain rounded-lg bg-gray-50" 
                                  onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="product-image bg-gray-50 flex items-center justify-center" style="display:none;">
+                            <div class="product-image-horizontal w-full h-48 bg-gray-50 flex items-center justify-center rounded-lg" style="display:none;">
                                 <div class="text-center">
-                                    <div class="text-5xl mb-2">${product.emoji}</div>
+                                    <div class="text-4xl mb-2">${product.emoji}</div>
                                     <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="text-xs bg-purple-100 text-purple-600 px-3 py-1 rounded-full mb-3 text-center font-bold">${product.badge}</div>
+                        <div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
                         
-                        <h4 class="font-bold text-gray-800 mb-3 text-base leading-tight">${product.name}</h4>
+                        <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
                         <div class="mb-3">
                             <span class="product-price text-lg font-bold text-purple-600">${product.price}</span>
                         </div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
-                           class="block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
+                           class="block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-2 px-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold text-center shadow-lg">
                             🛒 Amazonで購入
                         </a>
                     </div>
                 `;
             });
             
-            html += `</div></div>`;
+            html += `
+                        </div>
+                        <div class="scroll-indicator">
+                            <div class="text-xs text-gray-500">→ スクロール</div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
         
         // 商品選択について
@@ -2516,7 +2540,7 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             const toolCount = products.tools ? products.tools.length : 0;
             const protectionCount = products.protection ? products.protection.length : 0;
             
-            console.log(`✅ 商品表示完了: 洗剤${cleanerCount}個, ツール${toolCount}個, 保護具${protectionCount}個`);
+            console.log(`✅ 横スクロール商品表示完了: 洗剤${cleanerCount}個, ツール${toolCount}個, 保護具${protectionCount}個`);
         }
     }
 
