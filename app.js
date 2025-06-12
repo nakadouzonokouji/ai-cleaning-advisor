@@ -904,7 +904,12 @@ class AICleaningAdvisor {
                 }
             } else {
                 // 安全な値取得とフォールバック処理
-                const safeLabel = locationInfo?.label || '不明な場所';
+                console.log(`🔍 場所情報デバッグ:`, {
+                    preSelectedLocation: this.state.preSelectedLocation,
+                    locationInfo: locationInfo,
+                    label: locationInfo?.label
+                });
+                const safeLabel = locationInfo?.label || basicLocationMapping[this.state.preSelectedLocation]?.label || 'キッチン・換気扇';
                 text = `選択中: ${safeLabel}`;
                 
                 if (locationInfo.dirtTypes && locationInfo.dirtTypes.length > 0) {
@@ -2779,7 +2784,7 @@ class AICleaningAdvisor {
         
         // 場所から汚れタイプを推定
         let dirtType = 'その他';
-        let surface = '不明な場所';
+        let surface = 'キッチン・換気扇'; // デフォルトをキッチンに設定
         
         switch(location) {
             case 'kitchen':
@@ -2820,7 +2825,7 @@ class AICleaningAdvisor {
                 break;
             default:
                 dirtType = 'その他';
-                surface = '不明な場所';
+                surface = 'キッチン・換気扇'; // デフォルトをキッチンに設定
         }
         
         return {
