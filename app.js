@@ -882,6 +882,11 @@ class AICleaningAdvisor {
             
             if (!locationInfo) {
                 console.warn(`⚠️ 場所設定が見つかりません: ${this.state.preSelectedLocation}`);
+                // 安全なフォールバック処理
+                const fallbackInfo = { label: '場所が選択されていません', dirtTypes: [] };
+                const fallbackText = `選択中: ${fallbackInfo.label}`;
+                document.getElementById('selectedLocationText').textContent = fallbackText;
+                document.getElementById('selectedLocationText').classList.remove('hidden');
                 return;
             }
             
@@ -898,7 +903,9 @@ class AICleaningAdvisor {
                     }
                 }
             } else {
-                text = `選択中: ${locationInfo.label}`;
+                // 安全な値取得とフォールバック処理
+                const safeLabel = locationInfo?.label || '不明な場所';
+                text = `選択中: ${safeLabel}`;
                 
                 if (locationInfo.dirtTypes && locationInfo.dirtTypes.length > 0) {
                     text += ` (対応: ${locationInfo.dirtTypes.slice(0, 2).join(', ')})`;
