@@ -2851,22 +2851,47 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
     categorizeProduct(title) {
         const titleLower = title.toLowerCase();
         
-        if (titleLower.includes('洗剤') || titleLower.includes('クリーナー') || 
-            titleLower.includes('除去') || titleLower.includes('スプレー')) {
-            return '洗剤';
-        }
-        
-        if (titleLower.includes('スポンジ') || titleLower.includes('ブラシ') || 
-            titleLower.includes('クロス') || titleLower.includes('ワイパー')) {
-            return '道具';
-        }
-        
+        // 保護具の判定（最優先 - 特定性が高い）
         if (titleLower.includes('手袋') || titleLower.includes('マスク') || 
-            titleLower.includes('エプロン') || titleLower.includes('保護')) {
+            titleLower.includes('エプロン') || titleLower.includes('保護') ||
+            titleLower.includes('glove') || titleLower.includes('mask') ||
+            titleLower.includes('apron') || titleLower.includes('goggle') ||
+            titleLower.includes('ゴーグル') || titleLower.includes('防護')) {
             return '保護具';
         }
         
-        return '洗剤'; // デフォルト
+        // 道具の判定（掃除用具全般）
+        if (titleLower.includes('スポンジ') || titleLower.includes('ブラシ') || 
+            titleLower.includes('クロス') || titleLower.includes('ワイパー') ||
+            titleLower.includes('sponge') || titleLower.includes('brush') ||
+            titleLower.includes('cloth') || titleLower.includes('wiper') ||
+            titleLower.includes('タオル') || titleLower.includes('towel') ||
+            titleLower.includes('モップ') || titleLower.includes('mop') ||
+            titleLower.includes('雑巾') || titleLower.includes('ぞうきん') ||
+            titleLower.includes('バケツ') || titleLower.includes('bucket') ||
+            titleLower.includes('ほうき') || titleLower.includes('broom') ||
+            titleLower.includes('ちりとり') || titleLower.includes('dustpan') ||
+            titleLower.includes('掃除機') || titleLower.includes('vacuum') ||
+            titleLower.includes('へら') || titleLower.includes('scraper') ||
+            titleLower.includes('パッド') || titleLower.includes('pad')) {
+            return '道具';
+        }
+        
+        // 洗剤の判定
+        if (titleLower.includes('洗剤') || titleLower.includes('クリーナー') || 
+            titleLower.includes('除去') || titleLower.includes('スプレー') ||
+            titleLower.includes('cleaner') || titleLower.includes('detergent') ||
+            titleLower.includes('soap') || titleLower.includes('ソープ') ||
+            titleLower.includes('漂白') || titleLower.includes('bleach') ||
+            titleLower.includes('除菌') || titleLower.includes('抗菌') ||
+            titleLower.includes('消毒') || titleLower.includes('disinfect') ||
+            titleLower.includes('リムーバー') || titleLower.includes('remover') ||
+            titleLower.includes('液') || titleLower.includes('剤')) {
+            return '洗剤';
+        }
+        
+        // デフォルトは道具（スポンジ、ブラシなど基本的な掃除用品が多いため）
+        return '道具';
     }
     
     // 📂 商品タイプからカテゴリマッピング
