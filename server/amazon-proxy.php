@@ -48,7 +48,7 @@ if (!defined('AMAZON_ACCESS_KEY') || !defined('AMAZON_SECRET_KEY') || !defined('
 
 // 商品データベース（ベストセラー商品ASIN使用）
 $productDatabase = [
-    'B07CKWLMM5' => [
+    'B00OOCWP44' => [
         'title' => '花王 マジックリン ハンディスプレー 400ml',
         'price' => '¥398',
         'rating' => '4.3',
