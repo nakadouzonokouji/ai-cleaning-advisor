@@ -2326,8 +2326,8 @@ class AICleaningAdvisor {
                     badge: "🏆 万能",
                     emoji: "🧴",
                     price: "¥398",
-                    rating: 4.3,
-                    reviews: 2847,
+                    rating: null,
+                    reviews: null,
                     type: "洗剤"
                 },
                 {
@@ -2336,8 +2336,8 @@ class AICleaningAdvisor {
                     badge: "🌿 天然",
                     emoji: "🧴",
                     price: "¥298",
-                    rating: 4.1,
-                    reviews: 1567,
+                    rating: null,
+                    reviews: null,
                     type: "洗剤"
                 },
                 {
@@ -2346,8 +2346,8 @@ class AICleaningAdvisor {
                     badge: "💪 強力",
                     emoji: "🧴", 
                     price: "¥598",
-                    rating: 4.2,
-                    reviews: 3241,
+                    rating: null,
+                    reviews: null,
                     type: "洗剤"
                 }
             ],
@@ -2358,8 +2358,8 @@ class AICleaningAdvisor {
                     badge: "🧽 定番",
                     emoji: "🧽",
                     price: "¥398",
-                    rating: 4.4,
-                    reviews: 5632,
+                    rating: null,
+                    reviews: null,
                     type: "道具"
                 },
                 {
@@ -2368,8 +2368,8 @@ class AICleaningAdvisor {
                     badge: "🧹 セット",
                     emoji: "🧹",
                     price: "¥798",
-                    rating: 4.0,
-                    reviews: 1876,
+                    rating: null,
+                    reviews: null,
                     type: "道具"
                 }
             ],
@@ -2380,8 +2380,8 @@ class AICleaningAdvisor {
                     badge: "🧤 安全",
                     emoji: "🧤",
                     price: "¥298",
-                    rating: 4.1,
-                    reviews: 2134,
+                    rating: null,
+                    reviews: null,
                     type: "保護具"
                 },
                 {
@@ -2390,8 +2390,8 @@ class AICleaningAdvisor {
                     badge: "😷 防護",
                     emoji: "😷",
                     price: "¥498", 
-                    rating: 4.3,
-                    reviews: 987,
+                    rating: null,
+                    reviews: null,
                     type: "保護具"
                 }
             ]
@@ -2472,12 +2472,11 @@ class AICleaningAdvisor {
                         <div class="mb-3 flex items-center justify-between">
                             <span class="product-price text-2xl font-bold text-red-600">${product.price || '¥---'}</span>
                             <div class="product-rating flex items-center text-sm text-gray-600">
-                                <span class="text-yellow-400 mr-1">★</span>
-                                <span class="font-semibold">${product.rating || '4.0'}</span>
+                                ${product.rating ? `<span class="text-yellow-400 mr-1">★</span><span class="font-semibold">${product.rating}</span>` : '<span class="text-gray-400">評価確認中</span>'}
                             </div>
                         </div>
                         
-                        <div class="text-xs text-gray-500 mb-4">${product.reviews || product.reviewCount || Math.floor(Math.random() * 3000) + 500}件のレビュー</div>
+                        <div class="text-xs text-gray-500 mb-4">${product.reviews || product.reviewCount ? `${product.reviews || product.reviewCount}件のレビュー` : 'レビュー確認中'}</div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" class="block w-full" 
 style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); color: white; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s;">
@@ -2527,12 +2526,11 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         <div class="mb-3 flex items-center justify-between">
                             <span class="product-price text-2xl font-bold text-green-600">${product.price || '¥---'}</span>
                             <div class="product-rating flex items-center text-sm text-gray-600">
-                                <span class="text-yellow-400 mr-1">★</span>
-                                <span class="font-semibold">${product.rating || '4.0'}</span>
+                                ${product.rating ? `<span class="text-yellow-400 mr-1">★</span><span class="font-semibold">${product.rating}</span>` : '<span class="text-gray-400">評価確認中</span>'}
                             </div>
                         </div>
                         
-                        <div class="text-xs text-gray-500 mb-4">${product.reviews || product.reviewCount || Math.floor(Math.random() * 3000) + 500}件のレビュー</div>
+                        <div class="text-xs text-gray-500 mb-4">${product.reviews || product.reviewCount ? `${product.reviews || product.reviewCount}件のレビュー` : 'レビュー確認中'}</div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
                            class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-4 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
@@ -2582,12 +2580,11 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                         <div class="mb-3 flex items-center justify-between">
                             <span class="product-price text-2xl font-bold text-purple-600">${product.price || '¥---'}</span>
                             <div class="product-rating flex items-center text-sm text-gray-600">
-                                <span class="text-yellow-400 mr-1">★</span>
-                                <span class="font-semibold">${product.rating || '4.0'}</span>
+                                ${product.rating ? `<span class="text-yellow-400 mr-1">★</span><span class="font-semibold">${product.rating}</span>` : '<span class="text-gray-400">評価確認中</span>'}
                             </div>
                         </div>
                         
-                        <div class="text-xs text-gray-500 mb-4">${product.reviews || product.reviewCount || Math.floor(Math.random() * 3000) + 500}件のレビュー</div>
+                        <div class="text-xs text-gray-500 mb-4">${product.reviews || product.reviewCount ? `${product.reviews || product.reviewCount}件のレビュー` : 'レビュー確認中'}</div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
                            class="block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold flex items-center justify-center shadow-lg">
@@ -2607,8 +2604,9 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
                 <div class="text-sm text-blue-700 space-y-1">
                     <p>✅ 汚れタイプに最適化された専用商品を厳選</p>
                     <p>✅ 効果・安全性・コストパフォーマンスを総合評価</p>
-                    <p>✅ 実際のユーザーレビューを参考に選定</p>
                     <p>✅ 洗剤・道具・保護具をセットで提案</p>
+                    <p>ℹ️ レビュー数・評価は取得可能な場合のみ表示（虚偽情報は一切掲載しません）</p>
+                    <p>🔗 詳細情報・最新価格は商品リンクからご確認ください</p>
                 </div>
             </div>
         </div>`;
@@ -2884,22 +2882,18 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             
             console.log(`📂 詳細分析: 商品名="${title}" → タイプ="${productType}" → カテゴリ="${category}"`);
             
-            // 現実的なフォールバック値を設定
-            const fallbackRating = 3.8 + Math.random() * 0.8; // 3.8-4.6の範囲
-            const fallbackReviews = Math.floor(Math.random() * 3000) + 500; // 500-3500の範囲
-            
             const product = {
                 name: title,
                 asin: item.ASIN,
                 type: productType,
                 price: item.Offers?.Listings?.[0]?.Price?.DisplayAmount || '価格確認中',
-                rating: item.CustomerReviews?.StarRating?.Value || parseFloat(fallbackRating.toFixed(1)),
-                reviewCount: item.CustomerReviews?.Count || fallbackReviews,
+                rating: item.CustomerReviews?.StarRating?.Value || null,
+                reviewCount: item.CustomerReviews?.Count || null,
                 image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
                 url: item.DetailPageURL,
                 badge: '🆕 リアルタイム',
                 emoji: this.getProductEmoji(productType),
-                reviews: item.CustomerReviews?.Count || fallbackReviews // reviewsプロパティも追加
+                reviews: item.CustomerReviews?.Count || null
             };
             
             if (converted[category]) {
