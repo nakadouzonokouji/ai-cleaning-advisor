@@ -875,7 +875,7 @@ class AICleaningAdvisor {
                 const customText = this.state.customLocation || '自由記述';
                 text = `選択中: ✏️ ${customText}`;
                 
-                if (this.state.customLocation.trim()) {
+                if (this.state.customLocation && this.state.customLocation.trim()) {
                     const estimatedDirt = this.comprehensiveEstimateDirtTypes(this.state.customLocation);
                     if (estimatedDirt.length > 0) {
                         text += ` (推定: ${estimatedDirt.slice(0, 2).join(', ')})`;
