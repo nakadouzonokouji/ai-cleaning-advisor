@@ -909,7 +909,16 @@ class AICleaningAdvisor {
                     locationInfo: locationInfo,
                     label: locationInfo?.label
                 });
-                const safeLabel = locationInfo?.label || basicLocationMapping[this.state.preSelectedLocation]?.label || 'キッチン・換気扇';
+                
+                // 多重フォールバック処理で確実に場所名を取得
+                let safeLabel = locationInfo?.label;
+                if (!safeLabel && this.state.preSelectedLocation) {
+                    safeLabel = basicLocationMapping[this.state.preSelectedLocation]?.label;
+                }
+                if (!safeLabel) {
+                    safeLabel = this.state.preSelectedLocation === 'kitchen' ? 'キッチン・換気扇' : '選択された場所';
+                }
+                
                 text = `選択中: ${safeLabel}`;
                 
                 if (locationInfo.dirtTypes && locationInfo.dirtTypes.length > 0) {
