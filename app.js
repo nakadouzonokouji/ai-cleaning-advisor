@@ -2795,19 +2795,27 @@ style="width: 100%; background: linear-gradient(to right, #f97316, #ea580c); col
             const isInStock = !availabilityMessage || availabilityMessage.includes('在庫あり') || availabilityMessage.includes('通常配送');
             const hasPrimeOrAmazon = isAmazonFulfilled === true; // Amazon発送またはPrime対象
             
-            console.log(`🔍 購入可能性チェック: ${title}`);
+            console.log(`🔍 購入可能性チェック: ${title} (ASIN: ${item.ASIN})`);
             console.log(`  価格: ${hasValidPrice ? priceInfo : '❌なし'}`);
             console.log(`  在庫: ${availabilityMessage || '❌不明'}`);
             console.log(`  Amazon発送: ${isAmazonFulfilled ? '✅' : '❌'}`);
+            console.log(`  画像URL: ${item.Images?.Primary?.Large?.URL || '❌なし'}`);
+            console.log(`  商品URL: ${item.DetailPageURL || '❌なし'}`);
             
             if (!hasValidPrice) {
-                console.log(`⚠️ 商品除外（価格なし）: ${title}`);
+                console.log(`⚠️ 商品除外（価格なし）: ${title} (ASIN: ${item.ASIN})`);
                 return; // この商品をスキップ
             }
             
             // 在庫状況が不明または在庫切れの場合も除外
             if (availabilityMessage && !isInStock) {
-                console.log(`⚠️ 商品除外（在庫切れ）: ${title} - ${availabilityMessage}`);
+                console.log(`⚠️ 商品除外（在庫切れ）: ${title} (ASIN: ${item.ASIN}) - ${availabilityMessage}`);
+                return; // この商品をスキップ
+            }
+            
+            // DetailPageURLが無効な場合も除外
+            if (!item.DetailPageURL || item.DetailPageURL.trim() === '') {
+                console.log(`⚠️ 商品除外（無効URL）: ${title} (ASIN: ${item.ASIN})`);
                 return; // この商品をスキップ
             }
             

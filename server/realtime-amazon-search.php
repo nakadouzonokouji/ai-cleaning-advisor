@@ -31,10 +31,27 @@ class AmazonRealtimeSearch {
     public function searchByDirtType($dirtType, $itemCount = 30) {
         error_log("🔍 3グループ並行検索開始: $dirtType");
         
-        // 3つのグループで並行検索
-        $cleanerResults = $this->searchProductGroup($dirtType, 'cleaners', 10);
-        $toolResults = $this->searchProductGroup($dirtType, 'tools', 10);
-        $protectionResults = $this->searchProductGroup($dirtType, 'protection', 10);
+        // 3つのグループで並行検索（エラーハンドリング付き）
+        try {
+            $cleanerResults = $this->searchProductGroup($dirtType, 'cleaners', 10);
+        } catch (Exception $e) {
+            error_log("⚠️ 洗剤検索エラー: " . $e->getMessage());
+            $cleanerResults = ['SearchResult' => ['Items' => []]];
+        }
+        
+        try {
+            $toolResults = $this->searchProductGroup($dirtType, 'tools', 10);
+        } catch (Exception $e) {
+            error_log("⚠️ 道具検索エラー: " . $e->getMessage());
+            $toolResults = ['SearchResult' => ['Items' => []]];
+        }
+        
+        try {
+            $protectionResults = $this->searchProductGroup($dirtType, 'protection', 10);
+        } catch (Exception $e) {
+            error_log("⚠️ 保護具検索エラー: " . $e->getMessage());
+            $protectionResults = ['SearchResult' => ['Items' => []]];
+        }
         
         // 結果をマージ
         $mergedResults = [
@@ -70,6 +87,8 @@ class AmazonRealtimeSearch {
             'Availability' => 'Available', // 購入可能な商品のみ
             'Condition' => 'New', // 新品のみ
             'MinPrice' => 100, // 最低価格100円（無効な商品を除外）
+            'MaxPrice' => 50000, // 最高価格5万円（異常な高額商品を除外）
+            'Merchant' => 'Amazon', // Amazonが販売する商品のみ
             'Resources' => [
                 'Images.Primary.Large',
                 'Images.Primary.Medium',
@@ -79,6 +98,7 @@ class AmazonRealtimeSearch {
                 'Offers.Listings.Price',
                 'Offers.Listings.DeliveryInfo.IsAmazonFulfilled',
                 'Offers.Listings.Availability.Message',
+                'Offers.Listings.Availability.Type',
                 'CustomerReviews.StarRating',
                 'CustomerReviews.Count'
             ]
