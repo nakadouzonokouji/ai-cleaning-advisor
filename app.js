@@ -1353,9 +1353,10 @@ class AICleaningAdvisor {
     async executeAnalysis() {
         console.log('🚀 AI掃除方法生成開始（本番クラウド環境）');
         
-        if (!this.state.selectedImage) {
-            this.showError('画像または場所が必要です', '画像をアップロードするか、場所を選択してください');
-            return;
+        // 画像も場所も選択されていない場合は基本的なアドバイスを提供
+        if (!this.state.selectedImage && !this.state.preSelectedLocation) {
+            console.log('📍 場所選択なし・画像なしで基本アドバイス生成');
+            this.state.preSelectedLocation = 'general'; // 一般的な掃除アドバイス
         }
 
         // カスタム場所の検証
@@ -1463,9 +1464,13 @@ class AICleaningAdvisor {
                     dirtType = 'カビ汚れ';
                     surface = '洗濯機';
                     break;
+                case 'general':
+                    dirtType = 'ホコリ';
+                    surface = '一般的な掃除';
+                    break;
                 default:
-                    dirtType = '油汚れ';
-                    surface = '対象箇所';
+                    dirtType = 'ホコリ';
+                    surface = '一般的な掃除';
             }
         } else if (this.state.preSelectedLocation === 'custom' && this.state.customLocation) {
             // カスタム場所の場合

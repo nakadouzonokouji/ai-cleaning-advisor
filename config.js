@@ -850,6 +850,14 @@ const COMPREHENSIVE_LOCATION_CONFIG = {
         searchKeywords: ['掃除', 'クリーナー', '洗剤'],
         difficulty: 'medium',
         primaryCategories: ['kitchen_oil']
+    },
+    general: { 
+        label: '🏠 一般的な掃除', 
+        dirtTypes: ['ホコリ', '汚れ', '皮脂汚れ'], 
+        surface: '一般的な箇所',
+        searchKeywords: ['掃除', 'クリーナー', '洗剤', 'ホコリ', '一般'],
+        difficulty: 'easy',
+        primaryCategories: ['floor_dust', 'soap_scum', 'general_cleaning']
     }
 };
 
