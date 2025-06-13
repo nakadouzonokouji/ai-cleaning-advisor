@@ -2567,6 +2567,171 @@ class AICleaningAdvisor {
         }
     }
 
+    // 🤖 Gemini AIによる画像分析
+    async analyzeWithGemini() {
+        console.log('🤖 Gemini AI画像分析開始');
+        
+        try {
+            // Base64画像データを準備
+            const base64Data = this.state.selectedPhoto.split(',')[1];
+            
+            const requestBody = {
+                contents: [
+                    {
+                        parts: [
+                            {
+                                text: `この画像を詳しく分析して、以下の情報を日本語のJSONで出力してください：
+
+                                {
+                                    "location": "場所（キッチン、浴室、トイレ、リビング、寝室、玄関、ベランダ、エアコン、窓、その他から選択）",
+                                    "surface": "清掃対象の表面（例：コンロ、シンク、壁、床、便器、浴槽など）",
+                                    "dirtType": "汚れの種類（油汚れ、カビ汚れ、水垢汚れ、ホコリ、尿石、その他から選択）",
+                                    "dirtLevel": "汚れのレベル（light: 軽度、heavy: 重度）",
+                                    "description": "汚れの状況説明",
+                                    "analysisVersion": "gemini-analysis"
+                                }
+
+                                注意：
+                                - 汚れの種類は正確に判定してください
+                                - lightは日常的な軽い汚れ、heavyは頑固でこびりついた汚れ
+                                - JSONのみを出力し、他の文章は含めないでください`
+                            },
+                            {
+                                inline_data: {
+                                    mime_type: "image/jpeg",
+                                    data: base64Data
+                                }
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${window.GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Gemini API エラー: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('🤖 Gemini API レスポンス:', data);
+
+            if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                const responseText = data.candidates[0].content.parts[0].text;
+                console.log('📝 Gemini 応答テキスト:', responseText);
+
+                // JSONを抽出・パース
+                const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    const result = JSON.parse(jsonMatch[0]);
+                    
+                    // 汚れの程度をstateに保存
+                    if (result.dirtLevel) {
+                        this.state.dirtSeverity = result.dirtLevel;
+                        this.updateSelectedSeverityDisplay(result.dirtLevel);
+                    }
+                    
+                    console.log('✅ Gemini分析完了:', result);
+                    
+                    // 掃除方法と商品を生成
+                    const severity = result.dirtLevel || this.state.dirtSeverity || 'heavy';
+                    result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface, severity);
+                    result.recommendedProducts = await this.getRecommendedProducts(result.dirtType, severity);
+                    
+                    return result;
+                } else {
+                    throw new Error('有効なJSONが見つかりませんでした');
+                }
+            } else {
+                throw new Error('Gemini APIから有効な応答が得られませんでした');
+            }
+
+        } catch (error) {
+            console.error('❌ Gemini分析エラー:', error);
+            
+            // フォールバック: ローカル分析
+            console.log('🔄 ローカル分析にフォールバック');
+            return await this.analyzeLocally();
+        }
+    }
+
+    // 📍 事前選択された場所での分析
+    async analyzeWithPreSelectedLocation() {
+        console.log(`📍 事前選択場所分析: ${this.state.preSelectedLocation}`);
+        
+        // 場所に基づく汚れタイプマッピング
+        const locationDirtMapping = {
+            'キッチン': '油汚れ',
+            '浴室': 'カビ汚れ',
+            'トイレ': '尿石',
+            'リビング': 'ホコリ',
+            'エアコン': 'ホコリ・カビ',
+            '窓': '水垢汚れ',
+            'ベランダ': 'ホコリ',
+            '玄関': 'ホコリ',
+            '寝室': 'ホコリ'
+        };
+
+        const surfaceMapping = {
+            'キッチン': 'コンロ・換気扇',
+            '浴室': '浴槽・壁',
+            'トイレ': '便器・床',
+            'リビング': '床・家具',
+            'エアコン': 'フィルター・内部',
+            '窓': 'ガラス・サッシ',
+            'ベランダ': '床・手すり',
+            '玄関': '床・靴箱',
+            '寝室': '床・ベッド'
+        };
+
+        const result = {
+            location: this.state.preSelectedLocation,
+            surface: surfaceMapping[this.state.preSelectedLocation] || '一般的な表面',
+            dirtType: locationDirtMapping[this.state.preSelectedLocation] || 'その他',
+            dirtLevel: this.state.dirtSeverity || 'heavy',
+            description: `${this.state.preSelectedLocation}の一般的な汚れ`,
+            analysisVersion: 'pre-selected-location'
+        };
+
+        console.log('✅ 事前選択分析結果:', result);
+
+        // 掃除方法と商品を生成
+        const severity = this.state.dirtSeverity || 'heavy';
+        result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface, severity);
+        result.recommendedProducts = await this.getRecommendedProducts(result.dirtType, severity);
+
+        return result;
+    }
+
+    // 🔧 ローカル分析（フォールバック）
+    async analyzeLocally() {
+        console.log('🔧 ローカル分析実行（フォールバック）');
+        
+        const result = {
+            location: this.state.selectedLocation || 'その他',
+            surface: '一般的な表面', 
+            dirtType: '油汚れ',
+            dirtLevel: this.state.dirtSeverity || 'heavy',
+            description: '画像から一般的な汚れを検出しました',
+            analysisVersion: 'local-fallback'
+        };
+
+        console.log('✅ ローカル分析結果:', result);
+
+        // 掃除方法と商品を生成
+        const severity = this.state.dirtSeverity || 'heavy';
+        result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface, severity);
+        result.recommendedProducts = await this.getRecommendedProducts(result.dirtType, severity);
+
+        return result;
+    }
+
     // 🔍 汚れの深刻度判定
     determineDirtSeverity(dirtType) {
         const severityKeywords = {
