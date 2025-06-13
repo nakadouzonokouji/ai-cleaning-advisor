@@ -62,7 +62,14 @@
       "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"function displayProducts|displayProducts.*=|const displayProducts\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)",
       "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -A 20 -B 5 \"searchAmazonRealtime|loadAmazonProducts\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)",
       "Bash(git reset:*)",
-      "Bash(git revert:*)"
+      "Bash(git revert:*)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg \"手袋|マスク|エプロン|保護具|protective|glove|mask|apron\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js -A 5 -B 5 --color=never)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg \"¥[0-9,]+|price.*¥\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js -A 2 -B 2 --color=never)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg \"¥[1-9][0-9]{3,}\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js -n --color=never)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -A 10 -B 5 \"¥1450|¥1280\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js --color=never)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -A 10 -B 5 \"1450|1280\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js --color=never)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg \"保護メガネ|防水エプロン\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js -n --color=never)",
+      "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n -A 20 \"setupEventListeners\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)"
     ],
     "deny": []
   }

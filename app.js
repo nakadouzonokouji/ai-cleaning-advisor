@@ -572,6 +572,13 @@ class AICleaningAdvisor {
         // 🎯 汚れの強度選択UIを表示
         this.showDirtSeveritySelection();
         
+        // 📱 スマホフロー: 場所選択後にAI生成ボタンエリアを表示
+        const analysisButtonArea = document.getElementById('analysisButtonArea');
+        if (analysisButtonArea) {
+            analysisButtonArea.classList.remove('hidden');
+            console.log('✅ AI生成ボタンエリア表示');
+        }
+        
         // UI更新
         this.updateSelectedLocationDisplay();
         this.updateClearButtonVisibility();
@@ -1146,16 +1153,27 @@ class AICleaningAdvisor {
                     console.log('✅ 画像表示完了');
                 }
                 
-                // UI切り替え
-                const uploadArea = document.getElementById('uploadArea');
-                const analysisArea = document.getElementById('analysisArea');
-                if (uploadArea) {
-                    uploadArea.classList.add('hidden');
-                    console.log('✅ アップロードエリア非表示');
+                // 📱 新しいフロー制御: 写真 → 場所選択 → 汚れ度合い → 生成
+                const photoUploadArea = document.getElementById('photoUploadArea');
+                const uploadedImageArea = document.getElementById('uploadedImageArea');
+                const locationSelectionArea = document.getElementById('locationSelectionArea');
+                
+                // 写真アップロードエリアを隠す
+                if (photoUploadArea) {
+                    photoUploadArea.classList.add('hidden');
+                    console.log('✅ 写真アップロードエリア非表示');
                 }
-                if (analysisArea) {
-                    analysisArea.classList.remove('hidden');
-                    console.log('✅ 分析エリア表示');
+                
+                // アップロード済み画像エリアを表示
+                if (uploadedImageArea) {
+                    uploadedImageArea.classList.remove('hidden');
+                    console.log('✅ アップロード済み画像エリア表示');
+                }
+                
+                // 場所選択エリアを表示
+                if (locationSelectionArea) {
+                    locationSelectionArea.classList.remove('hidden');
+                    console.log('✅ 場所選択エリア表示');
                 }
                 
                 this.updateSelectedLocationDisplay();
@@ -1304,11 +1322,20 @@ class AICleaningAdvisor {
 
     // 📸 写真スキップ機能
     skipPhotoUpload() {
-        console.log('📸 写真スキップ処理開始');
+        console.log('📸 写真スキップ処理開始 - 場所選択モードに移行');
         
-        if (!this.state.preSelectedLocation) {
-            this.showError('場所選択が必要です', '掃除したい場所を選択してください');
-            return;
+        // 📱 新しいフロー: 写真アップロードエリアを隠して場所選択エリアを表示
+        const photoUploadArea = document.getElementById('photoUploadArea');
+        const locationSelectionArea = document.getElementById('locationSelectionArea');
+        
+        if (photoUploadArea) {
+            photoUploadArea.classList.add('hidden');
+            console.log('✅ 写真アップロードエリア非表示');
+        }
+        
+        if (locationSelectionArea) {
+            locationSelectionArea.classList.remove('hidden');
+            console.log('✅ 場所選択エリア表示');
         }
         
         if (this.state.preSelectedLocation === 'custom' && !this.state.customLocation.trim()) {
@@ -1378,18 +1405,29 @@ class AICleaningAdvisor {
             currentFeedbackType: null
         };
 
-        // UI要素リセット
-        const uploadArea = document.getElementById('uploadArea');
-        const analysisArea = document.getElementById('analysisArea');
+        // 📱 新しいUIフロー対応のリセット処理
+        const photoUploadArea = document.getElementById('photoUploadArea');
+        const locationSelectionArea = document.getElementById('locationSelectionArea');
+        const uploadedImageArea = document.getElementById('uploadedImageArea');
+        const analysisButtonArea = document.getElementById('analysisButtonArea');
+        const dirtSeveritySelection = document.getElementById('dirtSeveritySelection');
         const customInput = document.getElementById('customInput');
         
-        if (uploadArea) {
-            uploadArea.classList.remove('hidden');
-            console.log('✅ アップロードエリア表示');
+        // 初期状態に戻す: 写真アップロードエリアのみ表示
+        if (photoUploadArea) {
+            photoUploadArea.classList.remove('hidden');
         }
-        if (analysisArea) {
-            analysisArea.classList.add('hidden');
-            console.log('✅ 分析エリア非表示');
+        if (locationSelectionArea) {
+            locationSelectionArea.classList.add('hidden');
+        }
+        if (uploadedImageArea) {
+            uploadedImageArea.classList.add('hidden');
+        }
+        if (analysisButtonArea) {
+            analysisButtonArea.classList.add('hidden');
+        }
+        if (dirtSeveritySelection) {
+            dirtSeveritySelection.classList.add('hidden');
         }
         if (customInput) {
             customInput.classList.add('hidden');

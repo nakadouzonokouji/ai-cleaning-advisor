@@ -202,12 +202,38 @@
             </div>
         </div>
 
-        <!-- 場所選択・画像アップロード -->
+        <!-- 📱 スマホ向け：写真アップロード優先 -->
         <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-6">
-            <div id="uploadArea">
+            <div id="photoUploadArea">
+                <div class="text-center mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-800">📱 汚れた箇所の写真を撮影</h3>
+                    <p class="text-sm text-gray-600 mb-4">🤖 AI画像分析で汚れの種類を自動判定します</p>
+                    
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                        <i data-lucide="camera" class="w-10 h-10 mx-auto text-gray-400 mb-3"></i>
+                        <p class="text-lg text-gray-600 mb-2">写真をアップロード</p>
+                        <p class="text-sm text-gray-500 mb-4">📱 カメラで撮影 または 📁 ギャラリーから選択</p>
+                        
+                        <div class="space-y-3">
+                            <label class="bg-blue-600 text-white px-5 py-3 rounded-lg cursor-pointer hover:bg-blue-700 transition-colors inline-flex items-center text-sm">
+                                <i data-lucide="camera" class="w-4 h-4 mr-2"></i>📱 写真を撮影・選択
+                                <input type="file" id="imageInput" accept="image/*" capture="environment" class="hidden">
+                            </label>
+                            <p class="text-gray-500 text-sm">または</p>
+                            <button id="skipPhotoBtn" class="bg-green-600 text-white px-5 py-3 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center text-sm">
+                                <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>📍 写真なしで場所選択
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-4">💡 写真があるとより正確ですが、場所選択のみでも高品質な提案を行います</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📍 場所選択（写真なし または 写真アップロード後に表示） -->
+            <div id="locationSelectionArea" class="hidden">
                 <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-3 text-gray-800">📍 掃除したい場所を選択してください</h3>
-                    <p class="text-sm text-gray-600 mb-4">🤖 汚れタイプを自動判定して最適な方法をご提案</p>
+                    <h3 class="text-lg font-semibold mb-3 text-gray-800">📍 掃除する場所を選択してください</h3>
+                    <p class="text-sm text-gray-600 mb-4">🎯 場所に応じて最適な掃除方法をご提案</p>
                     
                     <!-- 🏠 基本的な場所 -->
                     <div class="mb-5">
@@ -289,33 +315,24 @@
                     
                 </div>
                 
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <i data-lucide="camera" class="w-10 h-10 mx-auto text-gray-400 mb-3"></i>
-                    <p class="text-lg text-gray-600 mb-2">汚れた箇所の写真をアップロード（任意）</p>
-                    <p class="text-sm text-gray-500 mb-4">🤖 AI画像分析で汚れの種類を自動判定</p>
-                    <p id="selectedLocationText" class="text-sm text-blue-600 mb-2 hidden"></p>
-                    <p id="selectedSeverityText" class="text-sm text-purple-600 mb-4 hidden"></p>
-                    <div class="space-y-3">
-                        <label class="bg-blue-600 text-white px-5 py-3 rounded-lg cursor-pointer hover:bg-blue-700 transition-colors inline-flex items-center text-sm">
-                            <i data-lucide="upload" class="w-4 h-4 mr-2"></i>写真を選択（任意）
-                            <input type="file" id="imageInput" accept="image/*" class="hidden">
-                        </label>
-                        <p class="text-gray-500 text-sm">または</p>
-                        <button id="skipPhotoBtn" class="bg-green-600 text-white px-5 py-3 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center text-sm">
-                            <i data-lucide="sparkles" class="w-4 h-4 mr-2"></i>写真なしでAI生成開始
-                        </button>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-4">💡 写真があるとより正確ですが、場所選択のみでも高品質な提案を行います</p>
+            <!-- 🖼️ アップロード済み画像表示エリア -->
+            <div id="uploadedImageArea" class="hidden text-center mb-6">
+                <div class="border rounded-lg p-4 bg-gray-50">
+                    <p class="text-sm text-gray-600 mb-2">📷 アップロード済み画像</p>
+                    <img id="uploadedImage" class="max-w-full h-64 object-cover mx-auto rounded-lg">
                 </div>
             </div>
 
-            <div id="analysisArea" class="hidden text-center">
-                <img id="uploadedImage" class="max-w-full h-64 object-cover mx-auto rounded-lg mb-4">
+            <!-- 🎯 分析・生成ボタンエリア -->
+            <div id="analysisButtonArea" class="hidden text-center">
                 <div id="selectedLocationDisplay" class="mb-4 p-3 bg-blue-50 rounded-lg hidden">
                     <p class="text-sm text-blue-700"></p>
                 </div>
+                <div id="selectedSeverityDisplay" class="mb-4 p-3 bg-purple-50 rounded-lg hidden">
+                    <p class="text-sm text-purple-700"></p>
+                </div>
                 <button id="analyzeBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors inline-flex items-center analyze-btn text-sm">
-                    <i data-lucide="sparkles" class="w-4 h-4 mr-2"></i>AIで掃除方法を生成
+                    <i data-lucide="sparkles" class="w-4 h-4 mr-2"></i>🤖 AIで掃除方法を生成
                 </button>
                 <button id="analyzeLoadingBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg inline-flex items-center hidden text-sm">
                     <div class="loading-spinner rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>AI生成中...
