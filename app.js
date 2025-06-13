@@ -1820,31 +1820,36 @@ class AICleaningAdvisor {
             '油汚れ': {
                 cleaners: [
                     {
-                        asin: "B07YLFTMQL",
-                        name: "花王 マジックリン ハンディスプレー 400ml",
-                        badge: "🏆 換気扇No.1",
+                        asin: "B079QMN7P8",
+                        name: "油職人 業務用強力脱脂洗剤 1L",
+                        badge: "🏆 プロ仕様・超強力",
+                        emoji: "⚡",
+                        price: "¥1,280",
+                        rating: 4.6,
+                        reviews: 1542,
+                        professional: true,
+                        safety_warning: "強アルカリ性 - 手袋必須・換気推奨"
+                    },
+                    {
+                        asin: "B00IH4U9ZI",
+                        name: "マジックリン ハンディスプレー 油汚れ用 400ml",
+                        badge: "💪 換気扇専用・強力",
                         emoji: "🧴",
                         price: "¥398",
                         rating: 4.3,
-                        reviews: 2847
+                        reviews: 8547,
+                        professional: false
                     },
                     {
-                        asin: "B07YNGH8Z3",
-                        name: "ライオン ママレモン 大容量 800ml",
-                        badge: "💪 強力洗浄",
-                        emoji: "🍋",
-                        price: "¥598",
+                        asin: "B08FZJC9Y7",
+                        name: "業務用 油汚れ落とし 濃縮タイプ 500ml",
+                        badge: "🔥 濃縮・業務用",
+                        emoji: "🧪",
+                        price: "¥980",
                         rating: 4.4,
-                        reviews: 3456
-                    },
-                    {
-                        asin: "B07YNHTJJ5",
-                        name: "重曹ちゃん キッチン泡スプレー 300ml",
-                        badge: "🌿 天然成分",
-                        emoji: "💚",
-                        price: "¥298",
-                        rating: 4.1,
-                        reviews: 1234
+                        reviews: 2134,
+                        professional: true,
+                        safety_warning: "濃縮タイプ - 希釈して使用"
                     }
                 ],
                 tools: [

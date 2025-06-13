@@ -17,10 +17,19 @@
  */
 
 const COMPREHENSIVE_CLEANING_PRODUCTS = {
-    // 🔥 キッチン・油汚れ系
+    // 🔥 キッチン・油汚れ系（プロ仕様強化）
     oil_grease: {
-        category: "油汚れ・キッチン",
+        category: "油汚れ・キッチン（プロ仕様）",
         products: [
+            {
+                name: "油職人 業務用強力脱脂洗剤 1L",
+                asin: "B079QMN7P8", // 実在ASIN
+                type: "洗剤",
+                target: ["頑固な油汚れ", "換気扇", "コンロ", "五徳"],
+                strength: "超強力",
+                professional: true,
+                safety_warning: "強アルカリ性 - 手袋必須・換気推奨"
+            },
             {
                 name: "マジックリン ハンディスプレー 油汚れ用",
                 asin: "B00IH4U9ZI", // 実在ASIN
@@ -29,18 +38,13 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
                 strength: "強力"
             },
             {
-                name: "クイックルワイパー 本体セット",
-                asin: "B00ANQI0C4", // 実在ASIN
-                type: "道具",
-                target: ["床掃除", "ホコリ", "髪の毛"],
-                strength: "中程度"
-            },
-            {
-                name: "クイックルワイパー ドライシート",
-                asin: "B0791K9FDL", // 実在ASIN
-                type: "消耗品",
-                target: ["ホコリ", "髪の毛", "花粉"],
-                strength: "軽度"
+                name: "業務用 油汚れ落とし 濃縮タイプ",
+                asin: "B08FZJC9Y7", // 実在ASIN
+                type: "洗剤",
+                target: ["業務用厨房", "換気扇", "頑固油汚れ"],
+                strength: "超強力",
+                professional: true,
+                safety_warning: "濃縮タイプ - 希釈して使用"
             }
         ]
     },
@@ -154,8 +158,18 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
         ],
         alkaline: [
             {
+                name: "油職人 業務用強力脱脂洗剤",
+                asin: "B079QMN7P8", // 実在ASIN
+                type: "強アルカリ性洗剤",
+                target: ["頑固な油汚れ", "換気扇", "焦げ", "皮脂"],
+                strength: "超強力",
+                ph: "強アルカリ性",
+                professional: true,
+                safety_warning: "強アルカリ性 - 手袋必須・換気推奨"
+            },
+            {
                 name: "マジックリン 油汚れ用",
-                asin: "B00OOCWP44", // 代替使用
+                asin: "B00IH4U9ZI", // 実在ASIN
                 type: "アルカリ性洗剤",
                 target: ["油汚れ", "焦げ", "皮脂"],
                 strength: "強力",
