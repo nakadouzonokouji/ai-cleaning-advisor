@@ -286,6 +286,40 @@
                                class="px-4 py-3 border border-gray-300 rounded-lg w-full text-sm">
                         <p class="text-xs text-gray-500 mt-1">💡 具体的に入力するほど、最適な掃除方法を提案できます</p>
                     </div>
+                    
+                    <!-- 🎯 汚れの強度選択 -->
+                    <div id="dirtSeveritySelection" class="mt-5 hidden">
+                        <h4 class="text-md font-medium text-gray-700 mb-3">🎯 汚れの程度を選択してください</h4>
+                        <p class="text-sm text-gray-600 mb-4">💡 汚れの程度に応じて最適な洗剤・方法をご提案します</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button class="severity-btn p-4 border-2 rounded-lg transition-colors text-sm text-left border-gray-200 hover:border-green-300 hover:bg-green-50" data-severity="light">
+                                <div class="flex items-center mb-1">
+                                    <span class="text-lg mr-2">🧽</span>
+                                    <span class="font-semibold">日常的な汚れ</span>
+                                </div>
+                                <div class="text-xs text-gray-500 ml-7">軽い汚れ・定期的なお掃除・中性洗剤</div>
+                            </button>
+                            <button class="severity-btn p-4 border-2 rounded-lg transition-colors text-sm text-left border-gray-200 hover:border-red-300 hover:bg-red-50" data-severity="heavy">
+                                <div class="flex items-center mb-1">
+                                    <span class="text-lg mr-2">⚡</span>
+                                    <span class="font-semibold">頑固な汚れ・こびりつき</span>
+                                </div>
+                                <div class="text-xs text-gray-500 ml-7">長期間蓄積・強力洗剤・プロ仕様</div>
+                            </button>
+                        </div>
+                        
+                        <div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <div class="flex items-start">
+                                <span class="text-yellow-600 mr-2">💡</span>
+                                <div class="text-xs text-yellow-700">
+                                    <strong>選択のヒント：</strong><br>
+                                    • 日常的：週1回程度の掃除、軽い汚れ<br>
+                                    • 頑固：数ヶ月〜数年放置、こびりついた汚れ
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">

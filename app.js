@@ -569,6 +569,9 @@ class AICleaningAdvisor {
         // カスタム入力の表示制御
         this.handleCustomInput(locationId);
         
+        // 🎯 汚れの強度選択UIを表示
+        this.showDirtSeveritySelection();
+        
         // UI更新
         this.updateSelectedLocationDisplay();
         this.updateClearButtonVisibility();
@@ -647,6 +650,65 @@ class AICleaningAdvisor {
         } catch (error) {
             console.warn('フォールバック通知表示エラー:', error);
         }
+    }
+    
+    // 🎯 汚れの強度選択UI表示
+    showDirtSeveritySelection() {
+        try {
+            const severitySelection = document.getElementById('dirtSeveritySelection');
+            if (severitySelection) {
+                severitySelection.classList.remove('hidden');
+                console.log('🎯 汚れの強度選択UIを表示');
+                
+                // 強度選択ボタンのイベントリスナーを設定
+                this.setupSeverityButtons();
+            }
+        } catch (error) {
+            console.error('汚れの強度選択UI表示エラー:', error);
+        }
+    }
+    
+    // 汚れの強度選択ボタンのイベントリスナー設定
+    setupSeverityButtons() {
+        try {
+            const severityButtons = document.querySelectorAll('.severity-btn');
+            severityButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const severity = btn.getAttribute('data-severity');
+                    this.selectDirtSeverity(severity);
+                });
+            });
+            console.log(`🎯 ${severityButtons.length}個の強度選択ボタンにイベントリスナーを設定`);
+        } catch (error) {
+            console.error('強度選択ボタン設定エラー:', error);
+        }
+    }
+    
+    // 汚れの強度選択処理
+    selectDirtSeverity(severity) {
+        console.log(`🎯 汚れの強度選択: ${severity}`);
+        
+        // 状態を更新
+        this.state.dirtSeverity = severity;
+        
+        // 全ての強度ボタンをリセット
+        const severityButtons = document.querySelectorAll('.severity-btn');
+        severityButtons.forEach(btn => {
+            btn.className = 'severity-btn p-4 border-2 rounded-lg transition-colors text-sm text-left border-gray-200 hover:border-green-300 hover:bg-green-50';
+        });
+        
+        // 選択されたボタンをハイライト
+        const selectedBtn = document.querySelector(`[data-severity="${severity}"]`);
+        if (selectedBtn) {
+            if (severity === 'light') {
+                selectedBtn.className = 'severity-btn p-4 border-2 rounded-lg transition-colors text-sm text-left border-green-500 bg-green-50 text-green-700';
+            } else {
+                selectedBtn.className = 'severity-btn p-4 border-2 rounded-lg transition-colors text-sm text-left border-red-500 bg-red-50 text-red-700';
+            }
+        }
+        
+        console.log(`💾 汚れの強度設定完了: ${severity}`);
     }
 
     // 全ボタンリセット
@@ -1751,21 +1813,23 @@ class AICleaningAdvisor {
     async getRecommendedProducts(dirtType) {
         console.log(`🛒 プロ仕様商品取得開始: ${dirtType}`);
         
-        // 🏆 プロ仕様商品選択ロジック統合
+        // 🏆 プロ仕様商品選択ロジック統合（汚れの強度考慮）
         let professionalProducts = [];
         if (window.PROFESSIONAL_PRODUCT_SELECTOR) {
             try {
                 const location = this.state.preSelectedLocation || 'general';
-                const severity = this.determineDirtSeverity(dirtType);
+                // ユーザーが選択した強度を優先、未選択時は汚れタイプから判定
+                const severity = this.state.dirtSeverity || this.determineDirtSeverity(dirtType);
                 professionalProducts = window.PROFESSIONAL_PRODUCT_SELECTOR.selectProfessionalProducts(location, dirtType, severity);
-                console.log(`🏆 プロ仕様商品選択完了: ${professionalProducts.length}件`);
+                console.log(`🏆 プロ仕様商品選択完了: ${professionalProducts.length}件 (強度: ${severity})`);
             } catch (error) {
                 console.warn('⚠️ プロ仕様商品選択エラー:', error);
             }
         }
         
-        // 基本商品データを取得
-        const baseProducts = this.getBaseProductData(dirtType);
+        // 基本商品データを取得（汚れの強度考慮）
+        const severity = this.state.dirtSeverity || this.determineDirtSeverity(dirtType);
+        const baseProducts = this.getBaseProductData(dirtType, severity);
         
         // プロ仕様商品を先頭に配置
         if (professionalProducts.length > 0) {
@@ -1813,11 +1877,70 @@ class AICleaningAdvisor {
         // デフォルトは高強度（プロ仕様推薦）
         return "high";
     }
-
-    // 📦 基本商品データ取得
-    getBaseProductData(dirtType) {
-        const productMap = {
-            '油汚れ': {
+    
+    // 🔥 油汚れ商品選択（強度別）
+    getOilDirtProducts(severity) {
+        if (severity === 'light') {
+            // 日常的な軽い油汚れ用
+            return {
+                cleaners: [
+                    {
+                        asin: "B08T1GZPYQ",
+                        name: "バスマジックリン 泡立ちスプレー 380ml",
+                        badge: "🧽 日常用・優しい",
+                        emoji: "🧴",
+                        price: "¥298",
+                        rating: 4.2,
+                        reviews: 3456,
+                        professional: false
+                    },
+                    {
+                        asin: "B0791K9FDL",
+                        name: "クイックルワイパー ドライシート 20枚",
+                        badge: "📋 お手軽・日常",
+                        emoji: "📋",
+                        price: "¥198",
+                        rating: 4.4,
+                        reviews: 5678,
+                        professional: false
+                    },
+                    {
+                        asin: "B00IH4U9ZI",
+                        name: "マジックリン ハンディスプレー 油汚れ用 400ml",
+                        badge: "💪 定番・油汚れ",
+                        emoji: "🧴",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 8547,
+                        professional: false
+                    }
+                ],
+                tools: [
+                    {
+                        asin: "B00ANQI0C4",
+                        name: "クイックルワイパー 本体セット",
+                        badge: "🧹 日常掃除用",
+                        emoji: "🧹",
+                        price: "¥598",
+                        rating: 4.5,
+                        reviews: 4321
+                    }
+                ],
+                protection: [
+                    {
+                        asin: "B08R8QVHCM",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
+                        badge: "🧤 基本保護",
+                        emoji: "🧤",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 5634
+                    }
+                ]
+            };
+        } else {
+            // 頑固な油汚れ用（プロ仕様）
+            return {
                 cleaners: [
                     {
                         asin: "B079QMN7P8",
@@ -1874,7 +1997,33 @@ class AICleaningAdvisor {
                 ],
                 protection: [
                     {
+                        asin: "B08R8QVHCM",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
+                        badge: "🧤 手保護",
+                        emoji: "🧤",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 5634
+                    },
+                    {
                         asin: "B07GWXSXF1",
+                        name: "防塵マスク N95対応 50枚入",
+                        badge: "😷 呼吸保護",
+                        emoji: "😷",
+                        price: "¥890",
+                        rating: 4.3,
+                        reviews: 1542
+                    }
+                ]
+            };
+        }
+    }
+
+    // 📦 基本商品データ取得（汚れの強度対応）
+    getBaseProductData(dirtType, severity = 'heavy') {
+        const productMap = {
+            '油汚れ': this.getOilDirtProducts(severity),
+            'カビ汚れ': {
                         name: "ニトリル手袋 キッチン用 50枚入",
                         badge: "🧤 手保護",
                         emoji: "🧤",
