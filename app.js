@@ -3473,14 +3473,40 @@ class AICleaningAdvisor {
             
             // 分類ロジックの詳細ログ
             const productType = this.categorizeProduct(title);
+            
+            // 🚫 ブラックリスト商品を除外
+            if (productType === 'exclude') {
+                console.log(`🚫 ブラックリスト商品をスキップ: ${title}`);
+                return; // この商品をスキップ
+            }
+            
             const category = this.getProductCategory(productType);
             
             console.log(`📂 詳細分析: 商品名="${title}" → タイプ="${productType}" → カテゴリ="${category}"`);
             
-            // 購入可能性の厳密チェック
+            // 購入可能性の厳密チェック + 価格適正性チェック
             const priceInfo = item.Offers?.Listings?.[0]?.Price?.DisplayAmount;
             const availabilityMessage = item.Offers?.Listings?.[0]?.Availability?.Message;
             const isAmazonFulfilled = item.Offers?.Listings?.[0]?.DeliveryInfo?.IsAmazonFulfilled;
+            
+            // 価格から数値を抽出して適正性をチェック
+            let priceValue = 0;
+            if (priceInfo) {
+                const priceMatch = priceInfo.match(/[\d,]+/);
+                if (priceMatch) {
+                    priceValue = parseInt(priceMatch[0].replace(/,/g, ''));
+                }
+            }
+            
+            // 🎯 商品タイプ別価格上限設定（細分化）
+            let priceLimit = this.getPriceLimitByCategory(productType);
+            
+            // 手袋の場合、より厳格な価格設定
+            if (title.includes('手袋') || title.includes('glove')) {
+                priceLimit = 1500; // 手袋は最大1500円まで
+            }
+            
+            const isReasonablePrice = priceValue > 0 && priceValue <= priceLimit;
             
             // 厳しい購入可能性チェック
             const hasValidPrice = priceInfo && priceInfo.trim() !== '';
@@ -3488,7 +3514,9 @@ class AICleaningAdvisor {
             const hasPrimeOrAmazon = isAmazonFulfilled === true; // Amazon発送またはPrime対象
             
             console.log(`🔍 購入可能性チェック: ${title} (ASIN: ${item.ASIN})`);
-            console.log(`  価格: ${hasValidPrice ? priceInfo : '❌なし'}`);
+            console.log(`  価格: ${hasValidPrice ? priceInfo : '❌なし'} (数値: ¥${priceValue})`);
+            console.log(`  価格上限: ¥${priceLimit} (タイプ: ${productType})`);
+            console.log(`  価格適正: ${isReasonablePrice ? '✅' : '❌高額'}`)
             console.log(`  在庫: ${availabilityMessage || '❌不明'}`);
             console.log(`  Amazon発送: ${isAmazonFulfilled ? '✅' : '❌'}`);
             console.log(`  画像URL: ${item.Images?.Primary?.Large?.URL || '❌なし'}`);
@@ -3496,6 +3524,12 @@ class AICleaningAdvisor {
             
             if (!hasValidPrice) {
                 console.log(`⚠️ 商品除外（価格なし）: ${title} (ASIN: ${item.ASIN})`);
+                return; // この商品をスキップ
+            }
+            
+            // 🚫 価格適正性チェック（高額商品除外）
+            if (!isReasonablePrice) {
+                console.log(`⚠️ 商品除外（高額商品）: ${title} (¥${priceValue} > ¥${priceLimit})`);
                 return; // この商品をスキップ
             }
             
@@ -3561,6 +3595,37 @@ class AICleaningAdvisor {
         });
         
         return converted;
+    }
+
+    // 🎯 商品タイプ別価格上限設定
+    getPriceLimitByCategory(productType) {
+        const priceLimits = {
+            // 洗剤類
+            'cleaner': 3000,
+            'spray': 2500,
+            'liquid': 2000,
+            'detergent': 2500,
+            
+            // 道具類
+            'tool': 5000,
+            'brush': 2000,
+            'sponge': 1500,
+            'cloth': 2000,
+            'mop': 4000,
+            'wiper': 3000,
+            
+            // 保護具類（適正価格設定）
+            'glove': 2000,      // 手袋: 最大2000円
+            'mask': 3000,       // マスク: 最大3000円
+            'apron': 2500,      // エプロン: 最大2500円
+            'goggles': 2000,    // ゴーグル: 最大2000円
+            'protection': 2500, // その他保護具: 最大2500円
+            
+            // デフォルト
+            'default': 3000
+        };
+        
+        return priceLimits[productType] || priceLimits['default'];
     }
     
     // 🔄 商品名の正規化（重複除去用）
@@ -3637,6 +3702,29 @@ class AICleaningAdvisor {
     // 📂 商品タイトルからタイプを推定
     categorizeProduct(title) {
         const titleLower = title.toLowerCase();
+        
+        // 🚫 不適切な商品を除外（ブラックリスト）
+        const excludeKeywords = [
+            // 食品・オレンジ系
+            'オレンジ', 'みかん', 'フルーツ', '果実', '果汁', '食品', '食べ物',
+            // 機械用品
+            '556', 'wd-40', 'wd40', '潤滑', '機械', '自動車', 'バイク', '車',
+            // 建築・工業用品  
+            '工業', '業務用洗浄機', '高圧洗浄機', '建築', '塗装',
+            // 浴室用でない商品が混入している場合
+            '洗車', '車用', 'カー用品', 'automotive',
+            // 医療・薬品（家庭用でない）
+            '医療', '薬品', '医薬', 'pharmaceutical',
+            // 電子機器
+            '電子', 'electronic', 'パソコン', 'スマホ'
+        ];
+        
+        for (const keyword of excludeKeywords) {
+            if (titleLower.includes(keyword)) {
+                console.log(`🚫 ブラックリスト除外: "${title}" (キーワード: ${keyword})`);
+                return 'exclude'; // 除外マーク
+            }
+        }
         
         // 保護具の判定（最優先 - 特定性が高い）
         if (titleLower.includes('手袋') || titleLower.includes('マスク') || 
