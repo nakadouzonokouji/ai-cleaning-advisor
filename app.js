@@ -2024,6 +2024,31 @@ class AICleaningAdvisor {
         const productMap = {
             '油汚れ': this.getOilDirtProducts(severity),
             'カビ汚れ': {
+                cleaners: [
+                    {
+                        asin: "B00V1BZH4Q",
+                        name: "カビキラー カビ除去スプレー 400g",
+                        badge: "🏆 カビ除去No.1",
+                        emoji: "🦠",
+                        price: "¥298",
+                        rating: 4.4,
+                        reviews: 3456
+                    }
+                ],
+                tools: [
+                    {
+                        asin: "B07GVQXH2M",
+                        name: "カビ用ブラシセット 3本組",
+                        badge: "🪥 カビ専用",
+                        emoji: "🪥",
+                        price: "¥598",
+                        rating: 4.2,
+                        reviews: 1234
+                    }
+                ],
+                protection: [
+                    {
+                        asin: "B08R8QVHCM",
                         name: "ニトリル手袋 キッチン用 50枚入",
                         badge: "🧤 手保護",
                         emoji: "🧤",
@@ -2069,50 +2094,12 @@ class AICleaningAdvisor {
                     }
                 ]
             },
-            'カビ汚れ': {
+            
+            // 他の汚れタイプもここに追加
+            '尿石': {
                 cleaners: [
                     {
-                        asin: "B005AILJ3O",
-                        name: "ジョンソン カビキラー 400g",
-                        badge: "🏆 カビ除去No.1",
-                        emoji: "🦠",
-                        price: "¥298",
-                        rating: 4.4,
-                        reviews: 3456
-                    },
-                    {
-                        asin: "B01N5P8B4V",
-                        name: "ジョンソン カビキラー 電動スプレー 750ml",
-                        badge: "💪 密着ジェル",
-                        emoji: "🧪",
-                        price: "¥498",
-                        rating: 4.2,
-                        reviews: 1987
-                    },
-                    {
-                        asin: "B078KS3NGF",
-                        name: "カビキラー 除菌@キッチン泡スプレー 400ml",
-                        badge: "🛡️ 予防効果",
-                        emoji: "✨",
-                        price: "¥598",
-                        rating: 4.0,
-                        reviews: 567
-                    }
-                ],
-                tools: [
-                    {
-                        asin: "B07BQFJ5K9",
-                        name: "山崎産業 ユニットバスボンくん 抗菌タイプ",
-                        badge: "🪥 隙間対応",
-                        emoji: "🪥",
-                        price: "¥498",
-                        rating: 4.2,
-                        reviews: 876
-                    }
-                ],
-                protection: [
-                    {
-                        asin: "B073C4QRLS",
+                        asin: "B07Q9ZKQHZ",
                         name: "ショーワグローブ No.281 テムレス",
                         badge: "🧤 化学品対応",
                         emoji: "🧤",
