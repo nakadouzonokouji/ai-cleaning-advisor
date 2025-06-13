@@ -2044,49 +2044,48 @@ class AICleaningAdvisor {
             '尿石': {
                 cleaners: [
                     {
-                        asin: "B00EOHQPHC",
-                        name: "小林製薬 サンポール 1000ml（業務用）",
-                        badge: "🏆 プロ仕様・超強力",
+                        asin: "B00G7Y5PTO",
+                        name: "小林製薬 サンポール 1000ml",
+                        badge: "🏆 尿石除去・No.1",
                         emoji: "⚡",
-                        price: "¥898",
-                        rating: 4.6,
-                        reviews: 2341,
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 8234,
                         professional: true,
                         safety_warning: "強酸性 - 換気必須・手袋必須"
                     },
                     {
-                        asin: "B005AILJ3O", 
-                        name: "業務用 トイレ用酸性洗剤 800ml",
-                        badge: "💪 頑固な尿石専用",
-                        emoji: "🧪",
-                        price: "¥1,280",
-                        rating: 4.4,
-                        reviews: 1876,
-                        professional: true,
-                        safety_warning: "酸性洗剤 - 保護具着用推奨"
+                        asin: "B07Z8QVQG7", 
+                        name: "スクラビングバブル 流せるトイレブラシ 激落ちくん",
+                        badge: "💪 こすり洗い専用",
+                        emoji: "🪥",
+                        price: "¥398",
+                        rating: 4.1,
+                        reviews: 2876,
+                        professional: false
                     }
                 ],
                 tools: [
                     {
-                        asin: "B00OOCWP44",
-                        name: "トイレブラシ 交換ヘッド付 業務用",
-                        badge: "🪥 プロ仕様ブラシ",
+                        asin: "B07Z8QVQG7",
+                        name: "スクラビングバブル 流せるトイレブラシ",
+                        badge: "🪥 流せるタイプ",
                         emoji: "🪥",
-                        price: "¥1,580",
-                        rating: 4.3,
-                        reviews: 986
+                        price: "¥398",
+                        rating: 4.1,
+                        reviews: 2876
                     }
                 ],
                 protection: [
                     {
-                        asin: "B005AILJ3O",
-                        name: "耐酸性手袋 ニトリル製 業務用",
+                        asin: "B08R8QVHCM",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
                         badge: "🧤 酸性対応",
                         emoji: "🧤",
-                        price: "¥980", 
-                        rating: 4.5,
-                        reviews: 1234,
-                        safety_warning: "酸性洗剤使用時必須"
+                        price: "¥598", 
+                        rating: 4.4,
+                        reviews: 5634,
+                        safety_warning: "酸性洗剤使用時推奨"
                     }
                 ]
             },
@@ -2094,49 +2093,44 @@ class AICleaningAdvisor {
             'トイレ汚れ': {
                 cleaners: [
                     {
-                        asin: "B00EOHQPHC",
-                        name: "小林製薬 サンポール 1000ml（業務用）",
-                        badge: "🏆 プロ仕様・超強力",
-                        emoji: "⚡",
-                        price: "¥898",
-                        rating: 4.6,
-                        reviews: 2341,
-                        professional: true,
-                        safety_warning: "強酸性 - 換気必須・手袋必須"
+                        asin: "B00G7Y5PTO",
+                        name: "小林製薬 サンポール 500ml",
+                        badge: "🏆 定番・尿石除去",
+                        emoji: "🚽",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 8234
                     },
                     {
-                        asin: "B005AILJ3O", 
-                        name: "業務用 トイレ用酸性洗剤 800ml",
-                        badge: "💪 頑固な尿石専用",
-                        emoji: "🧪",
-                        price: "¥1,280",
-                        rating: 4.4,
-                        reviews: 1876,
-                        professional: true,
-                        safety_warning: "酸性洗剤 - 保護具着用推奨"
+                        asin: "B00J4V7M8A",
+                        name: "ドメスト パイプクリーナー 500g",
+                        badge: "🦠 除菌・漂白",
+                        emoji: "🧽",
+                        price: "¥418",
+                        rating: 4.1,
+                        reviews: 2543
                     }
                 ],
                 tools: [
                     {
-                        asin: "B005AILJ3O",
-                        name: "トイレブラシ 流せるブラシ付",
+                        asin: "B07Z8QVQG7",
+                        name: "スクラビングバブル 流せるトイレブラシ",
                         badge: "🪥 使い捨て対応",
                         emoji: "🪥",
-                        price: "¥898",
-                        rating: 4.3,
-                        reviews: 2134
+                        price: "¥398",
+                        rating: 4.1,
+                        reviews: 2876
                     }
                 ],
                 protection: [
                     {
-                        asin: "B005AILJ3O",
-                        name: "耐酸性手袋 ニトリル製 業務用",
-                        badge: "🧤 酸性対応",
+                        asin: "B08R8QVHCM",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
+                        badge: "🧤 衛生管理",
                         emoji: "🧤",
-                        price: "¥980", 
-                        rating: 4.5,
-                        reviews: 1234,
-                        safety_warning: "酸性洗剤使用時必須"
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 5634
                     }
                 ]
             },

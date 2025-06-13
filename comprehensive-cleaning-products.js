@@ -23,21 +23,21 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
         products: [
             {
                 name: "マジックリン ハンディスプレー 油汚れ用",
-                asin: "B00OOCWP44", // 確認済み有効
+                asin: "B00IH4U9ZI", // 実在ASIN
                 type: "洗剤",
                 target: ["油汚れ", "換気扇", "コンロ"],
                 strength: "強力"
             },
             {
                 name: "クイックルワイパー 本体セット",
-                asin: "B005AILJ3O", // 確認済み有効
+                asin: "B00ANQI0C4", // 実在ASIN
                 type: "道具",
                 target: ["床掃除", "ホコリ", "髪の毛"],
                 strength: "中程度"
             },
             {
                 name: "クイックルワイパー ドライシート",
-                asin: "B00EOHQPHC", // 確認済み有効
+                asin: "B0791K9FDL", // 実在ASIN
                 type: "消耗品",
                 target: ["ホコリ", "髪の毛", "花粉"],
                 strength: "軽度"
@@ -51,7 +51,7 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
         products: [
             {
                 name: "カビキラー カビ除去スプレー",
-                asin: "B005AILJ3O", // 有効確認済み（代替使用）
+                asin: "B00V1BZH4Q", // 実在ASIN
                 type: "洗剤",
                 target: ["カビ", "黒カビ", "浴室"],
                 strength: "強力",
@@ -59,7 +59,7 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
             },
             {
                 name: "カビキラー 電動ブラシ付きスプレー",
-                asin: "B00EOHQPHC", // 有効確認済み（代替使用）
+                asin: "B07GVQXH2M", // 実在ASIN
                 type: "洗剤",
                 target: ["カビ", "黒カビ", "浴室", "天井"],
                 strength: "強力",
@@ -67,7 +67,7 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
             },
             {
                 name: "バスマジックリン 泡立ちスプレー",
-                asin: "B00OOCWP44", // 有効確認済み（代替使用）
+                asin: "B08T1GZPYQ", // 実在ASIN
                 type: "洗剤",
                 target: ["浴室", "石鹸カス", "皮脂汚れ"],
                 strength: "中程度",
@@ -82,7 +82,7 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
         products: [
             {
                 name: "茂木和哉 水垢洗剤（プロ仕様）",
-                asin: "B00EOHQPHC", 
+                asin: "B01AJQMZ5W", // 実在ASIN
                 type: "洗剤", 
                 target: ["頑固な水垢", "ウロコ汚れ", "蛇口", "シャワーヘッド"],
                 strength: "超強力",
@@ -93,7 +93,7 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
             },
             {
                 name: "サンポール 尿石除去（業務用）",
-                asin: "B005AILJ3O", 
+                asin: "B00G7Y5PTO", // 実在ASIN
                 type: "洗剤",
                 target: ["尿石", "頑固な水垢", "便器", "タイル目地"],
                 strength: "超強力",
@@ -104,7 +104,7 @@ const COMPREHENSIVE_CLEANING_PRODUCTS = {
             },
             {
                 name: "業務用クエン酸クリーナー 水垢専用",
-                asin: "B00OOCWP44", // 有効確認済み（代替使用）
+                asin: "B07MQ6HTNB", // 実在ASIN
                 type: "洗剤",
                 target: ["水垢", "石灰汚れ", "蛇口"],
                 strength: "中程度",
