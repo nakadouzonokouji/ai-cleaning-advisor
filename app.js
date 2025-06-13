@@ -717,21 +717,36 @@ class AICleaningAdvisor {
     // 🎯 選択された汚れの強度を表示
     updateSelectedSeverityDisplay(severity) {
         try {
+            // 🎯 分析ボタンエリアでの汚れ程度表示
+            const severityDisplay = document.getElementById('selectedSeverityDisplay');
+            if (severityDisplay && severity) {
+                const severityLabels = {
+                    'light': '🧽 日常的な汚れ（軽度）',
+                    'heavy': '⚡ 頑固な汚れ・こびりつき（強度）'
+                };
+                const label = severityLabels[severity] || severity;
+                const severityDisplayText = severityDisplay.querySelector('p');
+                if (severityDisplayText) {
+                    severityDisplayText.textContent = `汚れの程度: ${label}`;
+                }
+                severityDisplay.classList.remove('hidden');
+                console.log(`✅ 汚れ程度表示更新: ${label}`);
+            }
+            
+            // 🔄 従来のselectedSeverityTextも更新（互換性維持）
             const severityText = document.getElementById('selectedSeverityText');
             if (severityText && severity) {
                 const severityLabels = {
-                    'light': '🧽 日常的な汚れ',
-                    'heavy': '⚡ 頑固な汚れ・こびりつき'
+                    'light': '🧽 日常的な汚れ（軽度）',
+                    'heavy': '⚡ 頑固な汚れ・こびりつき（強度）'
                 };
-                
                 const label = severityLabels[severity] || severity;
                 severityText.textContent = `汚れの程度: ${label}`;
                 severityText.classList.remove('hidden');
-                
-                console.log(`🎯 汚れの強度表示更新: ${label}`);
+                console.log(`✅ 汚れ程度表示更新: ${label}`);
             }
         } catch (error) {
-            console.error('汚れの強度表示更新エラー:', error);
+            console.error('❌ 汚れ程度表示エラー:', error);
         }
     }
 
@@ -1622,8 +1637,9 @@ class AICleaningAdvisor {
 
         // 掃除方法と商品を生成
         try {
-            result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface);
-            result.recommendedProducts = await this.getRecommendedProducts(result.dirtType);
+            const severity = this.state.dirtSeverity || 'heavy';
+            result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface, severity);
+            result.recommendedProducts = await this.getRecommendedProducts(result.dirtType, severity);
             console.log('✅ 掃除方法・商品生成完了');
         } catch (error) {
             console.error('💥 掃除方法生成エラー:', error);
@@ -1677,8 +1693,9 @@ class AICleaningAdvisor {
             analysisVersion: 'custom-location'
         };
 
-        result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface);
-        result.recommendedProducts = await this.getRecommendedProducts(result.dirtType);
+        const severity = this.state.dirtSeverity || 'heavy';
+        result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface, severity);
+        result.recommendedProducts = await this.getRecommendedProducts(result.dirtType, severity);
 
         return result;
     }
@@ -1728,33 +1745,52 @@ class AICleaningAdvisor {
 
         console.log('✅ 分析結果:', result);
 
-        result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface);
-        result.recommendedProducts = await this.getRecommendedProducts(result.dirtType);
+        const severity = this.state.dirtSeverity || 'heavy';
+        result.cleaningMethod = this.generateCleaningMethod(result.dirtType, result.surface, severity);
+        result.recommendedProducts = await this.getRecommendedProducts(result.dirtType, severity);
 
         return result;
     }
 
-    // 🧹 掃除方法生成
-    generateCleaningMethod(dirtType, surface) {
-        console.log(`🧹 掃除方法生成: ${dirtType} - ${surface}`);
+    // 🧹 掃除方法生成（汚れ度合い対応）
+    generateCleaningMethod(dirtType, surface, severity = 'heavy') {
+        console.log(`🧹 掃除方法生成: ${dirtType} - ${surface} (強度: ${severity})`);
         
+        // 🎯 汚れ度合い別メソッドテンプレート
         const methodTemplates = {
             '油汚れ': {
-                title: `${surface}の油汚れ除去法`,
-                difficulty: '中級',
-                time: '30-45分',
-                steps: [
-                    '🔧 準備：アルカリ性洗剤、スポンジ、布巾、ゴム手袋を用意',
-                    '💨 安全確認：十分な換気を行い、ゴム手袋を着用する',
-                    '🧴 前処理：洗剤を汚れ部分に均等にスプレーし、5-10分放置',
-                    '🧽 清掃：スポンジで優しく円を描くようにこすり落とす',
-                    '💧 すすぎ：水またはウェットティッシュで洗剤をよく拭き取る',
-                    '✨ 仕上げ：乾いた布で水分を完全に拭き取り、艶を出す',
-                    '🔄 点検：汚れの取り残しがないか最終確認する',
-                    '🧼 後片付け：使用した道具を洗浄し、換気を継続する'
-                ],
-                tips: '💡 洗剤を温めると効果が向上します。頑固な汚れには重曹ペーストが効果的です。',
-                warnings: '⚠️ 必ず換気を行い、他の洗剤と混ぜないでください。'
+                light: {
+                    title: `${surface}の日常的な油汚れ除去法`,
+                    difficulty: '初級',
+                    time: '15-20分',
+                    steps: [
+                        '🔧 準備：中性洗剤、スポンジ、布巾を用意',
+                        '🧴 軽く湿らせる：スポンジに少量の洗剤をつける',
+                        '🧽 軽く拭き取り：円を描くように優しくこする',
+                        '💧 すすぎ：水拭きで洗剤を拭き取る',
+                        '✨ 仕上げ：乾いた布で水分を拭き取る'
+                    ],
+                    tips: '💡 日常的なお手入れなら、食器用洗剤でも十分効果的です。',
+                    warnings: '⚠️ 汚れが軽いうちに定期的にお手入れしましょう。'
+                },
+                heavy: {
+                    title: `${surface}の頑固な油汚れ除去法`,
+                    difficulty: '上級',
+                    time: '45-60分',
+                    steps: [
+                        '🔧 準備：強力アルカリ性洗剤、研磨スポンジ、保護手袋、ヘラを用意',
+                        '💨 安全確認：十分な換気を行い、保護手袋・マスクを着用する',
+                        '🧴 前処理：強力洗剤を厚めにスプレーし、15-20分放置',
+                        '🔥 加熱効果：可能であれば温風で温めて洗剤の効果を高める',
+                        '🧽 強力清掃：研磨スポンジで力を込めてこすり落とす',
+                        '🪚 固着除去：ヘラで固着した汚れを慎重に削り取る',
+                        '💧 念入りすすぎ：洗剤をしっかりと拭き取る',
+                        '✨ 仕上げ：乾いた布で完全に拭き取り、艶を出す',
+                        '🔄 再確認：汚れの取り残しがないか入念にチェック'
+                    ],
+                    tips: '💡 重曹ペーストや業務用脱脂洗剤が効果的。複数回に分けて作業することも重要です。',
+                    warnings: '⚠️ 強力洗剤使用時は必ず保護具を着用し、十分な換気を行ってください。'
+                }
             },
             'カビ汚れ': {
                 title: `${surface}のカビ除去法`,
@@ -1806,6 +1842,18 @@ class AICleaningAdvisor {
             }
         };
 
+        // 🎯 汚れタイプ別の対応
+        const template = methodTemplates[dirtType];
+        if (template && template[severity]) {
+            return template[severity];
+        } else if (template && template.heavy) {
+            // severityが指定されていない場合はheavyを使用
+            return template.heavy;
+        } else if (template && template.light) {
+            // heavyが無い場合はlightを使用
+            return template.light;
+        }
+
         return methodTemplates[dirtType] || {
             title: `${surface}の一般的な掃除法`,
             difficulty: '初級',
@@ -1823,16 +1871,16 @@ class AICleaningAdvisor {
     }
 
     // 🛒 おすすめ商品取得（プロ仕様・頑固汚れ対応版）
-    async getRecommendedProducts(dirtType) {
-        console.log(`🛒 プロ仕様商品取得開始: ${dirtType}`);
+    async getRecommendedProducts(dirtType, dirtSeverity = null) {
+        console.log(`🛒 プロ仕様商品取得開始: ${dirtType} (強度: ${dirtSeverity})`);
         
         // 🏆 プロ仕様商品選択ロジック統合（汚れの強度考慮）
         let professionalProducts = [];
         if (window.PROFESSIONAL_PRODUCT_SELECTOR) {
             try {
                 const location = this.state.preSelectedLocation || 'general';
-                // ユーザーが選択した強度を優先、未選択時は汚れタイプから判定
-                const severity = this.state.dirtSeverity || this.determineDirtSeverity(dirtType);
+                // 引数で渡された強度を優先、未設定時はstateまたは判定値を使用
+                const severity = dirtSeverity || this.state.dirtSeverity || this.determineDirtSeverity(dirtType);
                 professionalProducts = window.PROFESSIONAL_PRODUCT_SELECTOR.selectProfessionalProducts(location, dirtType, severity);
                 console.log(`🏆 プロ仕様商品選択完了: ${professionalProducts.length}件 (強度: ${severity})`);
             } catch (error) {
@@ -1841,7 +1889,7 @@ class AICleaningAdvisor {
         }
         
         // 基本商品データを取得（汚れの強度考慮）
-        const severity = this.state.dirtSeverity || this.determineDirtSeverity(dirtType);
+        const severity = dirtSeverity || this.state.dirtSeverity || this.determineDirtSeverity(dirtType);
         const baseProducts = this.getBaseProductData(dirtType, severity);
         
         // プロ仕様商品を先頭に配置
