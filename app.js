@@ -2686,11 +2686,36 @@ class AICleaningAdvisor {
 
     // 🛒 商品表示（Amazon風横スクロールUI）
     displayProducts(products) {
-        console.log('🛒 商品表示開始（横スクロール版）', products);
+        console.log('🛒 商品表示開始（重複除去・優先表示版）', products);
         
         // 🚨 商品数不足時の補完処理
         if (!products) {
             products = { cleaners: [], tools: [], protection: [] };
+        }
+        
+        // 🎯 商品重複除去・優先表示処理
+        if (window.PRODUCT_DEDUPLICATION_SYSTEM) {
+            const originalCounts = {
+                cleaners: products.cleaners?.length || 0,
+                tools: products.tools?.length || 0,
+                protection: products.protection?.length || 0
+            };
+            
+            if (products.cleaners) {
+                products.cleaners = window.PRODUCT_DEDUPLICATION_SYSTEM.processProductList(products.cleaners);
+            }
+            if (products.tools) {
+                products.tools = window.PRODUCT_DEDUPLICATION_SYSTEM.processProductList(products.tools);
+            }
+            if (products.protection) {
+                products.protection = window.PRODUCT_DEDUPLICATION_SYSTEM.processProductList(products.protection);
+            }
+            
+            console.log('🎯 重複除去結果:', {
+                cleaners: `${originalCounts.cleaners} → ${products.cleaners?.length || 0}`,
+                tools: `${originalCounts.tools} → ${products.tools?.length || 0}`,
+                protection: `${originalCounts.protection} → ${products.protection?.length || 0}`
+            });
         }
         
         // 補完商品機能を削除 - リアルタイム検索で購入可能な商品のみ表示
@@ -2748,7 +2773,12 @@ class AICleaningAdvisor {
                             </div>
                         </div>
                         
-                        <div class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
+                        <div class="flex flex-wrap gap-1 mb-2">
+                            ${product.bestseller ? '<div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-bold">🏆 ベストセラー</div>' : ''}
+                            ${product.amazons_choice ? '<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">🎯 Amazon\'s Choice</div>' : ''}
+                            ${product.professional ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">💼 プロ仕様</div>' : ''}
+                            ${product.badge ? '<div class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-bold">' + product.badge + '</div>' : ''}
+                        </div>
                         
                         ${product.safety_warning ? 
                         '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
@@ -2760,8 +2790,18 @@ class AICleaningAdvisor {
                         
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
+                        ${product.rating ? 
+                        '<div class="mb-2 flex items-center">' +
+                            '<div class="flex items-center">' +
+                                '<span class="text-yellow-500">★'.repeat(Math.floor(product.rating)) + '</span>' +
+                                '<span class="text-gray-300">★'.repeat(5 - Math.floor(product.rating)) + '</span>' +
+                                '<span class="text-xs text-gray-600 ml-1">' + product.rating + '</span>' +
+                            '</div>' +
+                            (product.reviews ? '<span class="text-xs text-gray-500 ml-2">(' + product.reviews.toLocaleString() + '件)</span>' : '') +
+                        '</div>' : ''}
+                        
                         <div class="mb-3">
-                            <span class="product-price text-lg font-bold text-red-600">${product.price}</span>
+                            <span class="product-price text-lg font-bold text-red-600">${product.price_range || product.price}</span>
                         </div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
@@ -2813,7 +2853,12 @@ class AICleaningAdvisor {
                             </div>
                         </div>
                         
-                        <div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
+                        <div class="flex flex-wrap gap-1 mb-2">
+                            ${product.bestseller ? '<div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-bold">🏆 ベストセラー</div>' : ''}
+                            ${product.amazons_choice ? '<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">🎯 Amazon\'s Choice</div>' : ''}
+                            ${product.professional ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">💼 プロ仕様</div>' : ''}
+                            ${product.badge ? '<div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full font-bold">' + product.badge + '</div>' : ''}
+                        </div>
                         
                         ${product.safety_warning ? 
                         '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
@@ -2825,8 +2870,18 @@ class AICleaningAdvisor {
                         
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
+                        ${product.rating ? 
+                        '<div class="mb-2 flex items-center">' +
+                            '<div class="flex items-center">' +
+                                '<span class="text-yellow-500">★'.repeat(Math.floor(product.rating)) + '</span>' +
+                                '<span class="text-gray-300">★'.repeat(5 - Math.floor(product.rating)) + '</span>' +
+                                '<span class="text-xs text-gray-600 ml-1">' + product.rating + '</span>' +
+                            '</div>' +
+                            (product.reviews ? '<span class="text-xs text-gray-500 ml-2">(' + product.reviews.toLocaleString() + '件)</span>' : '') +
+                        '</div>' : ''}
+                        
                         <div class="mb-3">
-                            <span class="product-price text-lg font-bold text-green-600">${product.price}</span>
+                            <span class="product-price text-lg font-bold text-green-600">${product.price_range || product.price}</span>
                         </div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
@@ -2878,7 +2933,12 @@ class AICleaningAdvisor {
                             </div>
                         </div>
                         
-                        <div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
+                        <div class="flex flex-wrap gap-1 mb-2">
+                            ${product.bestseller ? '<div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-bold">🏆 ベストセラー</div>' : ''}
+                            ${product.amazons_choice ? '<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">🎯 Amazon\'s Choice</div>' : ''}
+                            ${product.professional ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">💼 プロ仕様</div>' : ''}
+                            ${product.badge ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">' + product.badge + '</div>' : ''}
+                        </div>
                         
                         ${product.safety_warning ? 
                         '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
@@ -2890,8 +2950,18 @@ class AICleaningAdvisor {
                         
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
+                        ${product.rating ? 
+                        '<div class="mb-2 flex items-center">' +
+                            '<div class="flex items-center">' +
+                                '<span class="text-yellow-500">★'.repeat(Math.floor(product.rating)) + '</span>' +
+                                '<span class="text-gray-300">★'.repeat(5 - Math.floor(product.rating)) + '</span>' +
+                                '<span class="text-xs text-gray-600 ml-1">' + product.rating + '</span>' +
+                            '</div>' +
+                            (product.reviews ? '<span class="text-xs text-gray-500 ml-2">(' + product.reviews.toLocaleString() + '件)</span>' : '') +
+                        '</div>' : ''}
+                        
                         <div class="mb-3">
-                            <span class="product-price text-lg font-bold text-purple-600">${product.price}</span>
+                            <span class="product-price text-lg font-bold text-purple-600">${product.price_range || product.price}</span>
                         </div>
                         
                         <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
