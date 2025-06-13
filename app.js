@@ -2460,6 +2460,113 @@ class AICleaningAdvisor {
         }
     }
 
+    // 📸 写真アップロード処理
+    handlePhotoUpload(event) {
+        console.log('📸 写真アップロード開始');
+        
+        const file = event.target.files[0];
+        if (!file) {
+            console.log('❌ ファイルが選択されていません');
+            return;
+        }
+
+        // ファイルタイプチェック
+        if (!file.type.startsWith('image/')) {
+            alert('画像ファイルを選択してください。');
+            return;
+        }
+
+        // ファイルサイズチェック（10MB以下）
+        const maxSize = 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert('ファイルサイズが大きすぎます。10MB以下の画像を選択してください。');
+            return;
+        }
+
+        console.log(`📸 ファイル情報:`, {
+            name: file.name,
+            size: (file.size / 1024 / 1024).toFixed(2) + 'MB',
+            type: file.type
+        });
+
+        // 画像プレビュー表示
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.state.selectedPhoto = e.target.result;
+            
+            // プレビュー表示
+            const previewSection = document.getElementById('previewSection');
+            const uploadedImage = document.getElementById('uploadedImage');
+            
+            if (previewSection && uploadedImage) {
+                uploadedImage.src = e.target.result;
+                previewSection.classList.remove('hidden');
+                
+                // 分析ボタンを有効化
+                const analyzeBtn = document.getElementById('analyzeBtn');
+                if (analyzeBtn) {
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    analyzeBtn.classList.add('hover:bg-blue-600');
+                }
+                
+                console.log('✅ 画像プレビュー表示完了');
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    }
+
+    // 🔍 画像分析実行
+    async analyzeImage() {
+        console.log('🔍 画像分析開始');
+        
+        if (!this.state.selectedPhoto) {
+            alert('先に写真をアップロードしてください。');
+            return;
+        }
+
+        // 分析ボタンの状態更新
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        if (analyzeBtn) {
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = '🔍 分析中...';
+            analyzeBtn.classList.add('opacity-50');
+        }
+
+        try {
+            let analysisResult;
+            
+            // 場所が事前選択されている場合
+            if (this.state.preSelectedLocation) {
+                console.log(`📍 事前選択された場所での分析: ${this.state.preSelectedLocation}`);
+                analysisResult = await this.analyzeWithPreSelectedLocation();
+            } else {
+                console.log('🤖 Gemini AI による画像分析実行');
+                analysisResult = await this.analyzeWithGemini();
+            }
+
+            if (analysisResult) {
+                this.state.analysisResult = analysisResult;
+                this.displayResults(analysisResult);
+                console.log('✅ 画像分析・結果表示完了');
+            } else {
+                throw new Error('分析結果が取得できませんでした');
+            }
+
+        } catch (error) {
+            console.error('❌ 画像分析エラー:', error);
+            alert('画像分析に失敗しました。もう一度お試しください。');
+        } finally {
+            // ボタンの状態を元に戻す
+            if (analyzeBtn) {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = '🔍 画像を分析する';
+                analyzeBtn.classList.remove('opacity-50');
+            }
+        }
+    }
+
     // 🔍 汚れの深刻度判定
     determineDirtSeverity(dirtType) {
         const severityKeywords = {
