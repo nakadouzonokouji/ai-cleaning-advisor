@@ -2603,14 +2603,13 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
                         
-                        ${product.safety_warning ? `
-                        <div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">
-                            <div class="flex items-center">
-                                <span class="mr-1">⚠️</span>
-                                <span class="font-bold">${product.safety_warning}</span>
-                            </div>
-                        </div>
-                        ` : ''}
+                        ${product.safety_warning ? 
+                        '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
+                            '<div class="flex items-center">' +
+                                '<span class="mr-1">⚠️</span>' +
+                                '<span class="font-bold">' + product.safety_warning + '</span>' +
+                            '</div>' +
+                        '</div>' : ''}
                         
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
@@ -2669,14 +2668,13 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
                         
-                        ${product.safety_warning ? `
-                        <div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">
-                            <div class="flex items-center">
-                                <span class="mr-1">⚠️</span>
-                                <span class="font-bold">${product.safety_warning}</span>
-                            </div>
-                        </div>
-                        ` : ''}
+                        ${product.safety_warning ? 
+                        '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
+                            '<div class="flex items-center">' +
+                                '<span class="mr-1">⚠️</span>' +
+                                '<span class="font-bold">' + product.safety_warning + '</span>' +
+                            '</div>' +
+                        '</div>' : ''}
                         
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         
@@ -2735,14 +2733,13 @@ class AICleaningAdvisor {
                         
                         <div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full mb-2 text-center font-bold">${product.badge}</div>
                         
-                        ${product.safety_warning ? `
-                        <div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">
-                            <div class="flex items-center">
-                                <span class="mr-1">⚠️</span>
-                                <span class="font-bold">${product.safety_warning}</span>
-                            </div>
-                        </div>
-                        ` : ''}
+                        ${product.safety_warning ? 
+                        '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
+                            '<div class="flex items-center">' +
+                                '<span class="mr-1">⚠️</span>' +
+                                '<span class="font-bold">' + product.safety_warning + '</span>' +
+                            '</div>' +
+                        '</div>' : ''}
                         
                         <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
                         

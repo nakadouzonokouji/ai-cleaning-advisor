@@ -353,14 +353,19 @@ const PROFESSIONAL_PRODUCT_SELECTOR = {
         if (priorityMapping && priorityMapping[severity]) {
             const categoryPath = priorityMapping[severity];
             const category = this.getProductCategory(categoryPath);
-            if (category && category.products) {
-                // プロ仕様商品を優先
-                const professionalProducts = category.products.filter(p => p.professional === true);
-                const regularProducts = category.products.filter(p => !p.professional);
+            if (category) {
+                // detergents.acidic等の配列構造と、通常のproductsプロパティ構造の両方に対応
+                const productList = Array.isArray(category) ? category : (category.products || []);
                 
-                products.push(...professionalProducts);
-                if (severity === "medium" || severity === "light") {
-                    products.push(...regularProducts.slice(0, 2));
+                if (productList.length > 0) {
+                    // プロ仕様商品を優先
+                    const professionalProducts = productList.filter(p => p.professional === true);
+                    const regularProducts = productList.filter(p => !p.professional);
+                    
+                    products.push(...professionalProducts);
+                    if (severity === "medium" || severity === "light") {
+                        products.push(...regularProducts.slice(0, 2));
+                    }
                 }
             }
         }
