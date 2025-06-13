@@ -2081,18 +2081,106 @@ class AICleaningAdvisor {
 
     // 📦 基本商品データ取得（汚れの強度対応）
     getBaseProductData(dirtType, severity = 'heavy') {
+        console.log(`📦 基本商品データ取得: ${dirtType} (severity: ${severity})`);
+        
         const productMap = {
             '油汚れ': this.getOilDirtProducts(severity),
-            'カビ汚れ': {
+            'カビ汚れ': this.getMoldDirtProducts(severity),
+            '水垢汚れ': this.getScaleDirtProducts(severity),
+            'ホコリ': this.getDustProducts(severity),
+            'ホコリ・カビ': severity === 'light' ? this.getDustProducts(severity) : this.getMoldDirtProducts(severity), // エアコン用
+            '尿石': this.getScaleDirtProducts('heavy'), // 尿石は必ず強力版
+            '尿石・水垢': this.getScaleDirtProducts('heavy'), // トイレ用
+            'トイレ汚れ': this.getScaleDirtProducts(severity),
+            '石鹸カス': this.getMoldDirtProducts(severity), // 浴室系
+            '皮脂汚れ': this.getOilDirtProducts(severity), // 油汚れ系
+            '窓の水垢': this.getScaleDirtProducts(severity), // 窓用
+            'その他': severity === 'light' ? this.getDustProducts(severity) : this.getOilDirtProducts(severity) // デフォルト
+        };
+        
+        const result = productMap[dirtType] || this.getDustProducts(severity); // フォールバック
+        
+        console.log(`✅ 基本商品データ取得完了: ${dirtType}`, {
+            cleaners: result.cleaners?.length || 0,
+            tools: result.tools?.length || 0,
+            protection: result.protection?.length || 0
+        });
+        
+        return result;
+    }
+    
+    // 🦠 カビ汚れ用商品（汚れの程度別）
+    getMoldDirtProducts(severity) {
+        if (severity === 'light') {
+            return {
+                cleaners: [
+                    {
+                        asin: "B08T1GZPYQ",
+                        name: "バスマジックリン 泡立ちスプレー 380ml",
+                        badge: "🧽 日常用・中性",
+                        emoji: "🧽",
+                        price: "¥298",
+                        rating: 4.3,
+                        reviews: 5467,
+                        professional: false
+                    },
+                    {
+                        asin: "B00ANQI0C4",
+                        name: "重曹 クリーナー 500g",
+                        badge: "🌿 自然派",
+                        emoji: "🌿",
+                        price: "¥398",
+                        rating: 4.2,
+                        reviews: 3456
+                    }
+                ],
+                tools: [
+                    {
+                        asin: "B07YNGH8Z3",
+                        name: "メラミンスポンジ 激落ちくん 20個",
+                        badge: "🧽 日常用",
+                        emoji: "🧽",
+                        price: "¥498",
+                        rating: 4.4,
+                        reviews: 8765
+                    }
+                ],
+                protection: [
+                    {
+                        asin: "B08R8QVHCM",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
+                        badge: "🧤 基本保護",
+                        emoji: "🧤",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 5634
+                    }
+                ]
+            };
+        } else {
+            // 頑固なカビ用（プロ仕様）
+            return {
                 cleaners: [
                     {
                         asin: "B00V1BZH4Q",
                         name: "カビキラー カビ除去スプレー 400g",
                         badge: "🏆 カビ除去No.1",
                         emoji: "🦠",
-                        price: "¥298",
+                        price: "¥398",
                         rating: 4.4,
-                        reviews: 3456
+                        reviews: 3456,
+                        professional: true
+                    },
+                    {
+                        asin: "B07D7K9HQV",
+                        name: "強力カビハイター 洗濯槽用 500ml",
+                        badge: "⚡ プロ仕様・強力",
+                        emoji: "⚡",
+                        price: "¥680",
+                        rating: 4.6,
+                        reviews: 2134,
+                        professional: true,
+                        safety_warning: "強力洗剤 - 換気必須"
                     }
                 ],
                 tools: [
@@ -2104,21 +2192,30 @@ class AICleaningAdvisor {
                         price: "¥598",
                         rating: 4.2,
                         reviews: 1234
+                    },
+                    {
+                        asin: "B01LWYQPNY",
+                        name: "研磨パッド ステンレス製 5枚セット",
+                        badge: "💪 強力研磨",
+                        emoji: "💪",
+                        price: "¥498",
+                        rating: 4.1,
+                        reviews: 876
                     }
                 ],
                 protection: [
                     {
                         asin: "B08R8QVHCM",
-                        name: "ニトリル手袋 キッチン用 50枚入",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
                         badge: "🧤 手保護",
                         emoji: "🧤",
                         price: "¥598",
-                        rating: 4.5,
-                        reviews: 2341
+                        rating: 4.4,
+                        reviews: 5634
                     },
                     {
-                        asin: "B08F7YB7M2",
-                        name: "使い捨てマスク 50枚入 3層構造",
+                        asin: "B07GWXSXF1",
+                        name: "防塵マスク N95対応 50枚入",
                         badge: "😷 呼吸保護",
                         emoji: "😷",
                         price: "¥890",
@@ -2126,610 +2223,258 @@ class AICleaningAdvisor {
                         reviews: 1542
                     },
                     {
-                        asin: "B07H2XPZC3",
-                        name: "防水エプロン キッチン掃除用",
-                        badge: "👕 衣類保護",
-                        emoji: "👕",
-                        price: "¥680",
-                        rating: 4.2,
-                        reviews: 856
-                    },
-                    {
-                        asin: "B086Y4BZQR",
-                        name: "保護メガネ 曇り止め付き",
-                        badge: "👓 目保護",
-                        emoji: "👓",
-                        price: "¥780",
-                        rating: 4.1,
-                        reviews: 324
-                    },
-                    {
-                        asin: "B08K9NZHX7",
-                        name: "ひざあて 掃除用 クッション付き",
-                        badge: "🦵 膝保護",
-                        emoji: "🦵",
+                        asin: "B07D7BXQZX",
+                        name: "防水エプロン プロ仕様",
+                        badge: "🛡️ 全身保護",
+                        emoji: "🛡️",
                         price: "¥980",
                         rating: 4.0,
-                        reviews: 267
+                        reviews: 654
                     }
                 ]
-            },
-            
-            // 他の汚れタイプもここに追加
-            '尿石': {
+            };
+        }
+    }
+    
+    // 💧 水垢汚れ用商品（汚れの程度別）
+    getScaleDirtProducts(severity) {
+        if (severity === 'light') {
+            return {
                 cleaners: [
                     {
-                        asin: "B07Q9ZKQHZ",
-                        name: "ショーワグローブ No.281 テムレス",
-                        badge: "🧤 化学品対応",
-                        emoji: "🧤",
-                        price: "¥398",
-                        rating: 4.2,
-                        reviews: 987
-                    },
-                    {
-                        asin: "B08F7YB7M2",
-                        name: "使い捨てマスク 50枚入 3層構造",
-                        badge: "😷 カビ胞子対策",
-                        emoji: "😷",
-                        price: "¥890",
-                        rating: 4.3,
-                        reviews: 1542
-                    },
-                    {
-                        asin: "B086Y4BZQR",
-                        name: "保護メガネ 曇り止め付き",
-                        badge: "👓 薬品から目を保護",
-                        emoji: "👓",
-                        price: "¥780",
-                        rating: 4.1,
-                        reviews: 324
-                    }
-                ]
-            },
-            '水垢汚れ': {
-                cleaners: [
-                    {
-                        asin: "B07Q9ZKQHZ",
-                        name: "茂木和哉 水垢洗剤 200ml",
-                        badge: "🏆 水垢専門",
-                        emoji: "💎",
-                        price: "¥1,298",
-                        rating: 4.6,
-                        reviews: 2134
-                    },
-                    {
-                        asin: "B08P8FHYRT",
-                        name: "花王 マジックリン バスマジックリン 泡立ちスプレー SUPER CLEAN",
-                        badge: "🍋 天然成分",
+                        asin: "B00EOHQPHC",
+                        name: "クエン酸 クリーナー 500g",
+                        badge: "🍋 自然派・日常用",
                         emoji: "🍋",
                         price: "¥398",
-                        rating: 4.1,
-                        reviews: 987
-                    }
-                ],
-                tools: [
-                    {
-                        asin: "B075FZ7MGH",
-                        name: "レック ダイヤモンドクリーナー",
-                        badge: "💎 研磨効果",
-                        emoji: "💎",
-                        price: "¥698",
-                        rating: 4.5,
-                        reviews: 432
-                    }
-                ],
-                protection: [
-                    {
-                        asin: "B07GWXSXF1",
-                        name: "ニトリル手袋 キッチン用 50枚入",
-                        badge: "🧤 手保護",
-                        emoji: "🧤",
-                        price: "¥598",
-                        rating: 4.5,
-                        reviews: 2341
-                    },
-                    {
-                        asin: "B08K9NZHX7",
-                        name: "ひざあて 掃除用 クッション付き",
-                        badge: "🦵 膝保護",
-                        emoji: "🦵",
-                        price: "¥980",
-                        rating: 4.0,
-                        reviews: 267
-                    }
-                ]
-            },
-            
-            // 🚽 トイレ・尿石系（プロ仕様強化）
-            '尿石': {
-                cleaners: [
-                    {
-                        asin: "B00G7Y5PTO",
-                        name: "小林製薬 サンポール 1000ml",
-                        badge: "🏆 尿石除去・No.1",
-                        emoji: "⚡",
-                        price: "¥398",
                         rating: 4.3,
-                        reviews: 8234,
-                        professional: true,
-                        safety_warning: "強酸性 - 換気必須・手袋必須"
-                    },
-                    {
-                        asin: "B07Z8QVQG7", 
-                        name: "スクラビングバブル 流せるトイレブラシ 激落ちくん",
-                        badge: "💪 こすり洗い専用",
-                        emoji: "🪥",
-                        price: "¥398",
-                        rating: 4.1,
-                        reviews: 2876,
+                        reviews: 6789,
                         professional: false
-                    }
-                ],
-                tools: [
-                    {
-                        asin: "B07Z8QVQG7",
-                        name: "スクラビングバブル 流せるトイレブラシ",
-                        badge: "🪥 流せるタイプ",
-                        emoji: "🪥",
-                        price: "¥398",
-                        rating: 4.1,
-                        reviews: 2876
-                    }
-                ],
-                protection: [
-                    {
-                        asin: "B08R8QVHCM",
-                        name: "ニトリル手袋 使い捨て 100枚入り",
-                        badge: "🧤 酸性対応",
-                        emoji: "🧤",
-                        price: "¥598", 
-                        rating: 4.4,
-                        reviews: 5634,
-                        safety_warning: "酸性洗剤使用時推奨"
-                    }
-                ]
-            },
-            
-            'トイレ汚れ': {
-                cleaners: [
-                    {
-                        asin: "B00G7Y5PTO",
-                        name: "小林製薬 サンポール 500ml",
-                        badge: "🏆 定番・尿石除去",
-                        emoji: "🚽",
-                        price: "¥398",
-                        rating: 4.3,
-                        reviews: 8234
                     },
                     {
-                        asin: "B00J4V7M8A",
-                        name: "ドメスト パイプクリーナー 500g",
-                        badge: "🦠 除菌・漂白",
+                        asin: "B08T1GZPYQ",
+                        name: "バスマジックリン 泡立ちスプレー 380ml",
+                        badge: "🧽 日常用",
                         emoji: "🧽",
-                        price: "¥418",
-                        rating: 4.1,
-                        reviews: 2543
+                        price: "¥298",
+                        rating: 4.2,
+                        reviews: 5467
                     }
                 ],
                 tools: [
                     {
-                        asin: "B07Z8QVQG7",
-                        name: "スクラビングバブル 流せるトイレブラシ",
-                        badge: "🪥 使い捨て対応",
-                        emoji: "🪥",
-                        price: "¥398",
-                        rating: 4.1,
-                        reviews: 2876
+                        asin: "B07YNGH8Z3",
+                        name: "メラミンスポンジ 激落ちくん 20個",
+                        badge: "🧽 水垢用",
+                        emoji: "🧽",
+                        price: "¥498",
+                        rating: 4.4,
+                        reviews: 8765
                     }
                 ],
                 protection: [
                     {
                         asin: "B08R8QVHCM",
                         name: "ニトリル手袋 使い捨て 100枚入り",
-                        badge: "🧤 衛生管理",
+                        badge: "🧤 基本保護",
                         emoji: "🧤",
                         price: "¥598",
                         rating: 4.4,
                         reviews: 5634
                     }
                 ]
-            },
-            
-            'ホコリ': {
+            };
+        } else {
+            // 頑固な水垢用（プロ仕様）
+            return {
                 cleaners: [
                     {
-                        asin: "B00EOHQPHC",
-                        name: "花王 クイックルワイパー 立体吸着ドライシート 40枚",
-                        badge: "🏆 床掃除No.1",
-                        emoji: "🧹",
-                        price: "¥598",
-                        rating: 4.5,
-                        reviews: 4567
+                        asin: "B01AJQMZ5W",
+                        name: "茂木和哉 水垢洗剤 200ml",
+                        badge: "🏆 水垢専門プロ",
+                        emoji: "💎",
+                        price: "¥1,298",
+                        rating: 4.6,
+                        reviews: 2134,
+                        professional: true
                     },
                     {
-                        asin: "B00EOHQPHC",
-                        name: "クイックルワイパー ウエットシート 32枚",
-                        badge: "💧 水拭き効果",
-                        emoji: "💧",
-                        price: "¥498",
-                        rating: 4.3,
-                        reviews: 3210
+                        asin: "B00G7Y5PTO",
+                        name: "サンポール 尿石除去 500ml",
+                        badge: "⚡ 強酸性・プロ仕様",
+                        emoji: "⚡",
+                        price: "¥598",
+                        rating: 4.5,
+                        reviews: 3456,
+                        professional: true,
+                        safety_warning: "強酸性 - 手袋必須"
                     }
                 ],
                 tools: [
                     {
-                        asin: "B005AILJ3O",
-                        name: "花王 クイックルワイパー 本体 + シート",
-                        badge: "🧹 フローリング対応",
-                        emoji: "🧹",
-                        price: "¥1,298",
-                        rating: 4.4,
-                        reviews: 2876
+                        asin: "B07MQ6HTNB",
+                        name: "研磨パッド ダイヤモンド研磨シート",
+                        badge: "💎 プロ研磨",
+                        emoji: "💎",
+                        price: "¥798",
+                        rating: 4.3,
+                        reviews: 987
                     }
                 ],
                 protection: [
                     {
-                        asin: "B08F7YB7M2",
-                        name: "使い捨てマスク 50枚入 3層構造",
-                        badge: "😷 ホコリ対策",
+                        asin: "B08R8QVHCM",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
+                        badge: "🧤 手保護",
+                        emoji: "🧤",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 5634
+                    },
+                    {
+                        asin: "B07GWXSXF1",
+                        name: "防塵マスク N95対応 50枚入",
+                        badge: "😷 呼吸保護",
                         emoji: "😷",
                         price: "¥890",
                         rating: 4.3,
                         reviews: 1542
                     },
                     {
-                        asin: "B07GWXSXF1",
-                        name: "ニトリル手袋 キッチン用 50枚入",
+                        asin: "B01AJQMZ5W",
+                        name: "保護メガネ 防災用",
+                        badge: "🥽 目保護",
+                        emoji: "🥽",
+                        price: "¥680",
+                        rating: 4.1,
+                        reviews: 432
+                    }
+                ]
+            };
+        }
+    }
+    
+    // 🧹 ホコリ用商品（汚れの程度別）
+    getDustProducts(severity) {
+        if (severity === 'light') {
+            return {
+                cleaners: [
+                    {
+                        asin: "B0791K9FDL",
+                        name: "クイックルワイパー ドライシート 40枚",
+                        badge: "📋 Amazon's Choice",
+                        emoji: "📋",
+                        price: "¥398",
+                        rating: 4.6,
+                        reviews: 24567,
+                        professional: false
+                    }
+                ],
+                tools: [
+                    {
+                        asin: "B00ANQI0C4",
+                        name: "クイックルワイパー 本体セット",
+                        badge: "🧹 日常掃除用",
+                        emoji: "🧹",
+                        price: "¥598",
+                        rating: 4.5,
+                        reviews: 4321
+                    },
+                    {
+                        asin: "B07YNGH8Z3",
+                        name: "マイクロファイバークロス 6枚セット",
+                        badge: "✨ 仕上げ用",
+                        emoji: "✨",
+                        price: "¥498",
+                        rating: 4.4,
+                        reviews: 8765
+                    }
+                ],
+                protection: [
+                    {
+                        asin: "B08R8QVHCM",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
+                        badge: "🧤 基本保護",
+                        emoji: "🧤",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 5634
+                    }
+                ]
+            };
+        } else {
+            // 蓄積ホコリ用（プロ仕様）
+            return {
+                cleaners: [
+                    {
+                        asin: "B0791K9FDL",
+                        name: "クイックルワイパー ウェットシート 強力 32枚",
+                        badge: "💪 強力・蓄積用",
+                        emoji: "💪",
+                        price: "¥598",
+                        rating: 4.5,
+                        reviews: 15420
+                    }
+                ],
+                tools: [
+                    {
+                        asin: "B07D7BXQZX",
+                        name: "掃除機 コードレス サイクロン式",
+                        badge: "🌀 強力吸引",
+                        emoji: "🌀",
+                        price: "¥12,800",
+                        rating: 4.2,
+                        reviews: 987
+                    },
+                    {
+                        asin: "B01LWYQPNY",
+                        name: "電動ブラシ ハンディタイプ",
+                        badge: "🔄 電動・細部用",
+                        emoji: "🔄",
+                        price: "¥2,980",
+                        rating: 4.0,
+                        reviews: 543
+                    }
+                ],
+                protection: [
+                    {
+                        asin: "B08R8QVHCM",
+                        name: "ニトリル手袋 使い捨て 100枚入り",
                         badge: "🧤 手保護",
                         emoji: "🧤",
                         price: "¥598",
-                        rating: 4.5,
-                        reviews: 2341
+                        rating: 4.4,
+                        reviews: 5634
+                    },
+                    {
+                        asin: "B07GWXSXF1",
+                        name: "防塵マスク N95対応 50枚入",
+                        badge: "😷 呼吸保護",
+                        emoji: "😷",
+                        price: "¥890",
+                        rating: 4.3,
+                        reviews: 1542
                     }
                 ]
-            }
-        };
-
-        // トイレ関連の汚れは尿石商品を使用
-        let selectedProduct = productMap[dirtType];
-        if (!selectedProduct && (dirtType.includes('トイレ') || dirtType.includes('便器') || dirtType.includes('尿石'))) {
-            console.log(`🚽 トイレ関連汚れ "${dirtType}" → 尿石商品を使用`);
-            selectedProduct = productMap['尿石'];
+            };
         }
-        
-        // デフォルト値で必ず3カテゴリを返す
-        const defaultProduct = selectedProduct || {
-            cleaners: [
-                {
-                    asin: "B000TGNG0W",
-                    name: "マルチクリーナー 汎用洗剤",
-                    badge: "🔄 汎用",
-                    emoji: "🧴",
-                    price: "¥298",
-                    rating: 4.0,
-                    reviews: 1000
-                },
-                {
-                    asin: "B08XKJM789",
-                    name: "中性洗剤 万能タイプ 500ml",
-                    badge: "🏠 家庭用",
-                    emoji: "🧴",
-                    price: "¥398",
-                    rating: 4.2,
-                    reviews: 1500
-                }
-            ],
-            tools: [
-                {
-                    asin: "B00OOCWP44",
-                    name: "レック 激落ちくん メラミンスポンジ 20個",
-                    badge: "🫧 研磨効果",
-                    emoji: "🧽",
-                    price: "¥248",
-                    rating: 4.6,
-                    reviews: 5432
-                }
-            ],
-            protection: [
-                {
-                    asin: "B04GHI2345",
-                    name: "ニトリル手袋 家庭用 50枚入",
-                    badge: "🧤 手保護",
-                    emoji: "🧤",
-                    price: "¥598",
-                    rating: 4.5,
-                    reviews: 2341
-                },
-                {
-                    asin: "B08F7YB7M2",
-                    name: "使い捨てマスク 50枚入 3層構造",
-                    badge: "😷 呼吸保護",
-                    emoji: "😷",
-                    price: "¥890",
-                    rating: 4.3,
-                    reviews: 1542
-                },
-                {
-                    asin: "B07H2XPZC3",
-                    name: "防水エプロン キッチン掃除用",
-                    badge: "👕 衣類保護",
-                    emoji: "👕",
-                    price: "¥1280",
-                    rating: 4.2,
-                    reviews: 856
-                }
-            ]
+    }
+
+    // 🔍 汚れの深刻度判定
+    determineDirtSeverity(dirtType) {
+        const severityKeywords = {
+            high: ['カビ', '油汚れ', '水垢', '尿石'],
+            medium: ['ホコリ', 'トイレ汚れ'],
+            low: ['その他']
         };
         
-        console.log(`✅ 基本商品データ取得: 洗剤${defaultProduct.cleaners.length}個, ツール${defaultProduct.tools ? defaultProduct.tools.length : 0}個, 保護具${defaultProduct.protection ? defaultProduct.protection.length : 0}個`);
-        return defaultProduct;
-    }
-
-    // 🔗 Amazon APIでの商品データ拡張
-    // 🧪 デバッグ：現在の設定確認
-    debugCurrentSettings() {
-        console.log('🔍 デバッグ情報:');
-        console.log('ENV設定:', window.ENV);
-        console.log('ASSOCIATE_TAG:', window.ENV?.AMAZON_ASSOCIATE_TAG);
-        console.log('API_ENDPOINT:', window.ENV?.API_ENDPOINT);
-    }
-
-    async enrichProductsWithAmazonData(baseProducts, dirtType = null) {
-        this.debugCurrentSettings();
-        
-        // 🚀 リアルタイム検索モード判定（修正版）
-        if (dirtType && window.COMPREHENSIVE_CLEANING_PRODUCTS) {
-            console.log(`🔍 リアルタイム検索モード: ${dirtType}`);
-            
-            try {
-                // リアルタイム検索で最新商品を取得
-                const realtimeProducts = await this.searchProductsRealtime(dirtType);
-                
-                if (realtimeProducts && realtimeProducts.SearchResult && realtimeProducts.SearchResult.Items) {
-                    console.log('✅ リアルタイム検索成功、商品データを更新');
-                    console.log('🔍 取得した商品数:', realtimeProducts.SearchResult.Items.length);
-                    
-                    // リアルタイム商品を既存フォーマットに変換
-                    const enrichedProducts = this.convertRealtimeToBaseFormat(realtimeProducts);
-                    
-                    console.log('🔄 変換後の商品:', enrichedProducts);
-                    
-                    // 変換された商品が空でない場合は使用
-                    if (enrichedProducts.cleaners.length > 0 || enrichedProducts.tools.length > 0 || enrichedProducts.protection.length > 0) {
-                        return enrichedProducts;
-                    } else {
-                        console.warn('⚠️ 変換後の商品が空です、静的データにフォールバック');
-                    }
-                } else {
-                    console.warn('⚠️ リアルタイム検索結果が空です');
-                }
-            } catch (error) {
-                console.warn('⚠️ リアルタイム検索失敗、静的データにフォールバック:', error);
+        for (const [level, keywords] of Object.entries(severityKeywords)) {
+            if (keywords.some(keyword => dirtType.includes(keyword))) {
+                return level === 'high' ? 'heavy' : level === 'medium' ? 'heavy' : 'light';
             }
         }
         
-        try {
-            // 従来の静的ASINベース処理
-            const allAsins = [];
-            ['cleaners', 'tools', 'protection'].forEach(category => {
-                if (baseProducts[category]) {
-                    baseProducts[category].forEach(product => {
-                        if (product.asin) allAsins.push(product.asin);
-                    });
-                }
-            });
-
-            if (allAsins.length === 0) {
-                console.log('⚠️ ASINが見つかりません');
-                return baseProducts;
-            }
-
-            console.log(`📦 Amazon API呼び出し（静的モード）: ${allAsins.length}商品`);
-            
-            // Amazon APIで商品情報取得
-            let amazonData = null;
-            try {
-                // API_ENDPOINT確認とフォールバック
-                const apiEndpoint = window.ENV?.API_ENDPOINT || '/tools/ai-cleaner/server/amazon-proxy.php';
-                console.log('🔗 Amazon API呼び出し先:', apiEndpoint);
-                
-                const response = await fetch(apiEndpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ asins: allAsins })
-                });
-                
-                if (response.ok) {
-                    amazonData = await response.json();
-                    console.log('✅ Amazon API拡張用データ取得成功:', amazonData);
-                } else {
-                    console.log('⚠️ Amazon API応答エラー:', response.status);
-                }
-            } catch (error) {
-                console.error('❌ Amazon API呼び出しエラー:', error);
-                console.log('📦 フォールバック: 基本商品データを使用');
-            }
-            
-            if (!amazonData || !amazonData.success) {
-                console.log('⚠️ Amazon API応答なし - 基本データを使用');
-                return baseProducts;
-            }
-
-            // 商品データをAmazon情報で拡張
-            const enrichedProducts = { ...baseProducts };
-            
-            ['cleaners', 'tools', 'protection'].forEach(category => {
-                if (enrichedProducts[category]) {
-                    enrichedProducts[category] = enrichedProducts[category].map(product => {
-                        // Amazon APIレスポンスのproducts配列から該当ASINを検索
-                        const amazonInfo = amazonData.products?.find(p => p.asin === product.asin);
-                        if (amazonInfo) {
-                            
-                            return {
-                                ...product,
-                                name: amazonInfo.title || product.name,
-                                price: amazonInfo.price || product.price,
-                                rating: amazonInfo.rating || product.rating,
-                                reviews: amazonInfo.reviewCount || product.reviews,
-                                image: amazonInfo.image,
-                                url: amazonInfo.url,
-                                availability: amazonInfo.availability,
-                                isRealData: true
-                            };
-                        }
-                        return product;
-                    });
-                }
-            });
-
-            console.log('✅ Amazon API商品データ拡張完了');
-            return enrichedProducts;
-
-        } catch (error) {
-            console.error('💥 Amazon API拡張エラー:', error);
-            return baseProducts; // フォールバック
-        }
-    }
-
-
-
-
-    // 📊 分析結果表示
-    displayAnalysisResults() {
-        console.log('📊 分析結果表示開始');
-        
-        const analysis = this.state.analysis;
-        if (!analysis) {
-            console.error('分析結果がありません');
-            return;
-        }
-
-        // 分析結果の基本情報表示
-        this.updateAnalysisDisplay(analysis);
-        
-        // 掃除方法表示
-        this.displayCleaningMethod(analysis.cleaningMethod);
-        
-        // 商品表示
-        if (analysis.recommendedProducts) {
-            console.log('🛒 商品表示開始:', analysis.recommendedProducts);
-            this.displayProducts(analysis.recommendedProducts);
-        } else {
-            console.warn('⚠️ 推奨商品データがありません - 商品取得処理を確認してください');
-        }
-
-        // フィードバック状態リセット
-        this.resetFeedbackState();
-
-        // 結果エリア表示
-        const analysisResults = document.getElementById('analysisResults');
-        if (analysisResults) {
-            analysisResults.classList.remove('hidden');
-            console.log('✅ 分析結果エリア表示');
-        }
-        
-        // 成功通知
-        this.showSuccessNotification('AI掃除方法生成完了');
-        console.log('🎉 分析結果表示完了');
-    }
-
-    // 📋 分析表示更新
-    updateAnalysisDisplay(analysis) {
-        const dirtTypeText = document.getElementById('dirtTypeText');
-        const surfaceText = document.getElementById('surfaceText');
-        const confidenceText = document.getElementById('confidenceText');
-        
-        if (dirtTypeText) {
-            dirtTypeText.textContent = analysis.dirtType;
-            console.log(`✅ 汚れタイプ表示: ${analysis.dirtType}`);
-        }
-        if (surfaceText) {
-            surfaceText.textContent = analysis.surface;
-            console.log(`✅ 対象箇所表示: ${analysis.surface}`);
-        }
-        if (confidenceText) {
-            confidenceText.textContent = `${analysis.confidence}%`;
-            console.log(`✅ 信頼度表示: ${analysis.confidence}%`);
-        }
-    }
-
-    // 🧹 掃除方法表示
-    displayCleaningMethod(method) {
-        console.log('🧹 掃除方法表示開始');
-        
-        const difficultyClasses = {
-            '初級': 'bg-green-100 text-green-800',
-            '中級': 'bg-yellow-100 text-yellow-800',
-            '上級': 'bg-red-100 text-red-800'
-        };
-        
-        const difficultyClass = difficultyClasses[method.difficulty] || 'bg-gray-100 text-gray-800';
-
-        let html = `
-            <div class="mb-6">
-                <h3 class="font-semibold text-xl mb-4 text-gray-800">${method.title}</h3>
-                <div class="flex flex-wrap gap-3 mb-6">
-                    <span class="px-4 py-2 rounded-full text-sm font-semibold ${difficultyClass}">
-                        🎯 難易度: ${method.difficulty}
-                    </span>
-                    <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
-                        ⏰ 所要時間: ${method.time}
-                    </span>
-                </div>
-        `;
-
-        // 安全警告
-        if (method.warnings) {
-            html += `
-                <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded-r-lg">
-                    <div class="flex">
-                        <span class="text-red-400 text-2xl mr-3">⚠️</span>
-                        <div>
-                            <p class="text-sm text-red-800 font-bold mb-1">安全注意事項</p>
-                            <p class="text-sm text-red-700">${method.warnings}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // コツ
-        if (method.tips) {
-            html += `
-                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r-lg">
-                    <div class="flex">
-                        <span class="text-yellow-500 text-2xl mr-3">💡</span>
-                        <div>
-                            <p class="text-sm text-yellow-800 font-bold mb-1">効果的なコツ</p>
-                            <p class="text-sm text-yellow-700">${method.tips}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        html += '</div><div class="space-y-4">';
-
-        // 手順表示
-        method.steps.forEach((step, index) => {
-            html += `
-                <div class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center text-sm font-bold mr-4 flex-shrink-0">
-                        ${index + 1}
-                    </div>
-                    <p class="text-gray-800 font-medium">${step}</p>
-                </div>
-            `;
-        });
-
-        html += '</div>';
-
-        const cleaningMethodContent = document.getElementById('cleaningMethodContent');
-        if (cleaningMethodContent) {
-            cleaningMethodContent.innerHTML = html;
-            console.log('✅ 掃除方法表示完了');
-        }
+        return 'heavy'; // デフォルトは重度
     }
 
     // 🛒 商品表示（Amazon風横スクロールUI）
@@ -2773,131 +2518,38 @@ class AICleaningAdvisor {
         console.log(`🎯 商品数確認: 洗剤${products.cleaners.length}種類, 道具${products.tools.length}種類, 保護具${products.protection.length}種類`);
         console.log(`ℹ️ 補完機能無効 - リアルタイム検索で購入可能な商品のみ表示`);
         
-        console.log('🔧 ENV設定確認:', {
-            ENV_defined: typeof window.ENV !== 'undefined',
-            ASSOCIATE_TAG: window.ENV?.AMAZON_ASSOCIATE_TAG,
-            tag_valid: !!(window.ENV?.AMAZON_ASSOCIATE_TAG)
-        });
-        
-        // Associate Tag確認（警告のみ、表示は継続）
-        if (!window.ENV?.AMAZON_ASSOCIATE_TAG) {
-            console.warn('⚠️ AMAZON_ASSOCIATE_TAG未設定 - Amazonリンクが正しく動作しない可能性があります');
-        }
-        
-        let html = `<div class="space-y-8">`;
-        
-        // 🧴 洗剤セクション（横スクロール）
-        if (products.cleaners && products.cleaners.length > 0) {
-            const cleanerCount = Math.min(products.cleaners.length, 5);
-            html += `
-                <div class="product-category-section">
-                    <h3 class="product-category-title text-xl font-bold text-gray-800 mb-4 flex items-center">
-                        🧴 <span class="ml-2">洗剤</span>
-                        <span class="ml-2 text-sm bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold">${cleanerCount}件</span>
-                    </h3>
-                    <div class="relative">
-                        <div class="products-horizontal-scroll">
-            `;
-            
-            // 洗剤は最大5種類表示（忖度を避けるため）
-            products.cleaners.slice(0, 5).forEach((product) => {
-                // Amazon画像URL（2025年対応版・複数フォーマット）
-                const apiImage = product.image || '';
-                const imageUrl1 = apiImage || `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
-                const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
-                
-                html += `
-                    <div class="product-card-horizontal border-2 border-red-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
-                        <div class="relative mb-3">
-                            <img src="${imageUrl1}" alt="${product.name}" class="product-image-horizontal w-full h-48 object-contain rounded-lg bg-gray-50" 
-                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="product-image-horizontal w-full h-48 bg-gray-50 flex items-center justify-center rounded-lg" style="display:none;">
-                                <div class="text-center">
-                                    <div class="text-4xl mb-2">${product.emoji}</div>
-                                    <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-wrap gap-1 mb-2">
-                            ${product.bestseller ? '<div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-bold">🏆 ベストセラー</div>' : ''}
-                            ${product.amazons_choice ? '<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">🎯 Amazon\'s Choice</div>' : ''}
-                            ${product.professional ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">💼 プロ仕様</div>' : ''}
-                            ${product.badge ? '<div class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-bold">' + product.badge + '</div>' : ''}
-                        </div>
-                        
-                        ${product.safety_warning ? 
-                        '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
-                            '<div class="flex items-center">' +
-                                '<span class="mr-1">⚠️</span>' +
-                                '<span class="font-bold">' + product.safety_warning + '</span>' +
-                            '</div>' +
-                        '</div>' : ''}
-                        
-                        <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
-                        
-                        ${product.rating ? 
-                        '<div class="mb-2 flex items-center">' +
-                            '<div class="flex items-center">' +
-                                '<span class="text-yellow-500">★'.repeat(Math.floor(product.rating)) + '</span>' +
-                                '<span class="text-gray-300">★'.repeat(5 - Math.floor(product.rating)) + '</span>' +
-                                '<span class="text-xs text-gray-600 ml-1">' + product.rating + '</span>' +
-                            '</div>' +
-                            (product.reviews ? '<span class="text-xs text-gray-500 ml-2">(' + product.reviews.toLocaleString() + '件)</span>' : '') +
-                        '</div>' : ''}
-                        
-                        <div class="mb-3">
-                            <span class="product-price text-lg font-bold text-red-600">${product.price_range || product.price}</span>
-                        </div>
-                        
-                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
-                           class="block w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-3 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 text-sm font-bold text-center shadow-lg">
-                            🛒 Amazonで購入
-                        </a>
-                    </div>
-                `;
-            });
-            
-            html += `
-                        </div>
-                        <div class="scroll-indicator">
-                            <div class="text-xs text-gray-500">→ スクロール</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // 🧽 ツールセクション（横スクロール）
-        if (products.tools && products.tools.length > 0) {
-            html += `
-                <div class="product-category-section">
-                    <h3 class="product-category-title text-xl font-bold text-gray-800 mb-4 flex items-center">
-                        🧽 <span class="ml-2">掃除道具</span>
-                        <span class="ml-2 text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">${products.tools.length}件</span>
-                    </h3>
-                    <div class="relative">
-                        <div class="products-horizontal-scroll">
-            `;
-            
-            products.tools.forEach((product) => {
-                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
-                const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
-                
-                html += `
-                    <div class="product-card-horizontal border-2 border-green-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
-                        <div class="relative mb-3">
-                            <img src="${imageUrl1}" alt="${product.name}" class="product-image-horizontal w-full h-48 object-contain rounded-lg bg-gray-50" 
-                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="product-image-horizontal w-full h-48 bg-gray-50 flex items-center justify-center rounded-lg" style="display:none;">
-                                <div class="text-center">
-                                    <div class="text-4xl mb-2">${product.emoji}</div>
-                                    <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
-                                </div>
+        // 商品表示UI生成
+        const generateProductGrid = (categoryProducts, categoryName, categoryIcon) => {
+            if (!categoryProducts || categoryProducts.length === 0) {
+                return `<div class="bg-gray-50 rounded-lg p-4 text-center text-gray-500">
+                    <div class="text-2xl mb-2">${categoryIcon}</div>
+                    <p class="text-sm">現在、該当する商品が見つかりませんでした</p>
+                    <p class="text-xs text-gray-400 mt-1">検索条件を変更してお試しください</p>
+                </div>`;
+            }
+
+            return categoryProducts.slice(0, 6).map(product => {
+                // 🌟 Amazon商品画像URL修正（HTTPSと新形式対応）
+                let imageUrl = '';
+                if (product.image_url) {
+                    imageUrl = product.image_url.replace(/^http:/, 'https:');
+                } else if (product.asin) {
+                    imageUrl = `https://m.media-amazon.com/images/I/${product.asin}._SL500_.jpg`;
+                } else {
+                    imageUrl = 'https://via.placeholder.com/150x150/f0f0f0/999999?text=No+Image';
+                }
+
+                return `
+                    <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-shadow duration-200 min-w-[200px] max-w-[220px] flex-shrink-0">
+                        <div class="relative">
+                            <img src="${imageUrl}" 
+                                alt="${product.name}" 
+                                class="w-full h-32 object-contain rounded-md mb-2"
+                                onerror="this.src='https://via.placeholder.com/150x150/f0f0f0/999999?text=No+Image'"
+                                loading="lazy">
+                            <div class="absolute top-1 right-1">
+                                <div class="text-4xl mb-2">${product.emoji}</div>
+                                <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
                             </div>
                         </div>
                         
@@ -2916,992 +2568,254 @@ class AICleaningAdvisor {
                             '</div>' +
                         '</div>' : ''}
                         
-                        <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
+                        <h4 class="font-semibold text-sm text-gray-800 mb-2 line-clamp-2 leading-tight">${product.name}</h4>
                         
-                        ${product.rating ? 
-                        '<div class="mb-2 flex items-center">' +
-                            '<div class="flex items-center">' +
-                                '<span class="text-yellow-500">★'.repeat(Math.floor(product.rating)) + '</span>' +
-                                '<span class="text-gray-300">★'.repeat(5 - Math.floor(product.rating)) + '</span>' +
-                                '<span class="text-xs text-gray-600 ml-1">' + product.rating + '</span>' +
-                            '</div>' +
-                            (product.reviews ? '<span class="text-xs text-gray-500 ml-2">(' + product.reviews.toLocaleString() + '件)</span>' : '') +
-                        '</div>' : ''}
-                        
-                        <div class="mb-3">
-                            <span class="product-price text-lg font-bold text-green-600">${product.price_range || product.price}</span>
-                        </div>
-                        
-                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
-                           class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-2 px-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-bold text-center shadow-lg">
-                            🛒 Amazonで購入
-                        </a>
-                    </div>
-                `;
-            });
-            
-            html += `
-                        </div>
-                        <div class="scroll-indicator">
-                            <div class="text-xs text-gray-500">→ スクロール</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // 🧤 保護具セクション（横スクロール）
-        if (products.protection && products.protection.length > 0) {
-            html += `
-                <div class="product-category-section">
-                    <h3 class="product-category-title text-xl font-bold text-gray-800 mb-4 flex items-center">
-                        🧤 <span class="ml-2">保護用品</span>
-                        <span class="ml-2 text-sm bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">${products.protection.length}件</span>
-                    </h3>
-                    <div class="relative">
-                        <div class="products-horizontal-scroll">
-            `;
-            
-            products.protection.forEach((product) => {
-                const imageUrl1 = `https://m.media-amazon.com/images/P/${product.asin}.01._SL300_.jpg`;
-                const imageUrl2 = `https://m.media-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl3 = `https://images-na.ssl-images-amazon.com/images/P/${product.asin}.01.L.jpg`;
-                const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${product.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
-                
-                html += `
-                    <div class="product-card-horizontal border-2 border-purple-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 bg-white" data-asin="${product.asin}">
-                        <div class="relative mb-3">
-                            <img src="${imageUrl1}" alt="${product.name}" class="product-image-horizontal w-full h-48 object-contain rounded-lg bg-gray-50" 
-                                 onerror="this.src='${imageUrl2}'; this.onerror=function(){this.src='${imageUrl3}'; this.onerror=function(){this.src='${imageUrl4}'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.style.display='flex';}}}">
-                            <div class="product-image-horizontal w-full h-48 bg-gray-50 flex items-center justify-center rounded-lg" style="display:none;">
-                                <div class="text-center">
-                                    <div class="text-4xl mb-2">${product.emoji}</div>
-                                    <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
-                                </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-lg font-bold text-orange-600">${product.price}</span>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <span class="text-yellow-400">★</span>
+                                <span class="ml-1">${product.rating}</span>
+                                <span class="ml-1 text-gray-400">(${product.reviews.toLocaleString()})</span>
                             </div>
                         </div>
                         
-                        <div class="flex flex-wrap gap-1 mb-2">
-                            ${product.bestseller ? '<div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-bold">🏆 ベストセラー</div>' : ''}
-                            ${product.amazons_choice ? '<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">🎯 Amazon\'s Choice</div>' : ''}
-                            ${product.professional ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">💼 プロ仕様</div>' : ''}
-                            ${product.badge ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">' + product.badge + '</div>' : ''}
-                        </div>
-                        
-                        ${product.safety_warning ? 
-                        '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
-                            '<div class="flex items-center">' +
-                                '<span class="mr-1">⚠️</span>' +
-                                '<span class="font-bold">' + product.safety_warning + '</span>' +
-                            '</div>' +
-                        '</div>' : ''}
-                        
-                        <h4 class="font-bold text-gray-800 mb-2 text-sm leading-tight line-clamp-2">${product.name}</h4>
-                        
-                        ${product.rating ? 
-                        '<div class="mb-2 flex items-center">' +
-                            '<div class="flex items-center">' +
-                                '<span class="text-yellow-500">★'.repeat(Math.floor(product.rating)) + '</span>' +
-                                '<span class="text-gray-300">★'.repeat(5 - Math.floor(product.rating)) + '</span>' +
-                                '<span class="text-xs text-gray-600 ml-1">' + product.rating + '</span>' +
-                            '</div>' +
-                            (product.reviews ? '<span class="text-xs text-gray-500 ml-2">(' + product.reviews.toLocaleString() + '件)</span>' : '') +
-                        '</div>' : ''}
-                        
-                        <div class="mb-3">
-                            <span class="product-price text-lg font-bold text-purple-600">${product.price_range || product.price}</span>
-                        </div>
-                        
-                        <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}" target="_blank" rel="noopener noreferrer" 
-                           class="block w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-2 px-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-bold text-center shadow-lg">
+                        <a href="https://amazon.co.jp/dp/${product.asin}?tag=${window.AMAZON_ASSOCIATE_TAG || 'aiclean-22'}" 
+                           target="_blank" 
+                           class="block w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white text-center py-2 rounded-md hover:from-orange-500 hover:to-orange-600 transition-all duration-200 text-sm font-semibold shadow-sm">
                             🛒 Amazonで購入
                         </a>
                     </div>
                 `;
-            });
-            
-            html += `
-                        </div>
-                        <div class="scroll-indicator">
-                            <div class="text-xs text-gray-500">→ スクロール</div>
-                        </div>
+            }).join('');
+        };
+
+        // UI生成
+        const html = `
+            <div class="space-y-6">
+                <!-- 洗剤・クリーナー -->
+                <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                        <span class="text-2xl mr-2">🧴</span>
+                        洗剤・クリーナー
+                        <span class="ml-2 text-sm bg-blue-200 text-blue-800 px-2 py-1 rounded-full">${products.cleaners?.length || 0}種類</span>
+                    </h3>
+                    <div class="flex overflow-x-auto space-x-4 pb-2 scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100">
+                        ${generateProductGrid(products.cleaners, '洗剤・クリーナー', '🧴')}
                     </div>
                 </div>
-            `;
-        }
-        
-        // 商品選択について
-        html += `
-            <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl">
-                <h4 class="font-bold text-blue-800 mb-3">🎯 商品選択について</h4>
-                <div class="text-sm text-blue-700 space-y-1">
-                    <p>✅ 汚れタイプに最適化された専用商品を厳選</p>
-                    <p>✅ 効果・安全性・コストパフォーマンスを総合評価</p>
-                    <p>✅ 洗剤・道具・保護具をセットで提案</p>
-                    <p>📊 レビュー・評価・最新価格はAmazon商品ページでご確認ください</p>
-                    <p>🔗 商品詳細・購入は各商品のAmazonページでお願いします</p>
+
+                <!-- 掃除道具 -->
+                <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                        <span class="text-2xl mr-2">🧹</span>
+                        掃除道具
+                        <span class="ml-2 text-sm bg-green-200 text-green-800 px-2 py-1 rounded-full">${products.tools?.length || 0}種類</span>
+                    </h3>
+                    <div class="flex overflow-x-auto space-x-4 pb-2 scrollbar-thin scrollbar-thumb-green-300 scrollbar-track-green-100">
+                        ${generateProductGrid(products.tools, '掃除道具', '🧹')}
+                    </div>
+                </div>
+
+                <!-- 保護具 -->
+                <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                        <span class="text-2xl mr-2">🛡️</span>
+                        保護具・安全用品
+                        <span class="ml-2 text-sm bg-purple-200 text-purple-800 px-2 py-1 rounded-full">${products.protection?.length || 0}種類</span>
+                    </h3>
+                    <div class="flex overflow-x-auto space-x-4 pb-2 scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-purple-100">
+                        ${generateProductGrid(products.protection, '保護具', '🛡️')}
+                    </div>
                 </div>
             </div>
-        </div>`;
+        `;
 
-        const productsContent = document.getElementById('productsContent');
-        if (productsContent) {
-            productsContent.innerHTML = html;
-            
-            // 商品数のログ
-            const cleanerCount = products.cleaners ? products.cleaners.length : 0;
-            const toolCount = products.tools ? products.tools.length : 0;
-            const protectionCount = products.protection ? products.protection.length : 0;
-            
-            console.log(`✅ 横スクロール商品表示完了: 洗剤${cleanerCount}個, ツール${toolCount}個, 保護具${protectionCount}個`);
+        const productsContainer = document.getElementById('productsContainer');
+        if (productsContainer) {
+            productsContainer.innerHTML = html;
+            console.log('✅ 商品表示完了（度合い別対応）');
         }
     }
 
-    // 🔄 ローディング表示制御
-    showAnalysisLoading(show) {
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const analyzeLoadingBtn = document.getElementById('analyzeLoadingBtn');
-        
-        if (show) {
-            if (analyzeBtn) analyzeBtn.classList.add('hidden');
-            if (analyzeLoadingBtn) analyzeLoadingBtn.classList.remove('hidden');
-            console.log('⏳ 分析ローディング表示');
-        } else {
-            if (analyzeLoadingBtn) analyzeLoadingBtn.classList.add('hidden');
-            if (analyzeBtn) analyzeBtn.classList.remove('hidden');
-            console.log('✅ 分析ローディング非表示');
+    // 🎯 掃除方法表示
+    displayCleaningMethod(cleaningMethod) {
+        if (!cleaningMethod || !cleaningMethod.steps) {
+            console.warn('⚠️ 掃除方法データが不正です:', cleaningMethod);
+            return;
         }
-    }
 
-    // 🔄 フィードバック状態リセット
-    resetFeedbackState() {
-        const feedbackStatus = document.getElementById('feedbackStatus');
-        const feedbackGoodBtn = document.getElementById('feedbackGoodBtn');
-        const feedbackBadBtn = document.getElementById('feedbackBadBtn');
-        
-        if (feedbackStatus) feedbackStatus.classList.add('hidden');
-        if (feedbackGoodBtn) {
-            feedbackGoodBtn.disabled = false;
-            feedbackGoodBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-        if (feedbackBadBtn) {
-            feedbackBadBtn.disabled = false;
-            feedbackBadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        }
-    }
-    // 🎯 フィードバックモーダル表示
-    showFeedbackModal(type) {
-        console.log(`フィードバックモーダル表示: ${type}`);
-        
-        const modal = document.getElementById('feedbackModal');
-        const title = document.getElementById('feedbackModalTitle');
-        const text = document.getElementById('feedbackModalText');
-        
-        if (!modal || !title || !text) return;
-        
-        // フィードバックタイプを保存
-        this.state.currentFeedbackType = type;
-        
-        // モーダル内容を設定
-        if (type === 'good') {
-            title.textContent = '✨ Good フィードバック';
-            text.textContent = '役に立ったと感じた点や、特に良かった機能について教えてください。';
-        } else {
-            title.textContent = '💭 改善フィードバック';
-            text.textContent = '改善が必要だと感じた点や、期待に合わなかった部分について教えてください。';
-        }
-        
-        // モーダル表示
-        modal.classList.remove('hidden');
-        
-        // コメント欄にフォーカス
-        setTimeout(() => {
-            const comment = document.getElementById('feedbackComment');
-            if (comment) comment.focus();
-        }, 300);
-    }
-    
-    // 🎯 フィードバック送信
-    async submitFeedback(comment = null) {
-        console.log('フィードバック送信開始');
-        
-        const feedbackType = this.state.currentFeedbackType || 'unknown';
-        const commentText = comment !== null ? comment : 
-            (document.getElementById('feedbackComment')?.value || '');
-        
-        // フィードバックデータ作成（管理画面対応形式）
-        const feedbackData = {
-            id: Date.now(),
-            type: feedbackType,
-            comment: commentText.trim(),
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            url: window.location.href,
-            analysisResult: this.createAnalysisResultSummary()
-        };
-        
-        try {
-            // ローカルストレージに保存（簡易版）
-            const existingFeedback = JSON.parse(localStorage.getItem('aiCleanerFeedback') || '[]');
-            existingFeedback.push(feedbackData);
-            localStorage.setItem('aiCleanerFeedback', JSON.stringify(existingFeedback));
-            
-            console.log('フィードバック保存完了:', feedbackData);
-            
-            // 成功表示
-            this.showFeedbackSuccess(feedbackType);
-            
-        } catch (error) {
-            console.error('フィードバック送信エラー:', error);
-            this.showFeedbackError();
-        }
-        
-        // モーダルを閉じる
-        this.closeFeedbackModal();
-    }
-    
-    // 🎯 フィードバックモーダル閉じる
-    closeFeedbackModal() {
-        console.log('フィードバックモーダル閉じる');
-        
-        const modal = document.getElementById('feedbackModal');
-        const comment = document.getElementById('feedbackComment');
-        
-        if (modal) {
-            modal.classList.add('hidden');
-        }
-        
-        // コメント欄をクリア
-        if (comment) {
-            comment.value = '';
-        }
-        
-        // 状態リセット
-        this.state.currentFeedbackType = null;
-    }
-    
-    // 🎯 フィードバック成功表示
-    showFeedbackSuccess(type) {
-        const status = document.getElementById('feedbackStatus');
-        const goodBtn = document.getElementById('feedbackGoodBtn');
-        const badBtn = document.getElementById('feedbackBadBtn');
-        
-        if (status) {
-            status.classList.remove('hidden');
-            status.innerHTML = `
-                <i data-lucide="check-circle" class="w-4 h-4 inline mr-1 text-green-600"></i>
-                <span class="text-green-600">フィードバックありがとうございました！</span>
+        console.log('🎯 掃除方法表示開始:', cleaningMethod);
+
+        let html = `
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-6 mb-6 border border-blue-200">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <span class="text-3xl mr-3">🧹</span>
+                    ${cleaningMethod.title}
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white rounded-lg p-3 text-center border border-blue-200">
+                        <div class="text-lg font-semibold text-blue-600">難易度</div>
+                        <div class="text-gray-700">${cleaningMethod.difficulty}</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 text-center border border-blue-200">
+                        <div class="text-lg font-semibold text-green-600">所要時間</div>
+                        <div class="text-gray-700">${cleaningMethod.time}</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 text-center border border-blue-200">
+                        <div class="text-lg font-semibold text-purple-600">手順数</div>
+                        <div class="text-gray-700">${cleaningMethod.steps.length}ステップ</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg p-4 mb-4 border border-blue-200">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                        <span class="text-xl mr-2">📋</span>
+                        掃除手順
+                    </h4>
+                    <ol class="space-y-2">
+        `;
+
+        cleaningMethod.steps.forEach((step, index) => {
+            html += `
+                <li class="flex items-start p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">
+                        ${index + 1}
+                    </span>
+                    <span class="text-gray-700">${step}</span>
+                </li>
             `;
-        }
-        
-        // ボタンを無効化
-        if (goodBtn && badBtn) {
-            goodBtn.disabled = true;
-            badBtn.disabled = true;
-            goodBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            badBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        }
-        
-        // Lucide アイコンを再描画
-        if (window.lucide) {
-            window.lucide.createIcons();
-        }
-    }
-    
-    // 🎯 フィードバックエラー表示
-    showFeedbackError() {
-        const status = document.getElementById('feedbackStatus');
-        
-        if (status) {
-            status.classList.remove('hidden');
-            status.innerHTML = `
-                <i data-lucide="alert-circle" class="w-4 h-4 inline mr-1 text-red-600"></i>
-                <span class="text-red-600">送信に失敗しました。しばらく後でお試しください。</span>
-            `;
-        }
-        
-        // Lucide アイコンを再描画
-        if (window.lucide) {
-            window.lucide.createIcons();
+        });
+
+        html += `
+                    </ol>
+                </div>
+
+                ${cleaningMethod.tips ? `
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                    <h4 class="font-semibold text-yellow-800 mb-2">💡 コツ・ポイント</h4>
+                    <p class="text-yellow-700">${cleaningMethod.tips}</p>
+                </div>
+                ` : ''}
+
+                ${cleaningMethod.warnings ? `
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-red-800 mb-2">⚠️ 注意事項</h4>
+                    <p class="text-red-700">${cleaningMethod.warnings}</p>
+                </div>
+                ` : ''}
+            </div>
+        `;
+
+        const cleaningMethodContent = document.getElementById('cleaningMethodContent');
+        if (cleaningMethodContent) {
+            cleaningMethodContent.innerHTML = html;
+            console.log('✅ 掃除方法表示完了');
         }
     }
-    
-    // 🎯 分析結果サマリー作成（管理画面対応）
-    createAnalysisResultSummary() {
-        // 現在の状態から分析結果サマリーを作成
-        const location = this.state.preSelectedLocation || 'unknown';
-        const hasPhoto = this.state.selectedImage && this.state.selectedImage !== 'no-photo';
+
+    // 🎯 分析結果の統合表示
+    displayResults(analysisResult) {
+        console.log('🎯 分析結果表示開始:', analysisResult);
         
-        // 場所から汚れタイプを推定
-        let dirtType = 'その他';
-        let surface = 'キッチン・換気扇'; // デフォルトをキッチンに設定
-        
-        switch(location) {
-            case 'kitchen':
-                dirtType = '油汚れ';
-                surface = 'キッチン・換気扇';
-                break;
-            case 'bathroom':
-                dirtType = 'カビ汚れ';
-                surface = '浴室・お風呂';
-                break;
-            case 'toilet':
-                dirtType = '尿石';
-                surface = 'トイレ';
-                break;
-            case 'window':
-                dirtType = '水垢汚れ';
-                surface = '窓ガラス';
-                break;
-            case 'living':
-                dirtType = 'ホコリ';
-                surface = 'リビング';
-                break;
-            case 'aircon':
-                dirtType = 'ホコリ・カビ';
-                surface = 'エアコン';
-                break;
-            case 'washer':
-                dirtType = 'カビ汚れ';
-                surface = '洗濯機';
-                break;
-            case 'general':
-                dirtType = 'ホコリ';
-                surface = '一般的な掃除';
-                break;
-            case 'custom':
-                surface = this.state.customLocation || 'カスタム場所';
-                dirtType = 'その他';
-                break;
-            default:
-                dirtType = 'その他';
-                surface = 'キッチン・換気扇'; // デフォルトをキッチンに設定
-        }
-        
-        return {
-            dirtType: dirtType,
-            surface: surface,
-            confidence: hasPhoto ? 90 : 75,
-            hasPhoto: hasPhoto,
-            isAIAnalyzed: true,
-            location: location
-        };
-    }
-    
-    saveGeminiApiKey() { console.log('APIキー保存（簡略版）'); }
-    testGeminiConnection() { console.log('API接続テスト（簡略版）'); }
-    toggleApiKeyVisibility() { console.log('APIキー表示切替（簡略版）'); }
-    testAllConnections() { console.log('全接続テスト（簡略版）'); }
-    showExportModal() { console.log('エクスポートモーダル（簡略版）'); }
-    closeExportModal() { console.log('エクスポートモーダル閉じる（簡略版）'); }
-    copyConfiguration() { console.log('設定コピー（簡略版）'); }
-    copyAnalysisResult() { console.log('分析結果コピー（簡略版）'); }
-    copyCleaningMethod() { console.log('掃除方法コピー（簡略版）'); }
-    toggleCorrection() { console.log('修正切替（簡略版）'); }
-    // 🚀 リアルタイム価格更新とリアルタイム検索機能
-    async refreshProductPrices() {
-        console.log('🔄 リアルタイム価格更新開始');
-        const indicator = document.getElementById('priceLoadingIndicator');
-        
-        if (indicator) {
-            indicator.classList.remove('hidden');
-        }
-        
-        try {
-            // 現在表示中の商品ASINを収集
-            const productCards = document.querySelectorAll('[data-asin]');
-            const asins = Array.from(productCards).map(card => card.dataset.asin);
-            
-            if (asins.length === 0) {
-                console.log('⚠️ 更新する商品がありません');
-                return;
-            }
-            
-            // Amazon PA-APIで最新情報取得
-            const response = await fetch('/tools/ai-cleaner/server/amazon-proxy.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ asins: asins })
+        // 結果セクションを表示
+        const resultsSection = document.getElementById('resultsSection');
+        if (resultsSection) {
+            resultsSection.classList.remove('hidden');
+            resultsSection.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
             });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                // 商品価格・評価を更新
-                result.products.forEach(product => {
-                    const card = document.querySelector(`[data-asin="${product.asin}"]`);
-                    if (card) {
-                        const priceElement = card.querySelector('.product-price');
-                        const ratingElement = card.querySelector('.product-rating');
-                        
-                        if (priceElement) priceElement.textContent = product.price;
-                        if (ratingElement) ratingElement.textContent = `★${product.rating} (${product.reviewCount})`;
-                    }
+        }
+
+        // 掃除方法を表示
+        if (analysisResult.cleaningMethod) {
+            this.displayCleaningMethod(analysisResult.cleaningMethod);
+        }
+
+        // 商品を表示
+        if (analysisResult.recommendedProducts) {
+            this.displayProducts(analysisResult.recommendedProducts);
+        }
+
+        console.log('✅ 分析結果表示完了');
+    }
+
+    // 📱 イベントリスナー設定
+    setupEventListeners() {
+        console.log('📱 イベントリスナー設定開始');
+        
+        try {
+            // 🎯 汚れの強度選択ボタン
+            const severityButtons = document.querySelectorAll('.severity-btn');
+            severityButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const severity = button.getAttribute('data-severity');
+                    this.selectDirtSeverity(severity);
                 });
-                
-                console.log('✅ 価格更新完了:', result.products.length + '商品');
-            } else {
-                console.error('⚠️ 価格更新失敗:', result.error);
+            });
+
+            // 📍 場所選択ボタン
+            const locationButtons = document.querySelectorAll('.location-btn');
+            locationButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const location = button.getAttribute('data-location');
+                    this.selectLocation(location);
+                });
+            });
+
+            // 📸 写真アップロード
+            const photoUpload = document.getElementById('photoUpload');
+            if (photoUpload) {
+                photoUpload.addEventListener('change', (e) => {
+                    this.handlePhotoUpload(e);
+                });
             }
-            
+
+            // 🔍 分析ボタン
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            if (analyzeBtn) {
+                analyzeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.analyzeImage();
+                });
+            }
+
+            console.log('✅ イベントリスナー設定完了');
         } catch (error) {
-            console.error('❌ 価格更新エラー:', error);
-        } finally {
-            if (indicator) {
-                indicator.classList.add('hidden');
-            }
+            console.error('❌ イベントリスナー設定エラー:', error);
         }
-    }
-    
-    // 🎯 汚れタイプ別リアルタイム商品検索
-    async searchProductsRealtime(dirtType, itemCount = 10) {
-        console.log(`🔍 リアルタイム検索開始: ${dirtType}`);
-        
-        try {
-            // API_ENDPOINTの確認とフォールバック
-            const apiEndpoint = window.ENV?.API_ENDPOINT || '/tools/ai-cleaner/server/amazon-proxy.php';
-            console.log('🔗 リアルタイム検索API:', apiEndpoint);
-            
-            const response = await fetch(apiEndpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    search_mode: 'realtime',
-                    dirt_type: dirtType,
-                    item_count: itemCount
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            // JSON応答の安全なパース処理
-            let result;
-            try {
-                const responseText = await response.text();
-                console.log('🔍 Raw response length:', responseText.length);
-                
-                // 重複JSONの場合は最初の有効な部分のみを使用
-                const firstBraceIndex = responseText.indexOf('{');
-                const lastBraceIndex = responseText.lastIndexOf('}');
-                
-                if (firstBraceIndex !== -1 && lastBraceIndex !== -1) {
-                    // 最初の完全なJSONオブジェクトを抽出
-                    let braceCount = 0;
-                    let validJsonEnd = firstBraceIndex;
-                    
-                    for (let i = firstBraceIndex; i < responseText.length; i++) {
-                        if (responseText[i] === '{') braceCount++;
-                        if (responseText[i] === '}') braceCount--;
-                        if (braceCount === 0) {
-                            validJsonEnd = i;
-                            break;
-                        }
-                    }
-                    
-                    const cleanJson = responseText.substring(firstBraceIndex, validJsonEnd + 1);
-                    console.log('🔧 Cleaned JSON length:', cleanJson.length);
-                    result = JSON.parse(cleanJson);
-                } else {
-                    throw new Error('Invalid JSON structure');
-                }
-            } catch (parseError) {
-                console.error('❌ JSON parse error:', parseError);
-                throw new Error(`JSONパースエラー: ${parseError.message}`);
-            }
-            
-            if (result.success) {
-                console.log('✅ リアルタイム検索成功:', result.results);
-                return result.results;
-            } else {
-                console.error('⚠️ リアルタイム検索失敗:', result.error);
-                
-                // フォールバック: 既存の静的データを使用
-                console.log('📦 フォールバック: 静的商品データベースを使用');
-                return this.getStaticProductsByDirtType(dirtType);
-            }
-            
-        } catch (error) {
-            console.error('❌ リアルタイム検索エラー:', error);
-            
-            // フォールバック: 既存の静的データを使用
-            console.log('📦 フォールバック: 静的商品データベースを使用');
-            return this.getStaticProductsByDirtType(dirtType);
-        }
-    }
-    
-    // 📦 静的データベースからの商品取得（フォールバック用）
-    getStaticProductsByDirtType(dirtType) {
-        if (!window.COMPREHENSIVE_CLEANING_PRODUCTS) {
-            console.warn('⚠️ 新商品データベースが見つかりません - 従来データで代替');
-            // 従来の商品データを返す
-            return this.getBaseProductData(dirtType);
-        }
-        
-        const mapping = window.DIRT_TYPE_MAPPING[dirtType] || [];
-        const convertedProducts = {
-            cleaners: [],
-            tools: [],
-            protection: []
-        };
-        
-        mapping.forEach(categoryPath => {
-            const pathParts = categoryPath.split('.');
-            let category = window.COMPREHENSIVE_CLEANING_PRODUCTS;
-            
-            // ネストしたオブジェクトを辿る
-            pathParts.forEach(part => {
-                if (category && category[part]) {
-                    category = category[part];
-                }
-            });
-            
-            let products = [];
-            if (Array.isArray(category)) {
-                products = category;
-            } else if (category && category.products) {
-                products = category.products;
-            }
-            
-            // 商品をカテゴリ別に分類
-            products.forEach(product => {
-                const categoryType = this.getProductCategory(product.type || '洗剤');
-                if (convertedProducts[categoryType]) {
-                    convertedProducts[categoryType].push({
-                        ...product,
-                        badge: product.strength === '強力' ? '🏆 強力' : '💪 効果的',
-                        emoji: this.getProductEmoji(product.type || '洗剤')
-                    });
-                }
-            });
-        });
-        
-        console.log(`📦 静的データから取得:`, {
-            cleaners: convertedProducts.cleaners.length,
-            tools: convertedProducts.tools.length,
-            protection: convertedProducts.protection.length
-        });
-        
-        return convertedProducts;
-    }
-    
-    // 🔄 リアルタイム検索結果を既存フォーマットに変換
-    convertRealtimeToBaseFormat(realtimeProducts) {
-        const converted = {
-            cleaners: [],
-            tools: [],
-            protection: []
-        };
-        
-        if (!realtimeProducts.SearchResult || !realtimeProducts.SearchResult.Items) {
-            console.warn('⚠️ リアルタイム検索結果が空です');
-            return converted;
-        }
-        
-        console.log('🔍 変換開始 - 元データ:', realtimeProducts.SearchResult.Items.length + '商品');
-        
-        // 重複除去用のセット（商品名の正規化版を保存）
-        const seenProducts = new Set();
-        
-        realtimeProducts.SearchResult.Items.forEach((item, index) => {
-            const title = item.ItemInfo?.Title?.DisplayValue || 'Amazon商品';
-            console.log(`🔍 商品${index + 1}: "${title}"`);
-            
-            // 商品名の正規化（重複チェック用）
-            const normalizedName = this.normalizeProductName(title);
-            console.log(`🔍 正規化名: "${normalizedName}"`);
-            
-            // 重複チェック
-            if (seenProducts.has(normalizedName)) {
-                console.log(`⚠️ 重複商品をスキップ: ${title}`);
-                return;
-            }
-            seenProducts.add(normalizedName);
-            
-            // 分類ロジックの詳細ログ
-            const productType = this.categorizeProduct(title);
-            
-            // 🚫 ブラックリスト商品を除外
-            if (productType === 'exclude') {
-                console.log(`🚫 ブラックリスト商品をスキップ: ${title}`);
-                return; // この商品をスキップ
-            }
-            
-            const category = this.getProductCategory(productType);
-            
-            console.log(`📂 詳細分析: 商品名="${title}" → タイプ="${productType}" → カテゴリ="${category}"`);
-            
-            // 購入可能性の厳密チェック + 価格適正性チェック
-            const priceInfo = item.Offers?.Listings?.[0]?.Price?.DisplayAmount;
-            const availabilityMessage = item.Offers?.Listings?.[0]?.Availability?.Message;
-            const isAmazonFulfilled = item.Offers?.Listings?.[0]?.DeliveryInfo?.IsAmazonFulfilled;
-            
-            // 価格から数値を抽出して適正性をチェック
-            let priceValue = 0;
-            if (priceInfo) {
-                const priceMatch = priceInfo.match(/[\d,]+/);
-                if (priceMatch) {
-                    priceValue = parseInt(priceMatch[0].replace(/,/g, ''));
-                }
-            }
-            
-            // 🎯 商品タイプ別価格上限設定（細分化）
-            let priceLimit = this.getPriceLimitByCategory(productType);
-            
-            // 手袋の場合、より厳格な価格設定
-            if (title.includes('手袋') || title.includes('glove')) {
-                priceLimit = 1500; // 手袋は最大1500円まで
-            }
-            
-            const isReasonablePrice = priceValue > 0 && priceValue <= priceLimit;
-            
-            // 厳しい購入可能性チェック
-            const hasValidPrice = priceInfo && priceInfo.trim() !== '';
-            const isInStock = !availabilityMessage || availabilityMessage.includes('在庫あり') || availabilityMessage.includes('通常配送');
-            const hasPrimeOrAmazon = isAmazonFulfilled === true; // Amazon発送またはPrime対象
-            
-            console.log(`🔍 購入可能性チェック: ${title} (ASIN: ${item.ASIN})`);
-            console.log(`  価格: ${hasValidPrice ? priceInfo : '❌なし'} (数値: ¥${priceValue})`);
-            console.log(`  価格上限: ¥${priceLimit} (タイプ: ${productType})`);
-            console.log(`  価格適正: ${isReasonablePrice ? '✅' : '❌高額'}`)
-            console.log(`  在庫: ${availabilityMessage || '❌不明'}`);
-            console.log(`  Amazon発送: ${isAmazonFulfilled ? '✅' : '❌'}`);
-            console.log(`  画像URL: ${item.Images?.Primary?.Large?.URL || '❌なし'}`);
-            console.log(`  商品URL: ${item.DetailPageURL || '❌なし'}`);
-            
-            if (!hasValidPrice) {
-                console.log(`⚠️ 商品除外（価格なし）: ${title} (ASIN: ${item.ASIN})`);
-                return; // この商品をスキップ
-            }
-            
-            // 🚫 価格適正性チェック（高額商品除外）
-            if (!isReasonablePrice) {
-                console.log(`⚠️ 商品除外（高額商品）: ${title} (¥${priceValue} > ¥${priceLimit})`);
-                return; // この商品をスキップ
-            }
-            
-            // 在庫状況が不明または在庫切れの場合も除外
-            if (availabilityMessage && !isInStock) {
-                console.log(`⚠️ 商品除外（在庫切れ）: ${title} (ASIN: ${item.ASIN}) - ${availabilityMessage}`);
-                return; // この商品をスキップ
-            }
-            
-            // DetailPageURLが無効な場合も除外
-            if (!item.DetailPageURL || item.DetailPageURL.trim() === '') {
-                console.log(`⚠️ 商品除外（無効URL）: ${title} (ASIN: ${item.ASIN})`);
-                return; // この商品をスキップ
-            }
-            
-            // レビュー情報の取得
-            const reviewCount = item.CustomerReviews?.Count || 0;
-            const starRating = item.CustomerReviews?.StarRating?.Value || 0;
-            
-            console.log(`🔍 レビュー情報: ${title} - 評価: ${starRating}⭐, レビュー: ${reviewCount}件`);
-            
-            // ベストセラーバッジの判定
-            let badge = '✨ 最新情報';
-            if (reviewCount > 1000) {
-                badge = '🏆 ベストセラー';
-            } else if (starRating >= 4.5 && reviewCount > 100) {
-                badge = '⭐ 高評価';
-            } else if (isAmazonFulfilled) {
-                badge = '🚚 Prime対応';
-            }
-            
-            const product = {
-                name: title,
-                asin: item.ASIN,
-                type: productType,
-                price: priceInfo,
-                image: item.Images?.Primary?.Large?.URL || item.Images?.Primary?.Medium?.URL,
-                url: item.DetailPageURL,
-                badge: badge,
-                emoji: this.getProductEmoji(productType),
-                availability: availabilityMessage || '在庫確認済み',
-                rating: starRating,
-                reviews: reviewCount
-            };
-            
-            if (converted[category]) {
-                converted[category].push(product);
-                console.log(`✅ ${category}カテゴリに追加: ${product.name} (価格: ${product.price}, 評価: ${starRating}⭐, レビュー: ${reviewCount}件, バッジ: ${badge})`);
-            } else {
-                // カテゴリが不明な場合は cleaners に入れる
-                console.log(`⚠️ 不明カテゴリ "${category}" → cleanersに分類: ${product.name} (価格: ${product.price}, 評価: ${starRating}⭐, レビュー: ${reviewCount}件)`);
-                converted.cleaners.push(product);
-            }
-        });
-        
-        console.log('🔄 リアルタイム商品変換完了:', {
-            cleaners: converted.cleaners.length,
-            tools: converted.tools.length,
-            protection: converted.protection.length,
-            cleaners_list: converted.cleaners.map(p => `"${p.name}"`),
-            tools_list: converted.tools.map(p => `"${p.name}"`),
-            protection_list: converted.protection.map(p => `"${p.name}"`)
-        });
-        
-        return converted;
     }
 
-    // 🎯 商品タイプ別価格上限設定
-    getPriceLimitByCategory(productType) {
-        const priceLimits = {
-            // 洗剤類
-            'cleaner': 3000,
-            'spray': 2500,
-            'liquid': 2000,
-            'detergent': 2500,
-            
-            // 道具類
-            'tool': 5000,
-            'brush': 2000,
-            'sponge': 1500,
-            'cloth': 2000,
-            'mop': 4000,
-            'wiper': 3000,
-            
-            // 保護具類（適正価格設定）
-            'glove': 2000,      // 手袋: 最大2000円
-            'mask': 3000,       // マスク: 最大3000円
-            'apron': 2500,      // エプロン: 最大2500円
-            'goggles': 2000,    // ゴーグル: 最大2000円
-            'protection': 2500, // その他保護具: 最大2500円
-            
-            // デフォルト
-            'default': 3000
+    // 🔧 初期化
+    init() {
+        console.log('🤖 AI掃除アドバイザー初期化開始');
+        
+        this.state = {
+            selectedPhoto: null,
+            selectedLocation: null,
+            preSelectedLocation: null,
+            dirtSeverity: null,
+            analysisResult: null
         };
         
-        return priceLimits[productType] || priceLimits['default'];
-    }
-    
-    // 🔄 商品名の正規化（重複除去用）
-    normalizeProductName(title) {
-        let normalized = title
-            // 基本的な清掃
-            .replace(/\s+/g, ' ')
-            .trim()
-            .toLowerCase();
+        this.setupEventListeners();
         
-        // 数量・容量・サイズ情報を除去
-        normalized = normalized
-            .replace(/\d+本セット|\d+個セット|\d+枚入|\d+セット/g, '') // セット数
-            .replace(/\d+ml|\d+l|\d+リットル|\d+g|\d+kg/g, '') // 容量・重量
-            .replace(/[smlxl]サイズ|サイズ[smlxl]/g, '') // サイズ
-            .replace(/大容量|詰め替え|つめかえ|レフィル/g, '') // 容量表現
-            .replace(/\d+枚|\d+個|\d+本/g, '') // 数量
-            .replace(/\(\d+[^)]*\)/g, '') // 括弧内の数字情報
-            .replace(/[\(\)]/g, '') // 空の括弧
-            .replace(/\s+/g, ' ') // 複数スペースを1つに
-            .trim();
-        
-        // ブランド名 + 基本商品名を抽出
-        const brandProducts = {
-            'ウタマロ': normalized.includes('ウタマロ') ? 'ウタマロ' : null,
-            'マジックリン': normalized.includes('マジックリン') ? 'マジックリン' : null,
-            'カビキラー': normalized.includes('カビキラー') ? 'カビキラー' : null,
-            'ママレモン': normalized.includes('ママレモン') ? 'ママレモン' : null,
-            'クイックルワイパー': normalized.includes('クイックル') ? 'クイックルワイパー' : null,
-            '茂木和哉': normalized.includes('茂木和哉') ? '茂木和哉' : null,
-            'ジフ': normalized.includes('ジフ') ? 'ジフ' : null,
-            'バスマジックリン': normalized.includes('バスマジックリン') ? 'バスマジックリン' : null
-        };
-        
-        // ブランド商品が見つかった場合はそれを返す
-        for (const [brand, match] of Object.entries(brandProducts)) {
-            if (match) {
-                console.log(`🏷️ ブランド正規化: "${title}" → "${brand}"`);
-                return brand;
-            }
-        }
-        
-        // ブランドが見つからない場合は最初の2-3単語を使用
-        const words = normalized.split(' ').filter(word => word.length > 1);
-        const normalizedResult = words.slice(0, 3).join(' ');
-        
-        console.log(`🔄 一般正規化: "${title}" → "${normalizedResult}"`);
-        return normalizedResult;
-    }
-    
-    // 🧪 商品分類テスト機能
-    testProductCategorization() {
-        const testProducts = [
-            'スポンジ 食器洗い用',
-            'ブラシ 掃除用',
-            'ニトリル手袋 50枚入',
-            'マスク 防塵用',
-            'マジックリン 油汚れ用洗剤',
-            'カビキラー 浴室用',
-            'エプロン 防水',
-            'クロス マイクロファイバー',
-            'モップ 床掃除用',
-            'ゴム手袋 台所用'
-        ];
-        
-        console.log('🧪 商品分類テスト開始:');
-        testProducts.forEach(title => {
-            const type = this.categorizeProduct(title);
-            const category = this.getProductCategory(type);
-            console.log(`"${title}" → ${type} → ${category}`);
-        });
-    }
-
-    // 📂 商品タイトルからタイプを推定
-    categorizeProduct(title) {
-        const titleLower = title.toLowerCase();
-        
-        // 🚫 不適切な商品を除外（ブラックリスト）
-        const excludeKeywords = [
-            // 食品・オレンジ系
-            'オレンジ', 'みかん', 'フルーツ', '果実', '果汁', '食品', '食べ物',
-            // 機械用品
-            '556', 'wd-40', 'wd40', '潤滑', '機械', '自動車', 'バイク', '車',
-            // 建築・工業用品  
-            '工業', '業務用洗浄機', '高圧洗浄機', '建築', '塗装',
-            // 浴室用でない商品が混入している場合
-            '洗車', '車用', 'カー用品', 'automotive',
-            // 医療・薬品（家庭用でない）
-            '医療', '薬品', '医薬', 'pharmaceutical',
-            // 電子機器
-            '電子', 'electronic', 'パソコン', 'スマホ'
-        ];
-        
-        for (const keyword of excludeKeywords) {
-            if (titleLower.includes(keyword)) {
-                console.log(`🚫 ブラックリスト除外: "${title}" (キーワード: ${keyword})`);
-                return 'exclude'; // 除外マーク
-            }
-        }
-        
-        // 保護具の判定（最優先 - 特定性が高い）
-        if (titleLower.includes('手袋') || titleLower.includes('マスク') || 
-            titleLower.includes('エプロン') || titleLower.includes('保護') ||
-            titleLower.includes('glove') || titleLower.includes('mask') ||
-            titleLower.includes('apron') || titleLower.includes('goggle') ||
-            titleLower.includes('ゴーグル') || titleLower.includes('防護')) {
-            return '保護具';
-        }
-        
-        // 道具の判定（掃除用具全般）
-        if (titleLower.includes('スポンジ') || titleLower.includes('ブラシ') || 
-            titleLower.includes('クロス') || titleLower.includes('ワイパー') ||
-            titleLower.includes('sponge') || titleLower.includes('brush') ||
-            titleLower.includes('cloth') || titleLower.includes('wiper') ||
-            titleLower.includes('タオル') || titleLower.includes('towel') ||
-            titleLower.includes('モップ') || titleLower.includes('mop') ||
-            titleLower.includes('雑巾') || titleLower.includes('ぞうきん') ||
-            titleLower.includes('バケツ') || titleLower.includes('bucket') ||
-            titleLower.includes('ほうき') || titleLower.includes('broom') ||
-            titleLower.includes('ちりとり') || titleLower.includes('dustpan') ||
-            titleLower.includes('掃除機') || titleLower.includes('vacuum') ||
-            titleLower.includes('へら') || titleLower.includes('scraper') ||
-            titleLower.includes('パッド') || titleLower.includes('pad')) {
-            return '道具';
-        }
-        
-        // 洗剤の判定
-        if (titleLower.includes('洗剤') || titleLower.includes('クリーナー') || 
-            titleLower.includes('除去') || titleLower.includes('スプレー') ||
-            titleLower.includes('cleaner') || titleLower.includes('detergent') ||
-            titleLower.includes('soap') || titleLower.includes('ソープ') ||
-            titleLower.includes('漂白') || titleLower.includes('bleach') ||
-            titleLower.includes('除菌') || titleLower.includes('抗菌') ||
-            titleLower.includes('消毒') || titleLower.includes('disinfect') ||
-            titleLower.includes('リムーバー') || titleLower.includes('remover') ||
-            titleLower.includes('液') || titleLower.includes('剤')) {
-            return '洗剤';
-        }
-        
-        // デフォルトは道具（スポンジ、ブラシなど基本的な掃除用品が多いため）
-        return '道具';
-    }
-    
-    // 📂 商品タイプからカテゴリマッピング
-    getProductCategory(type) {
-        switch (type) {
-            case '洗剤': return 'cleaners';
-            case '道具': return 'tools';
-            case '保護具': return 'protection';
-            default: return 'cleaners';
-        }
-    }
-    
-    // 🎨 商品タイプから絵文字取得
-    getProductEmoji(type) {
-        switch (type) {
-            case '洗剤': return '🧴';
-            case '道具': return '🧽';
-            case 'スポンジ': return '🧽';
-            case 'ブラシ': return '🧹';
-            case '保護具': return '🧤';
-            case '手袋': return '🧤';
-            case 'マスク': return '😷';
-            default: return '🧴';
-        }
-    }
-    
-    // 🔗 商品データの統合
-    mergeProductData(baseProducts, realtimeProducts) {
-        const merged = { ...baseProducts };
-        
-        // リアルタイム商品を優先して統合
-        Object.keys(realtimeProducts).forEach(category => {
-            if (realtimeProducts[category].length > 0) {
-                merged[category] = [
-                    ...realtimeProducts[category].slice(0, 3), // リアルタイム商品を上位に
-                    ...(merged[category] || []).slice(0, 2)    // 既存商品を下位に
-                ];
-            }
-        });
-        
-        return merged;
-    }
-    
-    applyComprehensiveCorrection(type) { console.log(`修正適用: ${type}（簡略版）`); }
-    
-    // 🔧 デバッグ用：Amazon画像とリンクのテスト
-    debugAmazonHTML() {
-        console.log('🔧 Amazon HTML生成デバッグ');
-        const testProduct = {
-            asin: "B005AILJ3O",
-            name: "テスト商品",
-            price: "¥298",
-            rating: 4.4,
-            reviews: 1000,
-            emoji: "🧴",
-            badge: "テスト"
-        };
-        
-        const imageUrl1 = `https://m.media-amazon.com/images/P/${testProduct.asin}.01._SL300_.jpg`;
-        const imageUrl4 = `https://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${testProduct.asin}&Format=_SL300_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
-        const amazonLink = `https://www.amazon.co.jp/dp/${testProduct.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG}`;
-        
-        console.log('画像URL1:', imageUrl1);
-        console.log('画像URL4:', imageUrl4);
-        console.log('Amazon Link:', amazonLink);
-        console.log('Associate Tag:', window.ENV?.AMAZON_ASSOCIATE_TAG || 'タグ未設定');
-        
-        return { imageUrl1, imageUrl4, amazonLink };
+        console.log('✅ AI掃除アドバイザー初期化完了');
     }
 }
 
-// グローバルアクセス用
-window.AICleaningAdvisor = AICleaningAdvisor;
-
-// デバッグ用グローバル関数
-window.debugAmazonLinks = function() {
-    if (window.advisor) {
-        return window.advisor.debugAmazonHTML();
-    } else {
-        console.error('AIクリーニングアドバイザーが初期化されていません');
-    }
-};
-
-// DOMContentLoaded時に初期化
+// 🚀 アプリケーション起動
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 DOMContentLoaded - AICleaningAdvisor作成開始');
+    console.log('🚀 DOM読み込み完了 - AI掃除アドバイザー起動');
+    
     window.aiCleaningAdvisor = new AICleaningAdvisor();
+    window.aiCleaningAdvisor.init();
+    
+    console.log('🎉 AI掃除アドバイザー起動完了');
 });
 
 // さらに確実にするため、複数のタイミングで初期化を試行
@@ -3953,7 +2867,3 @@ window.checkDOMState = function() {
 
 console.log('🤖 AI掃除アドバイザー 本番クラウド環境版準備完了');
 console.log('🌐 一般ユーザー向けクラウドサービス提供中');
-console.log('🎯 安定したWebアプリケーションとして動作');
-console.log('🛒 Amazon商品情報とリンク機能完備');
-console.log('🚀 本番環境での確実な動作を保証');
-console.log('✅ https://cxmainte.com/tools/ai-cleaner/ で運用中');
