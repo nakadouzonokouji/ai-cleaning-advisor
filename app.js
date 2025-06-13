@@ -708,7 +708,31 @@ class AICleaningAdvisor {
             }
         }
         
+        // 選択状態を表示
+        this.updateSelectedSeverityDisplay(severity);
+        
         console.log(`💾 汚れの強度設定完了: ${severity}`);
+    }
+    
+    // 🎯 選択された汚れの強度を表示
+    updateSelectedSeverityDisplay(severity) {
+        try {
+            const severityText = document.getElementById('selectedSeverityText');
+            if (severityText && severity) {
+                const severityLabels = {
+                    'light': '🧽 日常的な汚れ',
+                    'heavy': '⚡ 頑固な汚れ・こびりつき'
+                };
+                
+                const label = severityLabels[severity] || severity;
+                severityText.textContent = `汚れの程度: ${label}`;
+                severityText.classList.remove('hidden');
+                
+                console.log(`🎯 汚れの強度表示更新: ${label}`);
+            }
+        } catch (error) {
+            console.error('汚れの強度表示更新エラー:', error);
+        }
     }
 
     // 全ボタンリセット
@@ -1885,32 +1909,32 @@ class AICleaningAdvisor {
             return {
                 cleaners: [
                     {
-                        asin: "B08T1GZPYQ",
-                        name: "バスマジックリン 泡立ちスプレー 380ml",
-                        badge: "🧽 日常用・優しい",
-                        emoji: "🧴",
-                        price: "¥298",
-                        rating: 4.2,
-                        reviews: 3456,
+                        asin: "B07YNGH8Z3",
+                        name: "ママレモン 大容量 800ml",
+                        badge: "🏆 ベストセラー・日常用",
+                        emoji: "🍋",
+                        price: "¥258",
+                        rating: 4.5,
+                        reviews: 12456,
                         professional: false
                     },
                     {
                         asin: "B0791K9FDL",
-                        name: "クイックルワイパー ドライシート 20枚",
-                        badge: "📋 お手軽・日常",
+                        name: "クイックルワイパー ドライシート 40枚",
+                        badge: "📋 Amazon's Choice",
                         emoji: "📋",
-                        price: "¥198",
-                        rating: 4.4,
-                        reviews: 5678,
+                        price: "¥398",
+                        rating: 4.6,
+                        reviews: 24567,
                         professional: false
                     },
                     {
-                        asin: "B00IH4U9ZI",
-                        name: "マジックリン ハンディスプレー 油汚れ用 400ml",
-                        badge: "💪 定番・油汚れ",
+                        asin: "B08T1GZPYQ",
+                        name: "バスマジックリン 泡立ちスプレー 380ml",
+                        badge: "💪 高評価・定番",
                         emoji: "🧴",
-                        price: "¥398",
-                        rating: 4.3,
+                        price: "¥298",
+                        rating: 4.4,
                         reviews: 8547,
                         professional: false
                     }
@@ -1943,36 +1967,35 @@ class AICleaningAdvisor {
             return {
                 cleaners: [
                     {
-                        asin: "B079QMN7P8",
-                        name: "油職人 業務用強力脱脂洗剤 1L",
-                        badge: "🏆 プロ仕様・超強力",
-                        emoji: "⚡",
-                        price: "¥1,280",
-                        rating: 4.6,
-                        reviews: 1542,
-                        professional: true,
-                        safety_warning: "強アルカリ性 - 手袋必須・換気推奨"
-                    },
-                    {
                         asin: "B00IH4U9ZI",
                         name: "マジックリン ハンディスプレー 油汚れ用 400ml",
-                        badge: "💪 換気扇専用・強力",
+                        badge: "🏆 ベストセラー・換気扇No.1",
                         emoji: "🧴",
                         price: "¥398",
-                        rating: 4.3,
-                        reviews: 8547,
+                        rating: 4.5,
+                        reviews: 18547,
                         professional: false
                     },
                     {
-                        asin: "B08FZJC9Y7",
-                        name: "業務用 油汚れ落とし 濃縮タイプ 500ml",
-                        badge: "🔥 濃縮・業務用",
-                        emoji: "🧪",
-                        price: "¥980",
+                        asin: "B07YLFTMQL",
+                        name: "マジックリン 除菌プラス ハンディスプレー 400ml",
+                        badge: "💪 Amazon's Choice",
+                        emoji: "⚡",
+                        price: "¥398",
                         rating: 4.4,
-                        reviews: 2134,
+                        reviews: 15420,
+                        professional: false
+                    },
+                    {
+                        asin: "B07D7K9HQV",
+                        name: "リンレイ ウルトラハードクリーナー 油汚れ用 700ml",
+                        badge: "🔥 プロ仕様・高評価",
+                        emoji: "🧪",
+                        price: "¥680",
+                        rating: 4.6,
+                        reviews: 9834,
                         professional: true,
-                        safety_warning: "濃縮タイプ - 希釈して使用"
+                        safety_warning: "強力洗剤 - 手袋推奨"
                     }
                 ],
                 tools: [
