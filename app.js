@@ -2093,7 +2093,7 @@ class AICleaningAdvisor {
                         name: "防水エプロン キッチン掃除用",
                         badge: "👕 衣類保護",
                         emoji: "👕",
-                        price: "¥1280",
+                        price: "¥680",
                         rating: 4.2,
                         reviews: 856
                     },
@@ -2102,7 +2102,7 @@ class AICleaningAdvisor {
                         name: "保護メガネ 曇り止め付き",
                         badge: "👓 目保護",
                         emoji: "👓",
-                        price: "¥1450",
+                        price: "¥780",
                         rating: 4.1,
                         reviews: 324
                     },
@@ -2144,7 +2144,7 @@ class AICleaningAdvisor {
                         name: "保護メガネ 曇り止め付き",
                         badge: "👓 薬品から目を保護",
                         emoji: "👓",
-                        price: "¥1450",
+                        price: "¥780",
                         rating: 4.1,
                         reviews: 324
                     }
