@@ -569,15 +569,8 @@ class AICleaningAdvisor {
         // カスタム入力の表示制御
         this.handleCustomInput(locationId);
         
-        // 🎯 汚れの強度選択UIを表示
-        this.showDirtSeveritySelection();
-        
-        // 📱 スマホフロー: 場所選択後にAI生成ボタンエリアを表示
-        const analysisButtonArea = document.getElementById('analysisButtonArea');
-        if (analysisButtonArea) {
-            analysisButtonArea.classList.remove('hidden');
-            console.log('✅ AI生成ボタンエリア表示');
-        }
+        // 🎯 汚れの強度選択は既に表示されているのでスキップ
+        // this.showDirtSeveritySelection(); // 最初から表示されているため不要
         
         // UI更新
         this.updateSelectedLocationDisplay();
@@ -1153,27 +1146,13 @@ class AICleaningAdvisor {
                     console.log('✅ 画像表示完了');
                 }
                 
-                // 📱 新しいフロー制御: 写真 → 場所選択 → 汚れ度合い → 生成
-                const photoUploadArea = document.getElementById('photoUploadArea');
+                        // 📱 新しいUIフロー: 写真アップロード後は画像表示エリアを表示
                 const uploadedImageArea = document.getElementById('uploadedImageArea');
-                const locationSelectionArea = document.getElementById('locationSelectionArea');
-                
-                // 写真アップロードエリアを隠す
-                if (photoUploadArea) {
-                    photoUploadArea.classList.add('hidden');
-                    console.log('✅ 写真アップロードエリア非表示');
-                }
                 
                 // アップロード済み画像エリアを表示
                 if (uploadedImageArea) {
                     uploadedImageArea.classList.remove('hidden');
                     console.log('✅ アップロード済み画像エリア表示');
-                }
-                
-                // 場所選択エリアを表示
-                if (locationSelectionArea) {
-                    locationSelectionArea.classList.remove('hidden');
-                    console.log('✅ 場所選択エリア表示');
                 }
                 
                 this.updateSelectedLocationDisplay();
@@ -1322,21 +1301,9 @@ class AICleaningAdvisor {
 
     // 📸 写真スキップ機能
     skipPhotoUpload() {
-        console.log('📸 写真スキップ処理開始 - 場所選択モードに移行');
-        
-        // 📱 新しいフロー: 写真アップロードエリアを隠して場所選択エリアを表示
-        const photoUploadArea = document.getElementById('photoUploadArea');
-        const locationSelectionArea = document.getElementById('locationSelectionArea');
-        
-        if (photoUploadArea) {
-            photoUploadArea.classList.add('hidden');
-            console.log('✅ 写真アップロードエリア非表示');
-        }
-        
-        if (locationSelectionArea) {
-            locationSelectionArea.classList.remove('hidden');
-            console.log('✅ 場所選択エリア表示');
-        }
+        console.log('📸 写真スキップ処理 - 新UIでは写真は任意のため、特別な処理は不要');
+        // 新しいUIフローでは場所選択と汚れ度合い選択は既に表示されているため、
+        // skipPhotoUploadは特に何もしない（または削除可能）
         
         if (this.state.preSelectedLocation === 'custom' && !this.state.customLocation.trim()) {
             const customValidation = document.getElementById('customValidation');
@@ -1406,28 +1373,12 @@ class AICleaningAdvisor {
         };
 
         // 📱 新しいUIフロー対応のリセット処理
-        const photoUploadArea = document.getElementById('photoUploadArea');
-        const locationSelectionArea = document.getElementById('locationSelectionArea');
         const uploadedImageArea = document.getElementById('uploadedImageArea');
-        const analysisButtonArea = document.getElementById('analysisButtonArea');
-        const dirtSeveritySelection = document.getElementById('dirtSeveritySelection');
         const customInput = document.getElementById('customInput');
         
-        // 初期状態に戻す: 写真アップロードエリアのみ表示
-        if (photoUploadArea) {
-            photoUploadArea.classList.remove('hidden');
-        }
-        if (locationSelectionArea) {
-            locationSelectionArea.classList.add('hidden');
-        }
+        // 画像エリアのみリセット（場所選択・汚れ度合い選択は常時表示）
         if (uploadedImageArea) {
             uploadedImageArea.classList.add('hidden');
-        }
-        if (analysisButtonArea) {
-            analysisButtonArea.classList.add('hidden');
-        }
-        if (dirtSeveritySelection) {
-            dirtSeveritySelection.classList.add('hidden');
         }
         if (customInput) {
             customInput.classList.add('hidden');
