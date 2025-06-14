@@ -3,7 +3,7 @@
  * AI掃除アドバイザーで使用する掃除場所の設定情報
  */
 
-export const COMPREHENSIVE_LOCATION_CONFIG = {
+const COMPREHENSIVE_LOCATION_CONFIG = {
     'kitchen': { 
         name: 'キッチン', 
         icon: '🔥', 
@@ -101,9 +101,6 @@ export const getLocationsByDifficulty = () => {
     
     return result;
 };
-
-// Named export
-export { COMPREHENSIVE_LOCATION_CONFIG };
 
 // デフォルトエクスポート
 export default COMPREHENSIVE_LOCATION_CONFIG;

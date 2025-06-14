@@ -40,9 +40,6 @@ export const DIRT_TYPE_MAPPING = {
     'entrance': ['泥汚れ', 'ほこり']
 };
 
-// Named exports
-export { COMPREHENSIVE_DIRT_MAPPING, DIRT_TYPE_MAPPING };
-
 // Default export
 export default {
     COMPREHENSIVE_DIRT_MAPPING,

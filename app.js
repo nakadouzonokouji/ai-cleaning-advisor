@@ -8,13 +8,17 @@
  */
 
 // モジュールのインポート
-import { COMPREHENSIVE_DIRT_MAPPING } from './js/config/dirt-mapping.js';
-import { COMPREHENSIVE_CLEANING_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } from './js/config/products.js';
-import { COMPREHENSIVE_LOCATION_CONFIG } from './js/config/locations.js';
+import dirtMappingConfig from './js/config/dirt-mapping.js';
+import productsConfig from './js/config/products.js';
+import COMPREHENSIVE_LOCATION_CONFIG from './js/config/locations.js';
 import { APIClient } from './js/modules/api-client.js';
 import { UIComponents } from './js/modules/ui-components.js';
 import RealtimeSearchEngine from './js/modules/search-engine.js';
 import { SafetyWarningSystem } from './js/config/safety-warnings.js';
+
+// 互換性のため変数を分解
+const { COMPREHENSIVE_DIRT_MAPPING, DIRT_TYPE_MAPPING } = dirtMappingConfig;
+const { COMPREHENSIVE_CLEANING_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsConfig;
 
 /**
  * AICleaningAdvisor - メインアプリケーションクラス
