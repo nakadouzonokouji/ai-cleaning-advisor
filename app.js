@@ -24,14 +24,14 @@ class StepWiseCleaningAdvisor {
         // ステップ1: 場所選択
         document.querySelectorAll('[data-location]').forEach(card => {
             card.addEventListener('click', (e) => {
-                this.selectLocation(e.currentTarget.dataset.location);
+                this.selectLocation(e.currentTarget.dataset.location, e);
             });
         });
         
         // ステップ2: 汚れ程度選択
         document.querySelectorAll('[data-level]').forEach(card => {
             card.addEventListener('click', (e) => {
-                this.selectLevel(e.currentTarget.dataset.level);
+                this.selectLevel(e.currentTarget.dataset.level, e);
             });
         });
         
@@ -91,7 +91,7 @@ class StepWiseCleaningAdvisor {
         }
     }
     
-    selectLocation(location) {
+    selectLocation(location, event = null) {
         console.log('📍 場所選択:', location);
         
         // 前の選択をリセット
@@ -101,7 +101,16 @@ class StepWiseCleaningAdvisor {
         });
         
         // 新しい選択をマーク（アニメーション付き）
-        const selectedCard = event.currentTarget;
+        const selectedCard = event ? event.currentTarget : document.querySelector(`[data-location="${location}"]`);
+        
+        if (!selectedCard) {
+            console.error('❌ 選択されたカードが見つかりません:', location);
+            // フォールバック処理: データ属性なしで選択可能にする
+            this.selectedLocation = location;
+            setTimeout(() => this.goToStep(2), 500);
+            return;
+        }
+        
         selectedCard.classList.add('selected');
         
         // 選択時のマイクロインタラクション
@@ -122,7 +131,7 @@ class StepWiseCleaningAdvisor {
         }, 500);
     }
     
-    selectLevel(level) {
+    selectLevel(level, event = null) {
         console.log('🎯 汚れ程度選択:', level);
         
         // 前の選択をリセット
@@ -132,7 +141,16 @@ class StepWiseCleaningAdvisor {
         });
         
         // 新しい選択をマーク（アニメーション付き）
-        const selectedCard = event.currentTarget;
+        const selectedCard = event ? event.currentTarget : document.querySelector(`[data-level="${level}"]`);
+        
+        if (!selectedCard) {
+            console.error('❌ 選択されたカードが見つかりません:', level);
+            // フォールバック処理: データ属性なしで選択可能にする
+            this.selectedLevel = level;
+            setTimeout(() => this.goToStep(3), 500);
+            return;
+        }
+        
         selectedCard.classList.add('selected');
         
         // 選択時のマイクロインタラクション
@@ -154,25 +172,48 @@ class StepWiseCleaningAdvisor {
     }
     
     handleImageSelection(event) {
+        if (!event || !event.target || !event.target.files) {
+            console.warn('⚠️ 無効なファイル選択イベント');
+            return;
+        }
+        
         const file = event.target.files[0];
         if (!file) return;
         
         console.log('📷 画像選択:', file.name);
         
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = document.getElementById('previewImg');
-            const imagePreview = document.getElementById('imagePreview');
-            const analyzeWithPhoto = document.getElementById('analyzeWithPhoto');
+        try {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.getElementById('previewImg');
+                const imagePreview = document.getElementById('imagePreview');
+                const analyzeWithPhoto = document.getElementById('analyzeWithPhoto');
+                
+                if (img && imagePreview && analyzeWithPhoto) {
+                    img.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    analyzeWithPhoto.classList.remove('hidden');
+                    this.selectedImage = e.target.result;
+                } else {
+                    console.error('❌ プレビュー関連の要素が見つかりません');
+                    // フォールバック: 画像データだけ保存
+                    this.selectedImage = e.target.result;
+                    console.log('📷 画像データは保存されました（プレビューは表示できません）');
+                }
+            };
             
-            if (img && imagePreview && analyzeWithPhoto) {
-                img.src = e.target.result;
-                imagePreview.classList.remove('hidden');
-                analyzeWithPhoto.classList.remove('hidden');
-                this.selectedImage = e.target.result;
-            }
-        };
-        reader.readAsDataURL(file);
+            reader.onerror = (error) => {
+                console.error('❌ ファイル読み込みエラー:', error);
+                // ユーザーに分かりやすいエラーメッセージを表示
+                this.showErrorToast('画像の読み込みに失敗しました。別の画像を選択してください。');
+            };
+            
+            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error('❌ 画像処理エラー:', error);
+            // ユーザーに分かりやすいエラーメッセージを表示
+            this.showErrorToast('画像の処理中にエラーが発生しました。もう一度お試しください。');
+        }
     }
     
     analyzeWithoutPhoto() {
@@ -530,7 +571,7 @@ class StepWiseCleaningAdvisor {
         
         console.log('🛒 商品推薦開始:', { location: location.type, level: level.intensity });
         
-        if (window.COMPREHENSIVE_CLEANING_PRODUCTS) {
+        if (window.COMPREHENSIVE_CLEANING_PRODUCTS && typeof window.COMPREHENSIVE_CLEANING_PRODUCTS === 'object') {
             console.log('📦 利用可能な商品カテゴリ:', Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS));
             
             // 実際のデータベースキーに合わせて修正
@@ -552,7 +593,7 @@ class StepWiseCleaningAdvisor {
             for (const categoryName of relevantCategories) {
                 console.log(`🔍 カテゴリ "${categoryName}" をチェック中...`);
                 
-                if (window.COMPREHENSIVE_CLEANING_PRODUCTS[categoryName]?.products) {
+                if (window.COMPREHENSIVE_CLEANING_PRODUCTS[categoryName]?.products && Array.isArray(window.COMPREHENSIVE_CLEANING_PRODUCTS[categoryName].products)) {
                     const categoryProducts = window.COMPREHENSIVE_CLEANING_PRODUCTS[categoryName].products;
                     console.log(`✅ カテゴリ "${categoryName}" で ${categoryProducts.length} 商品発見`);
                     
@@ -997,28 +1038,39 @@ class StepWiseCleaningAdvisor {
     
     // 選択エフェクト（成功時のリップルエフェクト）
     showSelectionEffect(element) {
-        const ripple = document.createElement('div');
-        ripple.style.cssText = `
-            position: absolute;
-            background: rgba(59, 130, 246, 0.3);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-            top: 50%;
-            left: 50%;
-            width: 100px;
-            height: 100px;
-            margin-left: -50px;
-            margin-top: -50px;
-        `;
+        if (!element) {
+            console.warn('⚠️ エフェクト対象の要素が存在しません');
+            return;
+        }
         
-        element.style.position = 'relative';
-        element.appendChild(ripple);
-        
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
+        try {
+            const ripple = document.createElement('div');
+            ripple.style.cssText = `
+                position: absolute;
+                background: rgba(59, 130, 246, 0.3);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+                top: 50%;
+                left: 50%;
+                width: 100px;
+                height: 100px;
+                margin-left: -50px;
+                margin-top: -50px;
+            `;
+            
+            element.style.position = 'relative';
+            element.appendChild(ripple);
+            
+            setTimeout(() => {
+                if (ripple && ripple.parentNode) {
+                    ripple.remove();
+                }
+            }, 600);
+        } catch (error) {
+            console.warn('⚠️ リップルエフェクトの作成に失敗:', error);
+        }
     }
     
     // 進行度バーアニメーション
@@ -1200,16 +1252,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // 少し待ってから初期化（他のスクリプト読み込み完了を待つ）
     setTimeout(() => {
         try {
-            window.stepWiseAdvisor = new StepWiseCleaningAdvisor();
+            if (!window.stepWiseAdvisor) {
+                window.stepWiseAdvisor = new StepWiseCleaningAdvisor();
+                console.log('✅ StepWiseCleaningAdvisor初期化成功');
+            }
         } catch (error) {
             console.error('❌ 初期化エラー:', error);
             // フォールバック処理
             console.log('🔄 フォールバック初期化を試行します');
             setTimeout(() => {
                 try {
-                    window.stepWiseAdvisor = new StepWiseCleaningAdvisor();
+                    if (!window.stepWiseAdvisor) {
+                        window.stepWiseAdvisor = new StepWiseCleaningAdvisor();
+                        console.log('✅ フォールバック初期化成功');
+                    }
                 } catch (fallbackError) {
                     console.error('❌ フォールバック初期化も失敗:', fallbackError);
+                    console.log('🚨 手動初期化が必要です。ページをリロードしてください。');
                 }
             }, 1000);
         }
