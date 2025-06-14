@@ -3,8 +3,12 @@
  * AI掃除アドバイザー - 商品検索・推薦システム
  */
 
-import { COMPREHENSIVE_CLEANING_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } from '../config/products.js';
-import { COMPREHENSIVE_DIRT_MAPPING } from '../config/dirt-mapping.js';
+import productsConfig from '../config/products.js';
+import dirtMappingConfig from '../config/dirt-mapping.js';
+
+// 設定データを分解
+const { COMPREHENSIVE_CLEANING_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsConfig;
+const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingConfig;
 
 export class RealtimeSearchEngine {
     constructor() {

@@ -591,15 +591,20 @@
     
     <!-- 包括的清掃用品データベース - モジュール版に移行済み -->
     <script type="module">
-        import { 
-            COMPREHENSIVE_CLEANING_PRODUCTS, 
-            DIRT_TYPE_MAPPING, 
-            LOCATION_PRODUCTS 
-        } from './js/config/products.js';
+        import productsConfig from './js/config/products.js';
+        import dirtMappingConfig from './js/config/dirt-mapping.js';
+        import COMPREHENSIVE_LOCATION_CONFIG from './js/config/locations.js';
         import { SafetyWarningSystem } from './js/config/safety-warnings.js';
+        
+        // 設定データを分解
+        const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS } = productsConfig;
+        const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingConfig;
         
         // システムチェック用にwindowオブジェクトに設定
         window.COMPREHENSIVE_CLEANING_PRODUCTS = COMPREHENSIVE_CLEANING_PRODUCTS;
+        window.COMPREHENSIVE_PRODUCT_DATABASE = productsConfig.COMPREHENSIVE_PRODUCT_DATABASE;
+        window.COMPREHENSIVE_DIRT_MAPPING = COMPREHENSIVE_DIRT_MAPPING;
+        window.COMPREHENSIVE_LOCATION_CONFIG = COMPREHENSIVE_LOCATION_CONFIG;
         window.DIRT_TYPE_MAPPING = DIRT_TYPE_MAPPING;
         window.LOCATION_PRODUCTS = LOCATION_PRODUCTS;
         window.SafetyWarningSystem = SafetyWarningSystem;
