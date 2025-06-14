@@ -382,11 +382,36 @@ class StepWiseCleaningAdvisor {
     disableExternalPlaceholders() {
         // 全てのimg要素をチェックして外部プレースホルダーを無効化
         document.querySelectorAll('img').forEach(img => {
-            if (img.src && (img.src.includes('via.placeholder') || img.src.includes('placeholder'))) {
+            if (img.src && (img.src.includes('via.placeholder') || img.src.includes('placeholder') || img.src.includes('placekitten') || img.src.includes('lorempixel'))) {
+                console.log(`🔧 外部プレースホルダー画像を置換: ${img.src}`);
                 img.src = this.getPlaceholderImage();
-                img.onerror = () => { img.style.display = 'none'; };
+                img.onerror = () => { 
+                    console.log('🖼️ 画像読み込み失敗 - 非表示にします');
+                    img.style.display = 'none'; 
+                };
             }
         });
+        
+        // 動的に追加される画像に対する監視
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1) { // Element node
+                        const imgs = node.querySelectorAll ? node.querySelectorAll('img') : [];
+                        imgs.forEach(img => {
+                            if (img.src && (img.src.includes('via.placeholder') || img.src.includes('placeholder'))) {
+                                console.log(`🔧 動的に追加された外部プレースホルダー画像を置換: ${img.src}`);
+                                img.src = this.getPlaceholderImage();
+                                img.onerror = () => { img.style.display = 'none'; };
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        
+        observer.observe(document.body, { childList: true, subtree: true });
+        console.log('✅ 外部プレースホルダー監視システム開始');
     }
     
     displayResult(result) {
@@ -547,9 +572,42 @@ class StepWiseCleaningAdvisor {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🎉 DOM読み込み完了 - ステップバイステップ AI掃除アドバイザー開始');
     
+    // エラーハンドリング強化
+    window.addEventListener('error', (event) => {
+        console.warn('🚨 グローバルエラーをキャッチ:', event.error);
+        // via.placeholder関連のエラーは無視
+        if (event.filename && event.filename.includes('via.placeholder')) {
+            console.log('🔧 via.placeholder関連エラーは無視します');
+            return true; // エラーを抑制
+        }
+    });
+    
+    // 未処理のPromise拒否をキャッチ
+    window.addEventListener('unhandledrejection', (event) => {
+        console.warn('🚨 未処理のPromise拒否:', event.reason);
+        // 外部画像関連のエラーは無視
+        if (event.reason && event.reason.toString().includes('placeholder')) {
+            console.log('🔧 placeholder関連エラーは無視します');
+            event.preventDefault();
+        }
+    });
+    
     // 少し待ってから初期化（他のスクリプト読み込み完了を待つ）
     setTimeout(() => {
-        window.stepWiseAdvisor = new StepWiseCleaningAdvisor();
+        try {
+            window.stepWiseAdvisor = new StepWiseCleaningAdvisor();
+        } catch (error) {
+            console.error('❌ 初期化エラー:', error);
+            // フォールバック処理
+            console.log('🔄 フォールバック初期化を試行します');
+            setTimeout(() => {
+                try {
+                    window.stepWiseAdvisor = new StepWiseCleaningAdvisor();
+                } catch (fallbackError) {
+                    console.error('❌ フォールバック初期化も失敗:', fallbackError);
+                }
+            }, 1000);
+        }
     }, 500);
 });
 

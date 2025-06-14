@@ -747,7 +747,7 @@ export class UIComponents extends EventTarget {
                 } else if (safeProduct.asin) {
                     imageUrl = `https://m.media-amazon.com/images/I/${safeProduct.asin}._SL500_.jpg`;
                 } else {
-                    imageUrl = 'https://via.placeholder.com/150x150/f0f0f0/999999?text=No+Image';
+                    imageUrl = this.getPlaceholderImage();
                 }
 
                 return `
@@ -756,7 +756,7 @@ export class UIComponents extends EventTarget {
                             <img src="${imageUrl}" 
                                 alt="${safeProduct.name}" 
                                 class="w-full h-32 object-contain rounded-md mb-2"
-                                onerror="this.src='https://via.placeholder.com/150x150/f0f0f0/999999?text=No+Image'"
+                                onerror="this.style.display='none'"
                                 loading="lazy">
                             <div class="absolute top-1 right-1">
                                 <div class="text-4xl mb-2">${safeProduct.emoji || '🧴'}</div>
@@ -1802,6 +1802,27 @@ export class UIComponents extends EventTarget {
             `;
             resultsEl.classList.remove('hidden');
         }
+    }
+
+    /**
+     * プレースホルダー画像生成（外部依存なし）
+     */
+    getPlaceholderImage() {
+        const svg = `
+            <svg width="200" height="150" xmlns="http://www.w3.org/2000/svg">
+                <rect width="200" height="150" fill="#f3f4f6"/>
+                <text x="100" y="75" text-anchor="middle" dominant-baseline="middle" 
+                      font-family="Arial, sans-serif" font-size="14" fill="#6b7280">
+                    商品画像
+                </text>
+                <text x="100" y="95" text-anchor="middle" dominant-baseline="middle" 
+                      font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">
+                    準備中
+                </text>
+            </svg>
+        `;
+        
+        return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.trim())));
     }
 
     /**
