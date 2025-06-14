@@ -94,17 +94,17 @@ class AICleaningAdvisor {
      */
     setupEventListeners() {
         // UIコンポーネントとの連携
-        this.uiComponents.on('locationSelected', (location) => {
-            this.selectLocation(location);
+        this.uiComponents.on('locationSelected', (event) => {
+            this.selectLocation(event.detail);
         });
         
-        this.uiComponents.on('severityChanged', (severity) => {
-            this.state.dirtSeverity = severity;
-            console.log(`🎯 汚れ度合い変更: ${severity}`);
+        this.uiComponents.on('severityChanged', (event) => {
+            this.state.dirtSeverity = event.detail;
+            console.log(`🎯 汚れ度合い変更: ${event.detail}`);
         });
         
-        this.uiComponents.on('imageUploaded', (imageData) => {
-            this.handleImageUpload(imageData);
+        this.uiComponents.on('imageUploaded', (event) => {
+            this.handleImageUpload(event.detail);
         });
         
         this.uiComponents.on('analyzeRequested', () => {

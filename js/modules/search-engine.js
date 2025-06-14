@@ -150,28 +150,32 @@ export class RealtimeSearchEngine {
     getProductsFromCategory(category, severity) {
         const products = [];
         
-        // COMPREHENSIVE_CLEANING_PRODUCTSから取得
-        if (COMPREHENSIVE_CLEANING_PRODUCTS[category]) {
-            const categoryData = COMPREHENSIVE_CLEANING_PRODUCTS[category];
-            if (categoryData.products) {
-                products.push(...categoryData.products.map(p => ({
-                    ...p,
-                    category: categoryData.category,
-                    source: 'COMPREHENSIVE_CLEANING_PRODUCTS'
-                })));
+        try {
+            // COMPREHENSIVE_CLEANING_PRODUCTSから取得
+            if (COMPREHENSIVE_CLEANING_PRODUCTS && COMPREHENSIVE_CLEANING_PRODUCTS[category]) {
+                const categoryData = COMPREHENSIVE_CLEANING_PRODUCTS[category];
+                if (categoryData && categoryData.products && Array.isArray(categoryData.products)) {
+                    products.push(...categoryData.products.map(p => ({
+                        ...p,
+                        category: categoryData.category,
+                        source: 'COMPREHENSIVE_CLEANING_PRODUCTS'
+                    })));
+                }
             }
-        }
-        
-        // COMPREHENSIVE_PRODUCT_DATABASEから取得
-        if (COMPREHENSIVE_PRODUCT_DATABASE[category]) {
-            const categoryData = COMPREHENSIVE_PRODUCT_DATABASE[category];
-            if (categoryData.products) {
-                products.push(...categoryData.products.map(p => ({
-                    ...p,
-                    category: categoryData.category,
-                    source: 'COMPREHENSIVE_PRODUCT_DATABASE'
-                })));
+            
+            // COMPREHENSIVE_PRODUCT_DATABASEから取得
+            if (COMPREHENSIVE_PRODUCT_DATABASE && COMPREHENSIVE_PRODUCT_DATABASE[category]) {
+                const categoryData = COMPREHENSIVE_PRODUCT_DATABASE[category];
+                if (categoryData && categoryData.products && Array.isArray(categoryData.products)) {
+                    products.push(...categoryData.products.map(p => ({
+                        ...p,
+                        category: categoryData.category,
+                        source: 'COMPREHENSIVE_PRODUCT_DATABASE'
+                    })));
+                }
             }
+        } catch (error) {
+            console.warn(`⚠️ カテゴリ商品取得エラー (${category}):`, error.message);
         }
         
         // 汚れの程度に基づくフィルタリング
@@ -273,29 +277,37 @@ export class RealtimeSearchEngine {
     getAllProducts() {
         const allProducts = [];
         
-        // COMPREHENSIVE_CLEANING_PRODUCTSから取得
-        Object.entries(COMPREHENSIVE_CLEANING_PRODUCTS).forEach(([key, categoryData]) => {
-            if (categoryData.products) {
-                allProducts.push(...categoryData.products.map(p => ({
-                    ...p,
-                    category: categoryData.category,
-                    categoryKey: key,
-                    source: 'COMPREHENSIVE_CLEANING_PRODUCTS'
-                })));
+        try {
+            // COMPREHENSIVE_CLEANING_PRODUCTSから取得
+            if (COMPREHENSIVE_CLEANING_PRODUCTS && typeof COMPREHENSIVE_CLEANING_PRODUCTS === 'object') {
+                Object.entries(COMPREHENSIVE_CLEANING_PRODUCTS).forEach(([key, categoryData]) => {
+                    if (categoryData && categoryData.products && Array.isArray(categoryData.products)) {
+                        allProducts.push(...categoryData.products.map(p => ({
+                            ...p,
+                            category: categoryData.category,
+                            categoryKey: key,
+                            source: 'COMPREHENSIVE_CLEANING_PRODUCTS'
+                        })));
+                    }
+                });
             }
-        });
-        
-        // COMPREHENSIVE_PRODUCT_DATABASEから取得
-        Object.entries(COMPREHENSIVE_PRODUCT_DATABASE).forEach(([key, categoryData]) => {
-            if (categoryData.products) {
-                allProducts.push(...categoryData.products.map(p => ({
-                    ...p,
-                    category: categoryData.category,
-                    categoryKey: key,
-                    source: 'COMPREHENSIVE_PRODUCT_DATABASE'
-                })));
+            
+            // COMPREHENSIVE_PRODUCT_DATABASEから取得
+            if (COMPREHENSIVE_PRODUCT_DATABASE && typeof COMPREHENSIVE_PRODUCT_DATABASE === 'object') {
+                Object.entries(COMPREHENSIVE_PRODUCT_DATABASE).forEach(([key, categoryData]) => {
+                    if (categoryData && categoryData.products && Array.isArray(categoryData.products)) {
+                        allProducts.push(...categoryData.products.map(p => ({
+                            ...p,
+                            category: categoryData.category,
+                            categoryKey: key,
+                            source: 'COMPREHENSIVE_PRODUCT_DATABASE'
+                        })));
+                    }
+                });
             }
-        });
+        } catch (error) {
+            console.warn('⚠️ 全商品取得エラー:', error.message);
+        }
         
         return allProducts;
     }

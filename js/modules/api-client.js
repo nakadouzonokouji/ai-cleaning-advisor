@@ -1064,6 +1064,57 @@ class APIClient {
             }
         };
     }
+
+    /**
+     * Enrich products with Amazon data
+     * @param {Array} products - Base product list
+     * @param {Array} asins - Amazon ASINs to fetch
+     * @returns {Promise<Array>} Enriched product list
+     */
+    async enrichProductsWithAmazonData(products, asins) {
+        console.log('🛒 商品データエンリッチ開始', { products: products.length, asins: asins.length });
+        
+        try {
+            // Get Amazon product data
+            const amazonProducts = await this.amazon.getProducts(asins);
+            console.log(`📦 Amazon商品データ取得: ${amazonProducts.length}件`);
+            
+            // Merge with base product data
+            const enrichedProducts = products.map(product => {
+                const amazonData = amazonProducts.find(ap => ap.asin === product.asin);
+                
+                if (amazonData) {
+                    return {
+                        ...product,
+                        amazonPrice: amazonData.price,
+                        amazonRating: amazonData.rating,
+                        amazonReviews: amazonData.reviewCount,
+                        amazonUrl: amazonData.url,
+                        amazonImage: amazonData.imageUrl,
+                        availability: amazonData.availability,
+                        enriched: true
+                    };
+                }
+                
+                return { ...product, enriched: false };
+            });
+            
+            console.log(`✅ 商品エンリッチ完了: ${enrichedProducts.filter(p => p.enriched).length}/${enrichedProducts.length}件`);
+            return enrichedProducts;
+            
+        } catch (error) {
+            console.warn('⚠️ 商品エンリッチ失敗、元データを返却:', error.message);
+            return products.map(p => ({ ...p, enriched: false }));
+        }
+    }
+
+    /**
+     * Get API status
+     * @returns {Object} Status information
+     */
+    getStatus() {
+        return this.getApiStatus();
+    }
 }
 
 // =============================================================================

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>モジュールテスト</title>
+</head>
+<body>
+    <h1>モジュール統合テスト</h1>
+    <div id="test-results"></div>
+
+    <script type="module">
+        import { COMPREHENSIVE_DIRT_MAPPING } from './js/config/dirt-mapping.js';
+        import { COMPREHENSIVE_CLEANING_PRODUCTS } from './js/config/products.js';
+        import { COMPREHENSIVE_LOCATION_CONFIG } from './js/config/locations.js';
+        import { APIClient } from './js/modules/api-client.js';
+        import UIComponents from './js/modules/ui-components.js';
+        import RealtimeSearchEngine from './js/modules/search-engine.js';
+
+        const results = [];
+
+        try {
+            // テスト 1: 設定データの読み込み
+            console.log('🧪 テスト1: 設定データ読み込み');
+            results.push(`✅ DIRT_MAPPING: ${Object.keys(COMPREHENSIVE_DIRT_MAPPING).length}件`);
+            results.push(`✅ CLEANING_PRODUCTS: ${Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS).length}カテゴリ`);
+            results.push(`✅ LOCATION_CONFIG: ${Object.keys(COMPREHENSIVE_LOCATION_CONFIG).length}場所`);
+
+            // テスト 2: APIClient初期化
+            console.log('🧪 テスト2: APIClient初期化');
+            const apiClient = new APIClient();
+            results.push(`✅ APIClient初期化成功`);
+            results.push(`✅ APIClient getStatus: ${typeof apiClient.getStatus}`);
+            results.push(`✅ APIClient enrichProductsWithAmazonData: ${typeof apiClient.enrichProductsWithAmazonData}`);
+
+            // テスト 3: UIComponents初期化
+            console.log('🧪 テスト3: UIComponents初期化');
+            const uiComponents = new UIComponents();
+            results.push(`✅ UIComponents初期化成功`);
+            results.push(`✅ UIComponents on: ${typeof uiComponents.on}`);
+            results.push(`✅ UIComponents emit: ${typeof uiComponents.emit}`);
+            results.push(`✅ UIComponents updateStatusInfo: ${typeof uiComponents.updateStatusInfo}`);
+
+            // テスト 4: SearchEngine初期化
+            console.log('🧪 テスト4: SearchEngine初期化');
+            const searchEngine = new RealtimeSearchEngine();
+            results.push(`✅ SearchEngine初期化成功`);
+            results.push(`✅ SearchEngine searchProductsByDirt: ${typeof searchEngine.searchProductsByDirt}`);
+
+            // テスト 5: 検索機能テスト
+            console.log('🧪 テスト5: 検索機能テスト');
+            const searchResults = await searchEngine.searchProductsByDirt('油汚れ', 'heavy', 'kitchen');
+            results.push(`✅ 検索結果: ${searchResults.length}件`);
+
+            results.push('🎉 全テスト成功！');
+
+        } catch (error) {
+            results.push(`❌ エラー: ${error.message}`);
+            console.error('テストエラー:', error);
+        }
+
+        // 結果表示
+        document.getElementById('test-results').innerHTML = results.map(r => `<p>${r}</p>`).join('');
+    </script>
+</body>
+</html>

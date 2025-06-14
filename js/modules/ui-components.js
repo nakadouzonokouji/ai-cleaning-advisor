@@ -1435,11 +1435,42 @@ export class UIComponents extends EventTarget {
      * @param {Object} locationConfig - 場所設定
      */
     setupLocationButtons(locationConfig) {
-        console.log('🏠 場所ボタンセットアップ開始');
+        console.log('🏠 場所ボタンセットアップ開始', locationConfig);
         
-        // 既存のsetupLocationButtonsWithDebugを使用
-        this.setupLocationButtonsWithDebug();
+        // 重複設定を避けるため、既存の設定を確認
+        if (this.locationButtonsSetup) {
+            console.log('⚠️ 場所ボタンは既にセットアップ済み');
+            return;
+        }
         
+        // 既存のHTMLボタンにイベントリスナーを設定
+        const locationButtons = document.querySelectorAll('[data-location]');
+        console.log(`📍 検出された場所ボタン数: ${locationButtons.length}`);
+        
+        if (locationButtons.length === 0) {
+            console.warn('⚠️ 場所ボタンが見つかりません - HTMLの確認が必要');
+            return;
+        }
+        
+        locationButtons.forEach((button, index) => {
+            const location = button.getAttribute('data-location');
+            if (location) {
+                // 重複リスナーを避けるため、既存のリスナーをクリア
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+                
+                // イベントリスナーを追加
+                newButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log(`🎯 場所ボタンクリック: ${location}`);
+                    this.selectLocation(location);
+                });
+                
+                console.log(`  ✅ ボタン${index + 1}: ${location} イベント設定完了`);
+            }
+        });
+        
+        this.locationButtonsSetup = true;
         console.log('✅ 場所ボタンセットアップ完了');
     }
 
