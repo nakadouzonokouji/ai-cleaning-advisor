@@ -1,0 +1,19 @@
+{
+  "name": "ai-cleaner",
+  "version": "1.0.0",
+  "description": "画像認識AIを使用した高精度な掃除アドバイス・商品推薦システム",
+  "main": "amazon-api.js",
+  "scripts": {
+    "build-css": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "build-css-prod": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.5",
+    "tailwindcss": "^4.1.10"
+  }
+}
