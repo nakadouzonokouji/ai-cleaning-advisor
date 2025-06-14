@@ -102,5 +102,8 @@ export const getLocationsByDifficulty = () => {
     return result;
 };
 
+// Named export
+export { COMPREHENSIVE_LOCATION_CONFIG };
+
 // デフォルトエクスポート
 export default COMPREHENSIVE_LOCATION_CONFIG;

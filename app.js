@@ -13,7 +13,7 @@ import { COMPREHENSIVE_CLEANING_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } from 
 import { COMPREHENSIVE_LOCATION_CONFIG } from './js/config/locations.js';
 import { APIClient } from './js/modules/api-client.js';
 import { UIComponents } from './js/modules/ui-components.js';
-import { RealtimeSearchEngine } from './js/modules/search-engine.js';
+import RealtimeSearchEngine from './js/modules/search-engine.js';
 import { SafetyWarningSystem } from './js/config/safety-warnings.js';
 
 /**

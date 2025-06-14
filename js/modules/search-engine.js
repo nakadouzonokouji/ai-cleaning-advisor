@@ -440,7 +440,6 @@ export class RealtimeSearchEngine {
 }
 
 // デフォルトエクスポート
-export { RealtimeSearchEngine };
 export default RealtimeSearchEngine;
 
 // ブラウザ互換性のため
