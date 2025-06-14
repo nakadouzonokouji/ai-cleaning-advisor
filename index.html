@@ -120,6 +120,13 @@
                 padding-right: 0.75rem;
             }
             
+            /* 強制的に2カラム表示 */
+            .grid.grid-cols-2 {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 1rem !important;
+            }
+            
             .choice-card {
                 padding: 0.75rem;
                 font-size: 0.9rem;
@@ -127,6 +134,68 @@
             
             .choice-card .text-4xl {
                 font-size: 2.5rem;
+            }
+            
+            /* Amazon商品横スクロール完全修正 */
+            .overflow-x-auto {
+                overflow-x: scroll !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch !important;
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE */
+                touch-action: pan-x !important;
+                white-space: nowrap !important;
+            }
+            
+            .overflow-x-auto::-webkit-scrollbar {
+                display: none !important; /* Chrome, Safari */
+            }
+            
+            /* 商品カードの幅とレイアウト強制 */
+            .flex-shrink-0 {
+                flex-shrink: 0 !important;
+                min-width: 160px !important;
+                max-width: 160px !important;
+                width: 160px !important;
+                display: inline-block !important;
+                vertical-align: top !important;
+                white-space: normal !important;
+            }
+            
+            /* フレックスコンテナ最適化 */
+            .flex {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                align-items: stretch !important;
+            }
+            
+            .space-x-3 > * + * {
+                margin-left: 0.5rem !important;
+            }
+            
+            /* スクロールエリア追加CSS */
+            .amazon-product-scroll {
+                width: 100% !important;
+                overflow-x: scroll !important;
+                overflow-y: hidden !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding-bottom: 10px !important;
+                position: relative !important;
+            }
+            
+            /* スクロールヒント表示 */
+            .scroll-hint {
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(0,0,0,0.5);
+                color: white;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-size: 10px;
+                pointer-events: none;
+                z-index: 10;
             }
             
             .step-indicator .step {

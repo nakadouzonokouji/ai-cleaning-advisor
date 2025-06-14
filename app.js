@@ -1610,10 +1610,11 @@ class StepWiseCleaningAdvisor {
                     <h3 class="text-lg font-bold text-gray-800 mb-4 px-4">
                         ${this.getCategoryIcon(categoryName)} ${categoryName}
                     </h3>
-                    <div class="overflow-x-auto pb-4">
-                        <div class="flex space-x-4 px-4" style="width: max-content;">
+                    <div class="amazon-product-scroll overflow-x-auto pb-4" style="overflow-x: scroll; -webkit-overflow-scrolling: touch; touch-action: pan-x;">
+                        <div class="flex space-x-3 px-4" style="width: max-content; min-width: 100%; flex-wrap: nowrap;">
                             ${categoryProducts.map(product => this.createProductCard(product)).join('')}
                         </div>
+                        <div class="scroll-hint md:hidden">→</div>
                     </div>
                 </div>
             `;
@@ -1633,7 +1634,7 @@ class StepWiseCleaningAdvisor {
     
     createProductCard(product) {
         return `
-            <div class="bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow relative flex-shrink-0" style="width: 200px;">
+            <div class="bg-white border rounded-lg shadow-sm hover:shadow-md transition-shadow relative flex-shrink-0" style="width: 160px; min-width: 160px; max-width: 160px;">
                 ${product.amazonChoice ? '<div class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">Amazon\'s Choice</div>' : ''}
                 ${product.bestseller ? '<div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">ベストセラー</div>' : ''}
                 ${product.professional ? '<div class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">プロ仕様</div>' : ''}
