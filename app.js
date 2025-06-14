@@ -97,15 +97,28 @@ class StepWiseCleaningAdvisor {
         // 前の選択をリセット
         document.querySelectorAll('[data-location]').forEach(card => {
             card.classList.remove('selected');
+            card.style.transform = '';
         });
         
-        // 新しい選択をマーク
-        event.currentTarget.classList.add('selected');
+        // 新しい選択をマーク（アニメーション付き）
+        const selectedCard = event.currentTarget;
+        selectedCard.classList.add('selected');
+        
+        // 選択時のマイクロインタラクション
+        selectedCard.style.transform = 'scale(1.05)';
+        selectedCard.style.transition = 'all 0.3s ease';
+        
+        // 成功エフェクト
+        this.showSelectionEffect(selectedCard);
+        
         this.selectedLocation = location;
         
-        // 少し待ってから次のステップへ
+        // 少し待ってから次のステップへ（アニメーション後）
         setTimeout(() => {
-            this.goToStep(2);
+            selectedCard.style.transform = 'scale(1)';
+            setTimeout(() => {
+                this.goToStep(2);
+            }, 200);
         }, 500);
     }
     
@@ -115,15 +128,28 @@ class StepWiseCleaningAdvisor {
         // 前の選択をリセット
         document.querySelectorAll('[data-level]').forEach(card => {
             card.classList.remove('selected');
+            card.style.transform = '';
         });
         
-        // 新しい選択をマーク
-        event.currentTarget.classList.add('selected');
+        // 新しい選択をマーク（アニメーション付き）
+        const selectedCard = event.currentTarget;
+        selectedCard.classList.add('selected');
+        
+        // 選択時のマイクロインタラクション
+        selectedCard.style.transform = 'scale(1.05)';
+        selectedCard.style.transition = 'all 0.3s ease';
+        
+        // 成功エフェクト
+        this.showSelectionEffect(selectedCard);
+        
         this.selectedLevel = level;
         
-        // 少し待ってから次のステップへ
+        // 少し待ってから次のステップへ（アニメーション後）
         setTimeout(() => {
-            this.goToStep(3);
+            selectedCard.style.transform = 'scale(1)';
+            setTimeout(() => {
+                this.goToStep(3);
+            }, 200);
         }, 500);
     }
     
@@ -162,11 +188,14 @@ class StepWiseCleaningAdvisor {
     async startAnalysis(withPhoto = false) {
         this.goToStep(4);
         
-        // ローディング表示
+        // 強化されたローディング表示
         const analysisLoading = document.getElementById('analysisLoading');
         const analysisResult = document.getElementById('analysisResult');
         
-        if (analysisLoading) analysisLoading.classList.remove('hidden');
+        if (analysisLoading) {
+            analysisLoading.classList.remove('hidden');
+            this.showEnhancedLoading();
+        }
         if (analysisResult) analysisResult.classList.add('hidden');
         
         try {
@@ -742,6 +771,9 @@ class StepWiseCleaningAdvisor {
         // 外部プレースホルダーを無効化
         this.disableExternalPlaceholders();
         
+        // 結果表示アニメーション
+        this.animateResultDisplay();
+        
         // 掃除方法を表示
         const methodElement = document.getElementById('cleaningMethod');
         if (methodElement) {
@@ -859,22 +891,46 @@ class StepWiseCleaningAdvisor {
     goToStep(stepNumber) {
         console.log(`📍 ステップ${stepNumber}に移動`);
         
-        // 現在のステップを非表示
-        document.querySelectorAll('.step-content').forEach(content => {
-            content.classList.add('hidden');
+        // 現在のステップをフェードアウト
+        const currentSteps = document.querySelectorAll('.step-content:not(.hidden)');
+        currentSteps.forEach(content => {
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(-20px)';
+            content.style.transition = 'all 0.3s ease';
         });
         
-        // 新しいステップを表示
-        const newStep = document.getElementById(`step${stepNumber}`);
-        if (newStep) {
-            newStep.classList.remove('hidden');
-            newStep.classList.add('fade-in');
-        }
-        
-        // ステップインジケーターを更新
-        this.updateStepIndicator(stepNumber);
-        
-        this.currentStep = stepNumber;
+        setTimeout(() => {
+            // 全ステップを非表示
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.add('hidden');
+                content.style.opacity = '';
+                content.style.transform = '';
+                content.style.transition = '';
+            });
+            
+            // 新しいステップを表示（フェードイン）
+            const newStep = document.getElementById(`step${stepNumber}`);
+            if (newStep) {
+                newStep.classList.remove('hidden');
+                newStep.style.opacity = '0';
+                newStep.style.transform = 'translateY(20px)';
+                newStep.style.transition = 'all 0.4s ease';
+                
+                // フェードイン実行
+                setTimeout(() => {
+                    newStep.style.opacity = '1';
+                    newStep.style.transform = 'translateY(0)';
+                }, 50);
+                
+                // 進行度バーアニメーション
+                this.animateProgressBar(stepNumber);
+            }
+            
+            // ステップインジケーターを更新
+            this.updateStepIndicator(stepNumber);
+            
+            this.currentStep = stepNumber;
+        }, 300);
     }
     
     updateStepIndicator(currentStep) {
@@ -932,10 +988,155 @@ class StepWiseCleaningAdvisor {
         } else {
             // フォールバック: クリップボードにコピー
             navigator.clipboard.writeText(`${shareText} ${window.location.href}`).then(() => {
-                alert('結果をクリップボードにコピーしました！');
+                this.showSuccessToast('結果をクリップボードにコピーしました！');
             }).catch(() => {
-                alert('シェア機能が利用できません');
+                this.showErrorToast('シェア機能が利用できません');
             });
+        }
+    }
+    
+    // 選択エフェクト（成功時のリップルエフェクト）
+    showSelectionEffect(element) {
+        const ripple = document.createElement('div');
+        ripple.style.cssText = `
+            position: absolute;
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            margin-left: -50px;
+            margin-top: -50px;
+        `;
+        
+        element.style.position = 'relative';
+        element.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    }
+    
+    // 進行度バーアニメーション
+    animateProgressBar(stepNumber) {
+        const progressPercentage = ((stepNumber - 1) / 3) * 100;
+        
+        // 仮想的な進行度バーを作成（将来の拡張用）
+        console.log(`📊 進行度: ${Math.round(progressPercentage)}%`);
+        
+        // ステップインジケーターに微細なアニメーション
+        const indicator = document.getElementById(`step${stepNumber}-indicator`);
+        if (indicator) {
+            indicator.style.transform = 'scale(1.2)';
+            indicator.style.transition = 'transform 0.3s ease';
+            setTimeout(() => {
+                indicator.style.transform = 'scale(1)';
+            }, 300);
+        }
+    }
+    
+    // 成功トースト通知
+    showSuccessToast(message) {
+        this.showToast(message, 'success');
+    }
+    
+    // エラートースト通知
+    showErrorToast(message) {
+        this.showToast(message, 'error');
+    }
+    
+    // 汎用トースト通知
+    showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        const bgColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6';
+        const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+        
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${bgColor};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        `;
+        
+        toast.innerHTML = `${icon} ${message}`;
+        document.body.appendChild(toast);
+        
+        // スライドイン
+        setTimeout(() => {
+            toast.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // 自動削除
+        setTimeout(() => {
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    }
+    
+    // 結果表示アニメーション
+    animateResultDisplay() {
+        const analysisResult = document.getElementById('analysisResult');
+        if (analysisResult) {
+            // 段階的に要素を表示
+            const elements = analysisResult.querySelectorAll('.bg-white');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                    
+                    // 各要素にバウンス効果
+                    el.classList.add('scale-in');
+                }, index * 200);
+            });
+            
+            // 成功メッセージのトースト
+            setTimeout(() => {
+                this.showSuccessToast('分析完了！最適な掃除方法をご提案します');
+            }, 1000);
+        }
+    }
+    
+    // ローディングアニメーション強化
+    showEnhancedLoading() {
+        const loadingElement = document.getElementById('analysisLoading');
+        if (loadingElement) {
+            loadingElement.innerHTML = `
+                <div class="text-center py-8">
+                    <div class="relative mb-6">
+                        <div class="loading-spinner w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+                        <div class="absolute inset-0 w-12 h-12 border-4 border-blue-200 rounded-full mx-auto animate-ping"></div>
+                    </div>
+                    <h3 class="text-xl font-bold text-blue-800 mb-2">🤖 AI分析中...</h3>
+                    <p class="text-blue-600 mb-4">最適な掃除方法と商品を検索しています</p>
+                    <div class="flex justify-center space-x-1">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+                    </div>
+                </div>
+            `;
         }
     }
 }
@@ -1015,10 +1216,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 });
 
-// ローディングスピナーアニメーション用CSS（既に存在しない場合）
-if (!document.querySelector('#spinner-style')) {
+// アニメーション用CSS（既に存在しない場合）
+if (!document.querySelector('#animation-styles')) {
     const style = document.createElement('style');
-    style.id = 'spinner-style';
+    style.id = 'animation-styles';
     style.textContent = `
         .loading-spinner {
             animation: spin 1s linear infinite;
@@ -1027,6 +1228,83 @@ if (!document.querySelector('#spinner-style')) {
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                transform: translate3d(0,0,0);
+            }
+            40%, 43% {
+                transform: translate3d(0,-15px,0);
+            }
+            70% {
+                transform: translate3d(0,-7px,0);
+            }
+            90% {
+                transform: translate3d(0,-3px,0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+        }
+        
+        .choice-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .choice-card.selected {
+            animation: pulse 1s;
+        }
+        
+        .bounce-in {
+            animation: bounce 0.6s ease;
+        }
+        
+        .fade-slide-in {
+            animation: fadeSlideIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .scale-in {
+            animation: scaleIn 0.3s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
     `;
     document.head.appendChild(style);
