@@ -2499,7 +2499,7 @@ class AICleaningAdvisor {
             this.state.selectedPhoto = e.target.result;
             
             // プレビュー表示
-            const previewSection = document.getElementById('previewSection');
+            const previewSection = document.getElementById('uploadedImageArea');
             const uploadedImage = document.getElementById('uploadedImage');
             
             if (previewSection && uploadedImage) {
@@ -3044,7 +3044,7 @@ class AICleaningAdvisor {
             });
 
             // 📸 写真アップロード
-            const photoUpload = document.getElementById('photoUpload');
+            const photoUpload = document.getElementById('imageInput');
             if (photoUpload) {
                 photoUpload.addEventListener('change', (e) => {
                     this.handlePhotoUpload(e);
