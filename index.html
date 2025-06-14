@@ -211,13 +211,25 @@
         <div id="step3" class="step-content hidden">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">📷 写真をアップロード（任意）</h2>
-                <p class="text-gray-600">より正確な診断のために写真をアップロードできます<br>スキップしても診断は可能です</p>
+                <p class="text-gray-600">より正確な診断のために写真をアップロードできます</p>
+                <p class="text-green-600 font-semibold mt-2">写真なしでも十分な診断が可能です！</p>
             </div>
             
             <div class="max-w-md mx-auto">
-                <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center mb-6">
-                    <div class="text-4xl mb-4">📁</div>
-                    <p class="text-gray-600 mb-4">写真をドラッグ&ドロップ<br>またはクリックして選択</p>
+                <!-- 写真なし診断を優先表示 -->
+                <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6 text-center mb-6">
+                    <div class="text-4xl mb-2">⚡</div>
+                    <h3 class="font-semibold text-green-800 mb-2">すぐに診断開始</h3>
+                    <p class="text-green-700 text-sm mb-4">場所と汚れ程度の選択だけで<br>適切な掃除方法をご提案します</p>
+                    <button id="skipPhoto" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 font-semibold">
+                        写真なしで診断開始
+                    </button>
+                </div>
+                
+                <!-- 写真アップロード（オプション） -->
+                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center mb-6">
+                    <div class="text-3xl mb-2">📁</div>
+                    <p class="text-gray-600 mb-4 text-sm">さらに詳細な診断をご希望の場合<br>写真をアップロードしてください</p>
                     <input type="file" id="imageInput" accept="image/*" class="hidden">
                     <button id="selectImageBtn" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
                         写真を選択
@@ -226,17 +238,14 @@
                 
                 <div id="imagePreview" class="hidden mb-6">
                     <img id="previewImg" class="w-full rounded-lg shadow-md">
+                    <button id="analyzeWithPhoto" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 mt-4 w-full font-semibold">
+                        写真で詳細診断開始
+                    </button>
                 </div>
                 
-                <div class="flex justify-center gap-4">
-                    <button id="backToStep2" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600">
+                <div class="text-center">
+                    <button id="backToStep2" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 text-sm">
                         ← 戻る
-                    </button>
-                    <button id="skipPhoto" class="bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600">
-                        写真なしで診断
-                    </button>
-                    <button id="analyzeWithPhoto" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 hidden">
-                        写真で診断開始
                     </button>
                 </div>
             </div>
