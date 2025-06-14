@@ -270,6 +270,9 @@
                     <button id="adminTab" class="tab-button px-6 py-3 text-white bg-white bg-opacity-20 rounded-t-lg mr-1 active">
                         <span class="mr-2">📊</span>管理者ダッシュボード
                     </button>
+                    <button id="productsTab" class="tab-button px-6 py-3 text-white bg-white bg-opacity-10 rounded-t-lg hover:bg-opacity-20">
+                        <span class="mr-2">📦</span>商品監視
+                    </button>
                     <button id="devTab" class="tab-button dev-tab px-6 py-3 text-white bg-white bg-opacity-10 rounded-t-lg hover:bg-opacity-20">
                         <span class="mr-2">🔧</span>開発者モード
                     </button>
@@ -392,6 +395,50 @@
                 <h3 class="text-lg font-bold text-gray-800 mb-4">分析データ統計</h3>
                 <div id="analysisStats" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- 動的に生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品監視 -->
+        <div id="productsContent" class="tab-content hidden">
+            <!-- 監視ステータス -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">商品監視ステータス</h2>
+                    <div class="flex gap-3">
+                        <button id="startProductMonitorBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                            <span class="mr-2">▶️</span>監視開始
+                        </button>
+                        <button id="exportProductReportBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            <span class="mr-2">📊</span>レポート出力
+                        </button>
+                        <button id="autoMonitorSettingsBtn" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                            <span class="mr-2">⚙️</span>自動監視設定
+                        </button>
+                    </div>
+                </div>
+                <div id="productMonitorStatus" class="text-gray-600">
+                    待機中 - 「監視開始」ボタンをクリックして商品のヘルスチェックを開始してください
+                </div>
+            </div>
+
+            <!-- 統計情報 -->
+            <div id="productMonitorStats" class="mb-8">
+                <!-- 統計情報はJavaScriptで動的に生成 -->
+            </div>
+
+            <!-- 監視結果 -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">監視結果</h2>
+                    <div class="text-sm text-gray-600" id="productLastCheckTime">
+                        <!-- 最終チェック時刻 -->
+                    </div>
+                </div>
+                <div id="productMonitorResults">
+                    <div class="text-center text-gray-500 py-8">
+                        監視を開始すると結果がここに表示されます
+                    </div>
                 </div>
             </div>
         </div>
@@ -648,6 +695,7 @@
 
                 // タブ切り替え
                 document.getElementById('adminTab').addEventListener('click', () => this.switchTab('admin'));
+                document.getElementById('productsTab').addEventListener('click', () => this.switchTab('products'));
                 document.getElementById('devTab').addEventListener('click', () => this.switchTab('dev'));
 
                 // 共通機能
@@ -655,6 +703,11 @@
 
                 // 管理者機能
                 document.getElementById('exportFeedbackBtn').addEventListener('click', () => this.exportFeedback());
+
+                // 商品監視機能
+                document.getElementById('startProductMonitorBtn').addEventListener('click', () => this.startProductMonitoring());
+                document.getElementById('exportProductReportBtn').addEventListener('click', () => this.exportProductReport());
+                document.getElementById('autoMonitorSettingsBtn').addEventListener('click', () => this.showAutoMonitorSettings());
 
                 // 開発者機能
                 document.getElementById('testConnectionBtn').addEventListener('click', () => this.testConnections());
@@ -710,11 +763,13 @@
                 
                 // タブボタンの状態更新
                 document.getElementById('adminTab').classList.remove('active');
+                document.getElementById('productsTab').classList.remove('active');
                 document.getElementById('devTab').classList.remove('active');
                 document.getElementById(`${tab}Tab`).classList.add('active');
                 
                 // コンテンツの表示切り替え
                 document.getElementById('adminContent').classList.remove('active');
+                document.getElementById('productsContent').classList.remove('active');
                 document.getElementById('devContent').classList.remove('active');
                 document.getElementById(`${tab}Content`).classList.add('active');
                 
@@ -724,6 +779,8 @@
                 // タブ固有の初期化
                 if (tab === 'admin') {
                     this.renderDashboard();
+                } else if (tab === 'products') {
+                    this.initializeProductMonitoring();
                 } else if (tab === 'dev') {
                     this.initializeDevMode();
                     this.updateDevStats();
@@ -739,6 +796,10 @@
                     headerContainer.className = 'admin-bg text-white shadow-lg';
                     headerIcon.textContent = '📊';
                     headerTitle.textContent = '管理者ダッシュボード';
+                } else if (tab === 'products') {
+                    headerContainer.className = 'admin-bg text-white shadow-lg';
+                    headerIcon.textContent = '📦';
+                    headerTitle.textContent = '商品監視システム';
                 } else {
                     headerContainer.className = 'dev-bg text-white shadow-lg';
                     headerIcon.textContent = '🔧';
@@ -1352,6 +1413,84 @@
             closeExportModal() {
                 document.getElementById('exportModal').classList.add('hidden');
                 this.devLogger.log('設定エクスポートモーダル非表示', 'info');
+            }
+
+            // 商品監視機能
+            async initializeProductMonitoring() {
+                try {
+                    // ProductMonitorクラスを動的にインポート
+                    const { ProductMonitor } = await import('./js/admin/product-monitor.js');
+                    this.productMonitor = new ProductMonitor();
+                    this.devLogger.log('商品監視システム初期化完了', 'success');
+                } catch (error) {
+                    this.devLogger.log(`商品監視システム初期化エラー: ${error.message}`, 'error');
+                    console.error('❌ 商品監視システム初期化エラー:', error);
+                }
+            }
+
+            async startProductMonitoring() {
+                if (!this.productMonitor) {
+                    await this.initializeProductMonitoring();
+                }
+                
+                if (this.productMonitor) {
+                    this.devLogger.log('商品監視開始', 'info');
+                    await this.productMonitor.startProductHealthCheck();
+                    this.updateProductMonitorUI();
+                } else {
+                    this.showNotification('商品監視システムの初期化に失敗しました', 'error');
+                }
+            }
+
+            exportProductReport() {
+                if (this.productMonitor) {
+                    this.productMonitor.exportReportCSV();
+                    this.devLogger.log('商品レポートエクスポート完了', 'success');
+                    this.showNotification('商品レポートをエクスポートしました', 'success');
+                } else {
+                    this.showNotification('監視を実行してからレポートを出力してください', 'warning');
+                }
+            }
+
+            showAutoMonitorSettings() {
+                // 自動監視設定のモーダル表示（簡易版）
+                const interval = prompt('自動監視間隔を時間で入力してください（例: 24）:', '24');
+                if (interval && this.productMonitor) {
+                    const hours = parseInt(interval);
+                    if (!isNaN(hours) && hours > 0) {
+                        this.productMonitor.startAutoMonitoring(hours);
+                        this.showNotification(`自動監視を${hours}時間間隔で開始しました`, 'success');
+                        this.devLogger.log(`自動商品監視開始: ${hours}時間間隔`, 'info');
+                    } else {
+                        this.showNotification('有効な時間を入力してください', 'error');
+                    }
+                } else if (!this.productMonitor) {
+                    this.showNotification('先に商品監視を初期化してください', 'warning');
+                }
+            }
+
+            updateProductMonitorUI() {
+                const statusElement = document.getElementById('productMonitorStatus');
+                const resultsElement = document.getElementById('productMonitorResults');
+                const statsElement = document.getElementById('productMonitorStats');
+                const timeElement = document.getElementById('productLastCheckTime');
+                
+                if (this.productMonitor && this.productMonitor.lastCheck && timeElement) {
+                    timeElement.textContent = `最終チェック: ${this.productMonitor.lastCheck.toLocaleString('ja-JP')}`;
+                }
+                
+                if (statusElement) {
+                    statusElement.innerHTML = `
+                        <div class="text-green-600">
+                            ✅ 監視完了 (${new Date().toLocaleString('ja-JP')})
+                        </div>
+                    `;
+                }
+                
+                // 統計とテーブルは ProductMonitor クラスの updateUI メソッドに委譲
+                if (this.productMonitor) {
+                    this.productMonitor.updateUI('complete', this.productMonitor.monitoringResults);
+                }
             }
 
             // 通知システム

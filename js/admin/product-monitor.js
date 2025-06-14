@@ -316,9 +316,10 @@ export class ProductMonitor {
      * UI更新
      */
     updateUI(status, data, problemData = null) {
-        const statusElement = document.getElementById('monitorStatus');
-        const resultsElement = document.getElementById('monitorResults');
-        const statsElement = document.getElementById('monitorStats');
+        // admin.html用のElement IDに対応
+        const statusElement = document.getElementById('productMonitorStatus') || document.getElementById('monitorStatus');
+        const resultsElement = document.getElementById('productMonitorResults') || document.getElementById('monitorResults');
+        const statsElement = document.getElementById('productMonitorStats') || document.getElementById('monitorStats');
 
         switch (status) {
             case 'monitoring':
