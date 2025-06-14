@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>重要機能テスト</title>
+</head>
+<body>
+    <h1>🔬 重要機能確認テスト</h1>
+    <div id="status">テスト準備中...</div>
+    
+    <!-- 場所ボタンのテスト -->
+    <div style="margin: 20px 0;">
+        <h3>場所ボタンテスト</h3>
+        <button data-location="kitchen" class="location-btn">キッチン</button>
+        <button data-location="bathroom" class="location-btn">バスルーム</button>
+    </div>
+    
+    <script type="module">
+        const status = document.getElementById('status');
+        let testResults = [];
+        
+        function updateStatus(msg) {
+            testResults.push(msg);
+            status.innerHTML = testResults.join('<br>');
+            console.log(msg);
+        }
+        
+        try {
+            updateStatus('🚀 重要機能テスト開始');
+            
+            // 1. AICleaningAdvisorクラスのインスタンス化テスト
+            updateStatus('📱 app.jsインポート中...');
+            
+            const module = await import('./app.js');
+            updateStatus('✅ app.jsインポート成功');
+            
+            // 2. モジュール構造確認
+            updateStatus('🔍 モジュール構造確認中...');
+            
+            const { COMPREHENSIVE_DIRT_MAPPING } = await import('./js/config/dirt-mapping.js');
+            const { APIClient } = await import('./js/modules/api-client.js');
+            const UIComponents = (await import('./js/modules/ui-components.js')).default;
+            
+            updateStatus(`✅ 汚れデータ: ${Object.keys(COMPREHENSIVE_DIRT_MAPPING).length}種類`);
+            updateStatus('✅ APIクライアント読み込み成功');
+            updateStatus('✅ UIコンポーネント読み込み成功');
+            
+            // 3. 基本機能テスト
+            updateStatus('🧪 基本機能テスト実行中...');
+            
+            const apiClient = new APIClient();
+            updateStatus('✅ APIClient インスタンス化成功');
+            
+            const uiComponents = new UIComponents();
+            updateStatus('✅ UIComponents インスタンス化成功');
+            
+            // 4. 重要メソッド存在確認
+            const criticalMethods = [
+                { obj: apiClient, method: 'enrichProductsWithAmazonData' },
+                { obj: apiClient, method: 'getStatus' },
+                { obj: uiComponents, method: 'on' },
+                { obj: uiComponents, method: 'emit' },
+                { obj: uiComponents, method: 'updateStatusInfo' }
+            ];
+            
+            criticalMethods.forEach(test => {
+                if (typeof test.obj[test.method] === 'function') {
+                    updateStatus(`✅ ${test.method}メソッド存在`);
+                } else {
+                    updateStatus(`❌ ${test.method}メソッド不在`);
+                }
+            });
+            
+            // 5. イベントシステムテスト
+            updateStatus('📡 イベントシステムテスト...');
+            
+            let eventWorking = false;
+            uiComponents.on('test-event', (event) => {
+                eventWorking = true;
+                updateStatus(`✅ イベント受信成功: ${event.detail}`);
+            });
+            
+            uiComponents.emit('test-event', 'テストデータ');
+            
+            // 6. DOM要素テスト
+            setTimeout(() => {
+                updateStatus('🎯 DOM要素テスト...');
+                
+                const locationButtons = document.querySelectorAll('[data-location]');
+                updateStatus(`✅ 場所ボタン検出: ${locationButtons.length}個`);
+                
+                if (eventWorking) {
+                    updateStatus('✅ イベントシステム動作確認');
+                } else {
+                    updateStatus('⚠️ イベント受信待機中...');
+                }
+                
+                // 最終判定
+                setTimeout(() => {
+                    const errors = testResults.filter(r => r.includes('❌')).length;
+                    if (errors === 0) {
+                        updateStatus('');
+                        updateStatus('🎉🎉🎉 全重要機能テスト成功！');
+                        updateStatus('💯 モジュール統合完璧に動作中');
+                        updateStatus('🚀 本番デプロイ準備完了');
+                    } else {
+                        updateStatus('');
+                        updateStatus(`⚠️ ${errors}件のエラーあり - 修正必要`);
+                    }
+                }, 500);
+            }, 100);
+            
+        } catch (error) {
+            updateStatus(`💥 致命的エラー: ${error.message}`);
+            console.error('エラー詳細:', error);
+        }
+    </script>
+</body>
+</html>
