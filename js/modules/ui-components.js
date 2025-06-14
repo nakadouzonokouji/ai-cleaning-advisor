@@ -566,9 +566,16 @@ export class UIComponents extends EventTarget {
                 ` : ''}
 
                 ${cleaningMethod.warnings ? `
-                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
                     <h4 class="font-semibold text-red-800 mb-2">⚠️ 注意事項</h4>
                     <p class="text-red-700">${cleaningMethod.warnings}</p>
+                </div>
+                ` : ''}
+
+                ${cleaningMethod.whyItWorks ? `
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-green-800 mb-2">🔬 なぜ効果があるのか</h4>
+                    <p class="text-green-700">${cleaningMethod.whyItWorks}</p>
                 </div>
                 ` : ''}
             </div>
@@ -638,6 +645,25 @@ export class UIComponents extends EventTarget {
                         '</div>' : ''}
                         
                         <h4 class="font-semibold text-sm text-gray-800 mb-2 line-clamp-2 leading-tight">${product.name}</h4>
+                        
+                        ${product.why_recommended ? `
+                        <div class="bg-blue-50 border border-blue-200 rounded-md p-2 mb-2">
+                            <div class="text-xs font-semibold text-blue-800 mb-1">💡 なぜおすすめ？</div>
+                            <div class="text-xs text-blue-700 leading-relaxed">${product.why_recommended}</div>
+                        </div>
+                        ` : ''}
+                        
+                        ${product.price_range ? `
+                        <div class="text-sm text-gray-600 mb-1">
+                            <span class="font-semibold">価格：</span>${product.price_range}
+                        </div>
+                        ` : ''}
+                        
+                        ${product.usage_amount ? `
+                        <div class="text-xs text-gray-500 mb-2">
+                            💰 ${product.usage_amount}
+                        </div>
+                        ` : ''}
                         
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-lg font-bold text-orange-600">${product.price}</span>

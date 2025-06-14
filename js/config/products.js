@@ -21,7 +21,10 @@ export const COMPREHENSIVE_CLEANING_PRODUCTS = {
                 strength: "強力",
                 bestseller: true,
                 rating: 4.3,
-                reviews: 15420
+                reviews: 15420,
+                why_recommended: "日本で最も信頼されている油汚れ用洗剤。スプレータイプで使いやすく、アルカリ性成分が油汚れを効率的に分解します。",
+                price_range: "¥300-¥500",
+                usage_amount: "1回あたり約10円"
             },
             {
                 name: "リンレイ ウルトラハードクリーナー 油汚れ用",
@@ -32,7 +35,11 @@ export const COMPREHENSIVE_CLEANING_PRODUCTS = {
                 professional: true,
                 rating: 4.6,
                 reviews: 9834,
-                safety_warning: "強力洗剤 - 手袋推奨"
+                safety_warning: "強力洗剤 - 手袋推奨",
+                why_recommended: "業務用レベルの超強力洗剤。長年蓄積した頑固な油汚れも短時間で分解。プロの清掃業者も愛用する実力派。",
+                price_range: "¥800-¥1,200",
+                usage_amount: "1回あたり約25円",
+                best_for: "頑固な油汚れ・年末大掃除"
             },
             {
                 name: "花王 キュキュット CLEAR泡スプレー",
