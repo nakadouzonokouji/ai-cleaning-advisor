@@ -14,6 +14,7 @@ import { COMPREHENSIVE_LOCATION_CONFIG } from './js/config/locations.js';
 import { APIClient } from './js/modules/api-client.js';
 import UIComponents from './js/modules/ui-components.js';
 import RealtimeSearchEngine from './js/modules/search-engine.js';
+import { SafetyWarningSystem } from './js/config/safety-warnings.js';
 
 /**
  * AICleaningAdvisor - メインアプリケーションクラス
@@ -516,6 +517,13 @@ class AICleaningAdvisor {
             return this.generateFallbackCleaningMethod(dirtType);
         }
         
+        // 動的安全警告生成
+        const safetyWarnings = SafetyWarningSystem.generateSafetyWarnings(
+            dirtType, 
+            this.state.selectedLocation, 
+            severity
+        );
+
         return {
             title: template.title || `${surface}の${dirtType}除去法`,
             dirtType,
@@ -526,6 +534,8 @@ class AICleaningAdvisor {
             steps: template.steps || [],
             tips: template.tips || '',
             warnings: template.warnings || '適切な道具と方法で安全に作業してください。',
+            whyItWorks: template.whyItWorks || '',
+            safetyWarnings: safetyWarnings, // 🛡️ 動的安全警告追加
             estimatedTime: template.time || '30分程度'
         };
     }

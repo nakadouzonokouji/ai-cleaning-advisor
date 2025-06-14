@@ -573,11 +573,13 @@ export class UIComponents extends EventTarget {
                 ` : ''}
 
                 ${cleaningMethod.whyItWorks ? `
-                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
                     <h4 class="font-semibold text-green-800 mb-2">🔬 なぜ効果があるのか</h4>
                     <p class="text-green-700">${cleaningMethod.whyItWorks}</p>
                 </div>
                 ` : ''}
+
+                ${cleaningMethod.safetyWarnings && cleaningMethod.safetyWarnings.length > 0 ? this.generateSafetyWarningsHTML(cleaningMethod.safetyWarnings) : ''}
             </div>
         `;
 
@@ -586,6 +588,75 @@ export class UIComponents extends EventTarget {
             cleaningMethodContent.innerHTML = html;
             console.log('✅ 掃除方法表示完了');
         }
+    }
+
+    // 🛡️ 安全警告HTML生成
+    generateSafetyWarningsHTML(safetyWarnings) {
+        if (!safetyWarnings || safetyWarnings.length === 0) {
+            return '';
+        }
+
+        return safetyWarnings.map(warning => {
+            const levelColor = warning.level === 'CRITICAL' ? 'red' : 'orange';
+            
+            return `
+                <div class="bg-${levelColor}-50 border-2 border-${levelColor}-300 rounded-lg p-4 mb-4">
+                    <h4 class="font-bold text-${levelColor}-900 mb-3 flex items-center text-lg">
+                        <span class="text-2xl mr-2">${warning.icon || '⚠️'}</span>
+                        ${warning.title}
+                    </h4>
+                    
+                    ${warning.warnings ? `
+                    <div class="mb-3">
+                        <div class="font-semibold text-${levelColor}-800 mb-2">🚨 重要な注意事項:</div>
+                        <ul class="space-y-1">
+                            ${warning.warnings.map(w => `
+                                <li class="text-${levelColor}-700 text-sm flex items-start">
+                                    <span class="mr-2 mt-0.5">•</span>
+                                    <span>${w}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                    
+                    ${warning.emergency_action ? `
+                    <div class="bg-${levelColor}-100 border border-${levelColor}-400 rounded-md p-3 mt-3">
+                        <div class="font-bold text-${levelColor}-900 mb-1">🚑 緊急時の対応:</div>
+                        <div class="text-${levelColor}-800 text-sm">${warning.emergency_action}</div>
+                    </div>
+                    ` : ''}
+                    
+                    ${warning.specific_risks ? `
+                    <div class="mt-3">
+                        <div class="font-semibold text-${levelColor}-800 mb-2">⚠️ この場所特有のリスク:</div>
+                        <ul class="space-y-1">
+                            ${warning.specific_risks.map(risk => `
+                                <li class="text-${levelColor}-700 text-sm flex items-start">
+                                    <span class="mr-2 mt-0.5">•</span>
+                                    <span>${risk}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                    
+                    ${warning.safety_measures ? `
+                    <div class="mt-3">
+                        <div class="font-semibold text-${levelColor}-800 mb-2">✅ 安全対策:</div>
+                        <ul class="space-y-1">
+                            ${warning.safety_measures.map(measure => `
+                                <li class="text-${levelColor}-700 text-sm flex items-start">
+                                    <span class="mr-2 mt-0.5">✓</span>
+                                    <span>${measure}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
     }
 
     // 🛒 商品表示
