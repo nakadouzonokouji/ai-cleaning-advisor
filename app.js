@@ -12,8 +12,8 @@ import { COMPREHENSIVE_DIRT_MAPPING } from './js/config/dirt-mapping.js';
 import { COMPREHENSIVE_CLEANING_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } from './js/config/products.js';
 import { COMPREHENSIVE_LOCATION_CONFIG } from './js/config/locations.js';
 import { APIClient } from './js/modules/api-client.js';
-import UIComponents from './js/modules/ui-components.js';
-import RealtimeSearchEngine from './js/modules/search-engine.js';
+import { UIComponents } from './js/modules/ui-components.js';
+import { RealtimeSearchEngine } from './js/modules/search-engine.js';
 import { SafetyWarningSystem } from './js/config/safety-warnings.js';
 
 /**
@@ -588,15 +588,20 @@ class AICleaningAdvisor {
      */
     displayAnalysisResult(result) {
         console.log('📊 分析結果表示開始');
+        console.log('📊 推薦商品数:', result.recommendedProducts?.length || 0);
         
-        this.uiComponents.displayAnalysisResult({
+        // UI状態を更新
+        this.uiComponents.state.analysis = {
             dirtType: result.dirtType,
             surface: result.surface,
             severity: result.dirtLevel || this.state.dirtSeverity,
             cleaningMethod: result.cleaningMethod,
             recommendedProducts: result.recommendedProducts || [],
             analysisMethod: result.analysisMethod
-        });
+        };
+        
+        // 分析結果表示
+        this.uiComponents.displayAnalysisResults();
         
         // 成功通知
         this.uiComponents.showSuccessNotification(

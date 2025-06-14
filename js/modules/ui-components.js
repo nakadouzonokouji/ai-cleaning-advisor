@@ -478,7 +478,7 @@ export class UIComponents extends EventTarget {
             return;
         }
 
-        console.log('🎯 分析結果表示開始');
+        console.log('🎯 分析結果表示開始', this.state.analysis);
         
         const analysisResults = document.getElementById('analysisResults');
         if (analysisResults) {
@@ -486,12 +486,16 @@ export class UIComponents extends EventTarget {
             
             // 掃除方法を表示
             if (this.state.analysis.cleaningMethod) {
+                console.log('🧹 掃除方法表示開始:', this.state.analysis.cleaningMethod);
                 this.displayCleaningMethod(this.state.analysis.cleaningMethod);
             }
             
             // 商品を表示
             if (this.state.analysis.recommendedProducts) {
+                console.log('🛒 商品表示開始:', this.state.analysis.recommendedProducts.length, '件');
                 this.displayProducts(this.state.analysis.recommendedProducts);
+            } else {
+                console.warn('⚠️ 推薦商品データが見つかりません');
             }
             
             // スクロール
@@ -855,10 +859,12 @@ export class UIComponents extends EventTarget {
             </div>
         `;
 
-        const productsContainer = document.getElementById('productsContainer');
+        const productsContainer = document.getElementById('productsContainer') || document.getElementById('productsContent');
         if (productsContainer) {
             productsContainer.innerHTML = html;
             console.log('✅ 商品表示完了');
+        } else {
+            console.error('❌ 商品表示コンテナが見つかりません - productsContainer または productsContent');
         }
     }
 
