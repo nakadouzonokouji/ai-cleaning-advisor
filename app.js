@@ -628,16 +628,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error('💥 AI掃除アドバイザー起動失敗:', error);
         
-        // フォールバック表示
-        document.body.innerHTML = `
-            <div style="padding: 20px; text-align: center; color: #dc3545;">
-                <h2>⚠️ アプリケーションの初期化に失敗しました</h2>
-                <p>ページを再読み込みしてください</p>
-                <button onclick="location.reload()" style="padding: 10px 20px; margin-top: 10px;">
-                    再読み込み
-                </button>
-            </div>
+        // エラー通知を表示（HTMLを破壊しない）
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 10000;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         `;
+        errorDiv.innerHTML = `
+            <h3>⚠️ アプリケーションの初期化に失敗しました</h3>
+            <p>エラー: ${error.message}</p>
+            <button onclick="location.reload()" style="padding: 8px 16px; margin-top: 10px; background: #dc3545; color: white; border: none; border-radius: 4px;">
+                ページを再読み込み
+            </button>
+            <button onclick="this.parentElement.remove()" style="padding: 8px 16px; margin-top: 10px; margin-left: 10px; background: #6c757d; color: white; border: none; border-radius: 4px;">
+                このメッセージを閉じる
+            </button>
+        `;
+        document.body.appendChild(errorDiv);
+        
+        // フォールバックモード: 基本的なUI操作だけでも動作させる
+        try {
+            console.log('🔄 フォールバックモード開始');
+            
+            // 場所ボタンだけでも動作させる
+            const locationButtons = document.querySelectorAll('[data-location]');
+            locationButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const location = button.getAttribute('data-location');
+                    console.log(`📍 フォールバックモード - 場所選択: ${location}`);
+                    
+                    // 簡易フィードバック
+                    const feedback = document.createElement('div');
+                    feedback.style.cssText = `
+                        position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+                        background: #d4edda; color: #155724; padding: 10px 15px;
+                        border: 1px solid #c3e6cb; border-radius: 5px;
+                    `;
+                    feedback.textContent = `場所選択: ${location}`;
+                    document.body.appendChild(feedback);
+                    
+                    setTimeout(() => feedback.remove(), 3000);
+                });
+            });
+            
+            console.log('✅ フォールバックモード設定完了');
+        } catch (fallbackError) {
+            console.error('❌ フォールバックモードも失敗:', fallbackError);
+        }
     }
 });
 
