@@ -609,6 +609,8 @@
         console.log('  COMPREHENSIVE_CLEANING_PRODUCTS:', Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS || {}).length);
         console.log('  COMPREHENSIVE_DIRT_MAPPING:', Object.keys(COMPREHENSIVE_DIRT_MAPPING || {}).length);
         console.log('  COMPREHENSIVE_LOCATION_CONFIG:', Object.keys(COMPREHENSIVE_LOCATION_CONFIG || {}).length);
+        console.log('  DIRT_TYPE_MAPPING:', Object.keys(DIRT_TYPE_MAPPING || {}).length);
+        console.log('  LOCATION_PRODUCTS:', Object.keys(LOCATION_PRODUCTS || {}).length);
         
         // システムチェック用にwindowオブジェクトに設定
         window.COMPREHENSIVE_CLEANING_PRODUCTS = COMPREHENSIVE_CLEANING_PRODUCTS;
@@ -620,6 +622,15 @@
         window.SafetyWarningSystem = SafetyWarningSystem;
         
         console.log('✅ windowオブジェクト設定完了');
+        
+        // モジュール読み込み完了イベントを発火
+        window.dispatchEvent(new CustomEvent('modulesLoaded', { 
+            detail: {
+                productsCount: Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS || {}).length,
+                dirtMappingCount: Object.keys(COMPREHENSIVE_DIRT_MAPPING || {}).length,
+                locationCount: Object.keys(COMPREHENSIVE_LOCATION_CONFIG || {}).length
+            }
+        }));
     </script>
     
     <!-- メインアプリケーション -->
@@ -629,36 +640,50 @@
     <script>
         console.log('🎉 システム全ファイル読み込み完了');
         
-        // システム設定確認
-        setTimeout(() => {
-            const systemCheck = () => {
-                const dirtCount = Object.keys(window.COMPREHENSIVE_DIRT_MAPPING || {}).length;
-                const productCount = Object.keys(window.COMPREHENSIVE_PRODUCT_DATABASE || {}).length;
-                const locationCount = Object.keys(window.COMPREHENSIVE_LOCATION_CONFIG || {}).length;
-                
-                // 🚀 新しいリアルタイム検索データベース確認
-                const newProductsCount = Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS || {}).length;
-                const dirtMappingCount = Object.keys(window.DIRT_TYPE_MAPPING || {}).length;
-                const locationProductsCount = Object.keys(window.LOCATION_PRODUCTS || {}).length;
-                
-                console.log('🏠 AI掃除アドバイザーシステム状況:');
-                console.log(`  🎯 汚れタイプ: ${dirtCount}種類`);
-                console.log(`  🛒 商品カテゴリ: ${productCount}カテゴリ`);
-                console.log(`  📍 対応場所: ${locationCount}箇所`);
-                console.log(`  🚀 新商品DB: ${newProductsCount}カテゴリ`);
-                console.log(`  🔗 汚れマッピング: ${dirtMappingCount}種類`);
-                console.log(`  📍 場所別商品: ${locationProductsCount}箇所`);
-                
-                if (dirtCount >= 15 && productCount >= 10 && locationCount >= 7 && 
-                    newProductsCount >= 5 && dirtMappingCount >= 8) {
-                    console.log('✅ システム正常稼働中（リアルタイム検索対応）');
-                } else {
-                    console.warn('⚠️ システム不完全 - データベース統合確認が必要');
-                }
-            };
+        // システム設定確認（モジュール読み込み後に実行）
+        // タイミング問題を解決するため、window.onloadとsetTimeoutの両方で実行
+        const runSystemCheck = () => {
+            const dirtCount = Object.keys(window.COMPREHENSIVE_DIRT_MAPPING || {}).length;
+            const productCount = Object.keys(window.COMPREHENSIVE_PRODUCT_DATABASE || {}).length;
+            const locationCount = Object.keys(window.COMPREHENSIVE_LOCATION_CONFIG || {}).length;
             
-            systemCheck();
-        }, 200);
+            // 🚀 新しいリアルタイム検索データベース確認
+            const newProductsCount = Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS || {}).length;
+            const dirtMappingCount = Object.keys(window.DIRT_TYPE_MAPPING || {}).length;
+            const locationProductsCount = Object.keys(window.LOCATION_PRODUCTS || {}).length;
+            
+            console.log('🏠 AI掃除アドバイザーシステム状況:');
+            console.log(`  🎯 汚れタイプ: ${dirtCount}種類`);
+            console.log(`  🛒 商品カテゴリ: ${productCount}カテゴリ`);
+            console.log(`  📍 対応場所: ${locationCount}箇所`);
+            console.log(`  🚀 新商品DB: ${newProductsCount}カテゴリ`);
+            console.log(`  🔗 汚れマッピング: ${dirtMappingCount}種類`);
+            console.log(`  📍 場所別商品: ${locationProductsCount}箇所`);
+            
+            if (dirtCount >= 15 && productCount >= 10 && locationCount >= 7 && 
+                newProductsCount >= 5 && dirtMappingCount >= 8) {
+                console.log('✅ システム正常稼働中（リアルタイム検索対応）');
+            } else {
+                console.warn('⚠️ システム不完全 - データベース統合確認が必要');
+                console.log('📊 詳細:', {
+                    dirtCount,
+                    productCount, 
+                    locationCount,
+                    newProductsCount,
+                    dirtMappingCount,
+                    locationProductsCount
+                });
+            }
+        };
+        
+        // 複数のタイミングで実行して確実にチェック
+        setTimeout(runSystemCheck, 500);
+        window.addEventListener('load', () => {
+            setTimeout(runSystemCheck, 100);
+        });
+        
+        // app.js初期化完了時にも実行
+        window.addEventListener('aiCleaningAdvisor:initialized', runSystemCheck);
     </script>
     
     <!-- Security Script -->
