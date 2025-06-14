@@ -590,6 +590,18 @@
     <script src="security.js"></script>
     
     <!-- 包括的清掃用品データベース - モジュール版に移行済み -->
+    <script type="module">
+        import { 
+            COMPREHENSIVE_CLEANING_PRODUCTS, 
+            DIRT_TYPE_MAPPING, 
+            LOCATION_PRODUCTS 
+        } from './js/config/products.js';
+        
+        // システムチェック用にwindowオブジェクトに設定
+        window.COMPREHENSIVE_CLEANING_PRODUCTS = COMPREHENSIVE_CLEANING_PRODUCTS;
+        window.DIRT_TYPE_MAPPING = DIRT_TYPE_MAPPING;
+        window.LOCATION_PRODUCTS = LOCATION_PRODUCTS;
+    </script>
     
     <!-- メインアプリケーション -->
     <script type="module" src="app.js"></script>
