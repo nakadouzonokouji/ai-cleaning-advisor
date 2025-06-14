@@ -209,8 +209,8 @@
             }
             
             h2 {
-                font-size: 1.75rem !important;
-                line-height: 1.3;
+                font-size: 1.5rem !important;
+                line-height: 1.2;
             }
             
             .grid-cols-2 {
@@ -317,15 +317,12 @@
         <!-- ステップ1: 場所選択 -->
         <div id="step1" class="step-content fade-in">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">🏠 清掃場所を選択してください</h2>
-                <p class="text-gray-600">掃除したい場所をクリックしてください</p>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">🏠 掃除する場所</h2>
+                <p class="text-gray-600 hidden md:block">掃除したい場所をクリックしてください</p>
+                <p class="text-gray-600 md:hidden">タップして選択</p>
             </div>
             
             <div class="grid grid-cols-2 gap-4 mb-8">
-                <!-- モバイル用スワイプヒント -->
-                <div class="swipe-hint col-span-full text-center text-sm text-gray-500 mb-2 md:hidden">
-                    👆 お好みの場所をタップしてください
-                </div>
                 <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-location="kitchen">
                     <div class="text-4xl mb-2">🔥</div>
                     <h3 class="font-semibold text-gray-800">キッチン</h3>
@@ -367,15 +364,12 @@
         <!-- ステップ2: 汚れの程度選択 -->
         <div id="step2" class="step-content hidden">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">🎯 汚れの程度はどれくらいですか？</h2>
-                <p class="text-gray-600">該当する汚れの程度を選択してください</p>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">🎯 汚れの程度</h2>
+                <p class="text-gray-600 hidden md:block">該当する汚れの程度を選択してください</p>
+                <p class="text-gray-600 md:hidden">どちらに近いですか？</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-2xl mx-auto">
-                <!-- モバイル用ヒント -->
-                <div class="swipe-hint col-span-full text-center text-sm text-gray-500 mb-2 md:hidden">
-                    🎯 汚れの程度をお選びください
-                </div>
                 <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-level="light">
                     <div class="text-4xl mb-4">✨</div>
                     <h3 class="font-semibold text-gray-800 mb-2">軽い汚れ</h3>
@@ -399,12 +393,12 @@
         <!-- ステップ3: 写真アップロード -->
         <div id="step3" class="step-content hidden">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">📷 写真をアップロード（任意）</h2>
-                <p class="text-gray-600">より正確な診断のために写真をアップロードできます</p>
-                <p class="text-green-600 font-semibold mt-2">写真なしでも十分な診断が可能です！</p>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">📷 写真（任意）</h2>
+                <p class="text-gray-600 hidden md:block">より正確な診断のために写真をアップロードできます</p>
+                <p class="text-green-600 font-semibold mt-2">写真なしでもOK！</p>
                 <!-- モバイル用説明 -->
                 <p class="text-sm text-gray-500 mt-2 md:hidden">
-                    📱 カメラでその場で撮影、またはギャラリーから選択できます
+                    📱 写真を撮って詳細診断
                 </p>
             </div>
             
