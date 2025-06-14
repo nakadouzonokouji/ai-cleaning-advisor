@@ -659,12 +659,58 @@ export class UIComponents extends EventTarget {
         }).join('');
     }
 
+    // 📦 商品カテゴリ分け
+    categorizeProducts(productsArray) {
+        const categorized = {
+            cleaners: [],
+            tools: [],
+            protection: []
+        };
+
+        productsArray.forEach(product => {
+            if (!product) return;
+
+            // タイプに基づいてカテゴリ分け
+            if (product.type) {
+                const type = product.type.toLowerCase();
+                if (type.includes('洗剤') || type.includes('クリーナー') || type.includes('漂白剤')) {
+                    categorized.cleaners.push(product);
+                } else if (type.includes('スポンジ') || type.includes('ブラシ') || type.includes('クロス') || 
+                          type.includes('モップ') || type.includes('研磨') || type.includes('ツール')) {
+                    categorized.tools.push(product);
+                } else if (type.includes('手袋') || type.includes('マスク') || type.includes('保護') || 
+                          type.includes('エプロン') || type.includes('ゴーグル')) {
+                    categorized.protection.push(product);
+                } else {
+                    // デフォルトは洗剤カテゴリに
+                    categorized.cleaners.push(product);
+                }
+            } else {
+                // typeがない場合は洗剤として分類
+                categorized.cleaners.push(product);
+            }
+        });
+
+        console.log('📊 カテゴリ分け結果:', {
+            洗剤: categorized.cleaners.length,
+            道具: categorized.tools.length,
+            保護具: categorized.protection.length
+        });
+
+        return categorized;
+    }
+
     // 🛒 商品表示
     displayProducts(products) {
         console.log('🛒 商品表示開始', products);
         
+        // 商品がない場合やArrayの場合の処理
         if (!products) {
             products = { cleaners: [], tools: [], protection: [] };
+        } else if (Array.isArray(products)) {
+            // Arrayの場合はカテゴリ分けする
+            console.log('📦 商品をカテゴリ分けします:', products.length, '件');
+            products = this.categorizeProducts(products);
         }
         
         const generateProductGrid = (categoryProducts, categoryName, categoryIcon) => {
@@ -677,11 +723,25 @@ export class UIComponents extends EventTarget {
             }
 
             return categoryProducts.slice(0, 6).map(product => {
+                // デフォルト値の設定
+                const safeProduct = {
+                    name: product.name || '商品名不明',
+                    asin: product.asin || '',
+                    price: product.price || '価格確認中',
+                    rating: product.rating || 4.0,
+                    reviews: product.reviews || 0,
+                    type: product.type || '商品',
+                    bestseller: product.bestseller || false,
+                    amazons_choice: product.amazons_choice || false,
+                    professional: product.professional || false,
+                    ...product
+                };
+
                 let imageUrl = '';
-                if (product.image_url) {
-                    imageUrl = product.image_url.replace(/^http:/, 'https:');
-                } else if (product.asin) {
-                    imageUrl = `https://m.media-amazon.com/images/I/${product.asin}._SL500_.jpg`;
+                if (safeProduct.image_url) {
+                    imageUrl = safeProduct.image_url.replace(/^http:/, 'https:');
+                } else if (safeProduct.asin) {
+                    imageUrl = `https://m.media-amazon.com/images/I/${safeProduct.asin}._SL500_.jpg`;
                 } else {
                     imageUrl = 'https://via.placeholder.com/150x150/f0f0f0/999999?text=No+Image';
                 }
@@ -690,62 +750,62 @@ export class UIComponents extends EventTarget {
                     <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-shadow duration-200 min-w-[200px] max-w-[220px] flex-shrink-0">
                         <div class="relative">
                             <img src="${imageUrl}" 
-                                alt="${product.name}" 
+                                alt="${safeProduct.name}" 
                                 class="w-full h-32 object-contain rounded-md mb-2"
                                 onerror="this.src='https://via.placeholder.com/150x150/f0f0f0/999999?text=No+Image'"
                                 loading="lazy">
                             <div class="absolute top-1 right-1">
-                                <div class="text-4xl mb-2">${product.emoji}</div>
-                                <div class="text-sm text-gray-600">${product.name.split(' ')[0]}</div>
+                                <div class="text-4xl mb-2">${safeProduct.emoji || '🧴'}</div>
+                                <div class="text-sm text-gray-600">${safeProduct.name.split(' ')[0]}</div>
                             </div>
                         </div>
                         
                         <div class="flex flex-wrap gap-1 mb-2">
-                            ${product.bestseller ? '<div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-bold">🏆 ベストセラー</div>' : ''}
-                            ${product.amazons_choice ? '<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">🎯 Amazon\'s Choice</div>' : ''}
-                            ${product.professional ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">💼 プロ仕様</div>' : ''}
-                            ${product.badge ? '<div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full font-bold">' + product.badge + '</div>' : ''}
+                            ${safeProduct.bestseller ? '<div class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-bold">🏆 ベストセラー</div>' : ''}
+                            ${safeProduct.amazons_choice ? '<div class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full font-bold">🎯 Amazon\'s Choice</div>' : ''}
+                            ${safeProduct.professional ? '<div class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full font-bold">💼 プロ仕様</div>' : ''}
+                            ${safeProduct.badge ? '<div class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full font-bold">' + safeProduct.badge + '</div>' : ''}
                         </div>
                         
-                        ${product.safety_warning ? 
+                        ${safeProduct.safety_warning ? 
                         '<div class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded mb-2 border-l-4 border-orange-400">' +
                             '<div class="flex items-center">' +
                                 '<span class="mr-1">⚠️</span>' +
-                                '<span class="font-bold">' + product.safety_warning + '</span>' +
+                                '<span class="font-bold">' + safeProduct.safety_warning + '</span>' +
                             '</div>' +
                         '</div>' : ''}
                         
-                        <h4 class="font-semibold text-sm text-gray-800 mb-2 line-clamp-2 leading-tight">${product.name}</h4>
+                        <h4 class="font-semibold text-sm text-gray-800 mb-2 line-clamp-2 leading-tight">${safeProduct.name}</h4>
                         
-                        ${product.why_recommended ? `
+                        ${safeProduct.why_recommended ? `
                         <div class="bg-blue-50 border border-blue-200 rounded-md p-2 mb-2">
                             <div class="text-xs font-semibold text-blue-800 mb-1">💡 なぜおすすめ？</div>
-                            <div class="text-xs text-blue-700 leading-relaxed">${product.why_recommended}</div>
+                            <div class="text-xs text-blue-700 leading-relaxed">${safeProduct.why_recommended}</div>
                         </div>
                         ` : ''}
                         
-                        ${product.price_range ? `
+                        ${safeProduct.price_range ? `
                         <div class="text-sm text-gray-600 mb-1">
-                            <span class="font-semibold">価格：</span>${product.price_range}
+                            <span class="font-semibold">価格：</span>${safeProduct.price_range}
                         </div>
                         ` : ''}
                         
-                        ${product.usage_amount ? `
+                        ${safeProduct.usage_amount ? `
                         <div class="text-xs text-gray-500 mb-2">
-                            💰 ${product.usage_amount}
+                            💰 ${safeProduct.usage_amount}
                         </div>
                         ` : ''}
                         
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-lg font-bold text-orange-600">${product.price}</span>
+                            <span class="text-lg font-bold text-orange-600">${safeProduct.price}</span>
                             <div class="flex items-center text-sm text-gray-600">
                                 <span class="text-yellow-400">★</span>
-                                <span class="ml-1">${product.rating}</span>
-                                <span class="ml-1 text-gray-400">(${product.reviews.toLocaleString()})</span>
+                                <span class="ml-1">${safeProduct.rating}</span>
+                                <span class="ml-1 text-gray-400">(${safeProduct.reviews.toLocaleString()})</span>
                             </div>
                         </div>
                         
-                        <a href="https://amazon.co.jp/dp/${product.asin}?tag=${window.AMAZON_ASSOCIATE_TAG || 'aiclean-22'}" 
+                        <a href="https://amazon.co.jp/dp/${safeProduct.asin}?tag=${window.AMAZON_ASSOCIATE_TAG || 'aiclean-22'}" 
                            target="_blank" 
                            class="block w-full bg-gradient-to-r from-orange-400 to-orange-500 text-white text-center py-2 rounded-md hover:from-orange-500 hover:to-orange-600 transition-all duration-200 text-sm font-semibold shadow-sm">
                             🛒 Amazonで購入
