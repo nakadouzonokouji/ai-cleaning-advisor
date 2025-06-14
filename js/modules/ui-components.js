@@ -1360,6 +1360,253 @@ export class UIComponents extends EventTarget {
     emit(eventType, detail = null) {
         this.dispatchEvent(new CustomEvent(eventType, { detail }));
     }
+
+    /**
+     * ステータス情報を更新
+     * @param {Object} info - 統計情報
+     */
+    updateStatusInfo(info) {
+        console.log('📊 ステータス情報更新:', info);
+        
+        // 統計情報の表示更新
+        if (info.dirtCount) {
+            const dirtCountEl = document.querySelector('[data-stat="dirt-count"]');
+            if (dirtCountEl) dirtCountEl.textContent = info.dirtCount;
+        }
+        
+        if (info.productCount) {
+            const productCountEl = document.querySelector('[data-stat="product-count"]');
+            if (productCountEl) productCountEl.textContent = info.productCount;
+        }
+        
+        if (info.locationCount) {
+            const locationCountEl = document.querySelector('[data-stat="location-count"]');
+            if (locationCountEl) locationCountEl.textContent = info.locationCount;
+        }
+    }
+
+    /**
+     * エラーメッセージを表示
+     * @param {string} message - エラーメッセージ
+     * @param {Error} error - エラーオブジェクト
+     */
+    showErrorMessage(message, error = null) {
+        console.error(`❌ ${message}:`, error);
+        
+        try {
+            // エラー通知を表示
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #dc3545;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(220,53,69,0.3);
+                z-index: 10000;
+                max-width: 300px;
+                word-wrap: break-word;
+            `;
+            
+            notification.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 4px;">⚠️ エラー</div>
+                <div style="font-size: 14px;">${message}</div>
+                ${error ? `<div style="font-size: 12px; margin-top: 4px; opacity: 0.8;">${error.message}</div>` : ''}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // 5秒後に自動削除
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+            
+        } catch (displayError) {
+            console.error('エラー表示に失敗:', displayError);
+        }
+    }
+
+    /**
+     * 場所ボタンをセットアップ
+     * @param {Object} locationConfig - 場所設定
+     */
+    setupLocationButtons(locationConfig) {
+        console.log('🏠 場所ボタンセットアップ開始');
+        
+        // 既存のsetupLocationButtonsWithDebugを使用
+        this.setupLocationButtonsWithDebug();
+        
+        console.log('✅ 場所ボタンセットアップ完了');
+    }
+
+    /**
+     * 場所選択を更新
+     * @param {string} location - 選択された場所
+     */
+    updateLocationSelection(location) {
+        console.log(`📍 場所選択UI更新: ${location}`);
+        this.selectLocation(location);
+    }
+
+    /**
+     * 一般的な汚れタイプを表示
+     * @param {Array} dirtTypes - 汚れタイプ配列
+     */
+    updateCommonDirtTypes(dirtTypes) {
+        console.log('🧽 一般的な汚れタイプ表示:', dirtTypes);
+        
+        const container = document.getElementById('commonDirtTypes');
+        if (container && dirtTypes && dirtTypes.length > 0) {
+            container.innerHTML = `
+                <div class="text-sm text-gray-600 mb-2">この場所でよくある汚れ:</div>
+                <div class="flex flex-wrap gap-2">
+                    ${dirtTypes.map(dirt => `
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                            ${dirt}
+                        </span>
+                    `).join('')}
+                </div>
+            `;
+            container.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * 汚れ度合い選択を更新
+     * @param {string} severity - 汚れ度合い
+     */
+    updateSeveritySelection(severity) {
+        console.log(`🎯 汚れ度合いUI更新: ${severity}`);
+        this.selectDirtSeverity(severity);
+    }
+
+    /**
+     * 画像プレビューを表示
+     * @param {string} imageData - Base64画像データ
+     */
+    showImagePreview(imageData) {
+        console.log('🖼️ 画像プレビュー表示');
+        
+        const uploadedImage = document.getElementById('uploadedImage');
+        if (uploadedImage) {
+            uploadedImage.src = imageData;
+            uploadedImage.style.display = 'block';
+        }
+        
+        const uploadedImageArea = document.getElementById('uploadedImageArea');
+        if (uploadedImageArea) {
+            uploadedImageArea.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * 自動分析が有効かチェック
+     * @returns {boolean} 自動分析が有効かどうか
+     */
+    isAutoAnalysisEnabled() {
+        const autoAnalysisEl = document.getElementById('autoAnalysis');
+        return autoAnalysisEl ? autoAnalysisEl.checked : false;
+    }
+
+    /**
+     * ローディング状態を表示
+     * @param {string} message - ローディングメッセージ
+     */
+    showLoadingState(message = '処理中...') {
+        console.log(`⏳ ローディング表示: ${message}`);
+        
+        const loadingEl = document.getElementById('loadingState');
+        if (loadingEl) {
+            loadingEl.textContent = message;
+            loadingEl.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * ローディング状態を非表示
+     */
+    hideLoadingState() {
+        console.log('⏳ ローディング非表示');
+        
+        const loadingEl = document.getElementById('loadingState');
+        if (loadingEl) {
+            loadingEl.classList.add('hidden');
+        }
+    }
+
+    /**
+     * 分析結果を表示
+     * @param {Object} result - 分析結果
+     */
+    displayAnalysisResult(result) {
+        console.log('📊 分析結果表示:', result);
+        
+        const resultsEl = document.getElementById('analysisResults');
+        if (resultsEl) {
+            resultsEl.innerHTML = `
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">分析結果</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p><strong>汚れタイプ:</strong> ${result.dirtType}</p>
+                            <p><strong>場所:</strong> ${result.surface}</p>
+                            <p><strong>程度:</strong> ${result.severity}</p>
+                        </div>
+                        <div>
+                            <p><strong>分析方法:</strong> ${result.analysisMethod || 'AI分析'}</p>
+                        </div>
+                    </div>
+                    
+                    ${result.cleaningMethod ? `
+                        <div class="mt-6">
+                            <h4 class="font-bold mb-2">推奨掃除方法</h4>
+                            <ol class="list-decimal list-inside space-y-1">
+                                ${result.cleaningMethod.steps.map(step => `<li>${step}</li>`).join('')}
+                            </ol>
+                            ${result.cleaningMethod.warning ? `
+                                <div class="mt-2 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                                    <p class="text-sm">${result.cleaningMethod.warning}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                    
+                    ${result.recommendedProducts && result.recommendedProducts.length > 0 ? `
+                        <div class="mt-6">
+                            <h4 class="font-bold mb-4">推奨商品</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                ${result.recommendedProducts.slice(0, 6).map(product => `
+                                    <div class="border rounded-lg p-3">
+                                        <h5 class="font-medium text-sm mb-1">${product.name}</h5>
+                                        <p class="text-xs text-gray-600 mb-2">${product.type}</p>
+                                        ${product.amazonUrl ? `
+                                            <a href="${product.amazonUrl}" target="_blank" 
+                                               class="text-blue-600 hover:text-blue-800 text-xs">
+                                                Amazonで見る →
+                                            </a>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            resultsEl.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * クリーンアップ処理
+     */
+    cleanup() {
+        console.log('🧹 UIComponents クリーンアップ');
+        // 必要に応じてイベントリスナーの削除等
+    }
 }
 
 // ES Module Export
