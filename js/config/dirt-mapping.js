@@ -39,3 +39,9 @@ export const DIRT_TYPE_MAPPING = {
     'laundry': ['汗染み', '皮脂汚れ', 'カビ'],
     'entrance': ['泥汚れ', 'ほこり']
 };
+
+// Default export
+export default {
+    COMPREHENSIVE_DIRT_MAPPING,
+    DIRT_TYPE_MAPPING
+};

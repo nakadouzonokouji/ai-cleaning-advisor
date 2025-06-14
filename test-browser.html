@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ブラウザ実行テスト</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .result { margin: 5px 0; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>🧪 AI掃除アドバイザー ブラウザ実行テスト</h1>
+    <div id="results"></div>
+    
+    <script type="module">
+        const results = [];
+        
+        function log(message, type = 'info') {
+            console.log(message);
+            results.push({message, type});
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            const container = document.getElementById('results');
+            container.innerHTML = results.map(r => 
+                `<div class="result ${r.type}">${r.message}</div>`
+            ).join('');
+        }
+        
+        async function runTests() {
+            log('🚀 ブラウザテスト開始', 'info');
+            
+            try {
+                // テスト1: 設定モジュール読み込み
+                log('📦 テスト1: 設定モジュール読み込み', 'info');
+                
+                const { COMPREHENSIVE_DIRT_MAPPING } = await import('./js/config/dirt-mapping.js');
+                log(`✅ DIRT_MAPPING: ${Object.keys(COMPREHENSIVE_DIRT_MAPPING).length}件`, 'success');
+                
+                const { COMPREHENSIVE_CLEANING_PRODUCTS } = await import('./js/config/products.js');
+                log(`✅ CLEANING_PRODUCTS: ${Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS).length}カテゴリ`, 'success');
+                
+                const { COMPREHENSIVE_LOCATION_CONFIG } = await import('./js/config/locations.js');
+                log(`✅ LOCATION_CONFIG: ${Object.keys(COMPREHENSIVE_LOCATION_CONFIG).length}場所`, 'success');
+                
+                // テスト2: APIクライアント
+                log('🔌 テスト2: APIクライアント', 'info');
+                
+                const { APIClient } = await import('./js/modules/api-client.js');
+                const apiClient = new APIClient();
+                log('✅ APIClient インスタンス作成成功', 'success');
+                
+                // メソッド存在確認
+                if (typeof apiClient.enrichProductsWithAmazonData === 'function') {
+                    log('✅ enrichProductsWithAmazonData メソッド存在', 'success');
+                } else {
+                    log('❌ enrichProductsWithAmazonData メソッド不在', 'error');
+                }
+                
+                if (typeof apiClient.getStatus === 'function') {
+                    log('✅ getStatus メソッド存在', 'success');
+                } else {
+                    log('❌ getStatus メソッド不在', 'error');
+                }
+                
+                // テスト3: UIコンポーネント
+                log('🎨 テスト3: UIコンポーネント', 'info');
+                
+                const UIComponents = (await import('./js/modules/ui-components.js')).default;
+                const uiComponents = new UIComponents();
+                log('✅ UIComponents インスタンス作成成功', 'success');
+                
+                // EventTarget継承確認
+                if (uiComponents instanceof EventTarget) {
+                    log('✅ EventTarget継承確認', 'success');
+                } else {
+                    log('❌ EventTarget継承なし', 'error');
+                }
+                
+                // メソッド存在確認
+                const uiMethods = ['on', 'emit', 'updateStatusInfo', 'showErrorMessage'];
+                uiMethods.forEach(method => {
+                    if (typeof uiComponents[method] === 'function') {
+                        log(`✅ UIComponents.${method} メソッド存在`, 'success');
+                    } else {
+                        log(`❌ UIComponents.${method} メソッド不在`, 'error');
+                    }
+                });
+                
+                // テスト4: 検索エンジン
+                log('🔍 テスト4: 検索エンジン', 'info');
+                
+                const RealtimeSearchEngine = (await import('./js/modules/search-engine.js')).default;
+                const searchEngine = new RealtimeSearchEngine();
+                log('✅ SearchEngine インスタンス作成成功', 'success');
+                
+                // 検索テスト
+                const searchResults = await searchEngine.searchProductsByDirt('油汚れ', 'heavy', 'kitchen');
+                log(`✅ 検索テスト結果: ${searchResults.length}件`, 'success');
+                
+                // テスト5: イベントシステム
+                log('📡 テスト5: イベントシステム', 'info');
+                
+                let eventReceived = false;
+                uiComponents.on('test', (event) => {
+                    eventReceived = true;
+                    log(`✅ イベント受信: ${event.detail}`, 'success');
+                });
+                
+                uiComponents.emit('test', 'テストデータ');
+                
+                // 少し待ってイベント処理を確認
+                setTimeout(() => {
+                    if (eventReceived) {
+                        log('✅ イベントシステム動作確認', 'success');
+                    } else {
+                        log('❌ イベントシステム動作不良', 'error');
+                    }
+                    
+                    // 最終結果
+                    log('', 'info');
+                    log('🎯 テスト完了', 'info');
+                    const errorCount = results.filter(r => r.type === 'error').length;
+                    if (errorCount === 0) {
+                        log('🎉 全テスト成功！モジュール統合完璧', 'success');
+                    } else {
+                        log(`⚠️ ${errorCount}件のエラーあり`, 'warning');
+                    }
+                }, 100);
+                
+            } catch (error) {
+                log(`💥 テスト実行エラー: ${error.message}`, 'error');
+                console.error('詳細エラー:', error);
+            }
+        }
+        
+        // テスト実行
+        runTests();
+    </script>
+</body>
+</html>
