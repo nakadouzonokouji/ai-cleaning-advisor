@@ -596,18 +596,30 @@
         import COMPREHENSIVE_LOCATION_CONFIG from './js/config/locations.js';
         import { SafetyWarningSystem } from './js/config/safety-warnings.js';
         
+        console.log('📦 モジュール読み込み確認:');
+        console.log('  productsConfig:', productsConfig);
+        console.log('  dirtMappingConfig:', dirtMappingConfig);
+        console.log('  COMPREHENSIVE_LOCATION_CONFIG:', COMPREHENSIVE_LOCATION_CONFIG);
+        
         // 設定データを分解
-        const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS } = productsConfig;
+        const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsConfig;
         const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingConfig;
+        
+        console.log('📊 分解後データ確認:');
+        console.log('  COMPREHENSIVE_CLEANING_PRODUCTS:', Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS || {}).length);
+        console.log('  COMPREHENSIVE_DIRT_MAPPING:', Object.keys(COMPREHENSIVE_DIRT_MAPPING || {}).length);
+        console.log('  COMPREHENSIVE_LOCATION_CONFIG:', Object.keys(COMPREHENSIVE_LOCATION_CONFIG || {}).length);
         
         // システムチェック用にwindowオブジェクトに設定
         window.COMPREHENSIVE_CLEANING_PRODUCTS = COMPREHENSIVE_CLEANING_PRODUCTS;
-        window.COMPREHENSIVE_PRODUCT_DATABASE = productsConfig.COMPREHENSIVE_PRODUCT_DATABASE;
+        window.COMPREHENSIVE_PRODUCT_DATABASE = COMPREHENSIVE_PRODUCT_DATABASE;
         window.COMPREHENSIVE_DIRT_MAPPING = COMPREHENSIVE_DIRT_MAPPING;
         window.COMPREHENSIVE_LOCATION_CONFIG = COMPREHENSIVE_LOCATION_CONFIG;
         window.DIRT_TYPE_MAPPING = DIRT_TYPE_MAPPING;
         window.LOCATION_PRODUCTS = LOCATION_PRODUCTS;
         window.SafetyWarningSystem = SafetyWarningSystem;
+        
+        console.log('✅ windowオブジェクト設定完了');
     </script>
     
     <!-- メインアプリケーション -->
