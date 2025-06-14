@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// GET リクエストは設定確認用、POSTリクエストは商品取得用
+// GET リクエストは設定確認用、POSTリクエストは商品取得用・ヘルスチェック用
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // 設定確認テスト
     $response = [

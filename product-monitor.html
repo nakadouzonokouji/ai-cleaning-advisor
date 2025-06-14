@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品監視システム - AI掃除アドバイザー管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .loading { animation: spin 1s linear infinite; }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .monitor-bg { background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%); }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- ヘッダー -->
+    <div class="monitor-bg text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i data-lucide="package-check" class="w-8 h-8 mr-3"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold">商品監視システム</h1>
+                        <p class="text-blue-100 text-sm">Amazon商品のリンク切れ・在庫切れを監視</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button id="startMonitorBtn" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors font-semibold">
+                        <i data-lucide="play" class="w-4 h-4 mr-2 inline"></i>監視開始
+                    </button>
+                    <button id="exportReportBtn" class="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors">
+                        <i data-lucide="download" class="w-4 h-4 mr-2 inline"></i>レポート出力
+                    </button>
+                    <a href="admin.html" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4 mr-2 inline"></i>戻る
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-6 py-8">
+        <!-- ステータス表示 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-gray-800">監視ステータス</h2>
+                <div class="flex gap-3">
+                    <button id="autoMonitorBtn" class="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">
+                        <i data-lucide="clock" class="w-3 h-3 mr-1 inline"></i>自動監視設定
+                    </button>
+                    <button id="refreshBtn" class="text-sm bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors">
+                        <i data-lucide="refresh-cw" class="w-3 h-3 mr-1 inline"></i>更新
+                    </button>
+                </div>
+            </div>
+            <div id="monitorStatus" class="text-gray-600">
+                待機中 - 「監視開始」ボタンをクリックして商品のヘルスチェックを開始してください
+            </div>
+        </div>
+
+        <!-- 統計情報 -->
+        <div id="monitorStats" class="mb-8">
+            <!-- 統計情報はJavaScriptで動的に生成 -->
+        </div>
+
+        <!-- アラート設定 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">アラート設定</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Slack通知</label>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="slackAlert" class="mr-2">
+                        <span class="text-sm text-gray-600">問題検出時にSlackに通知</span>
+                    </div>
+                    <input type="text" id="slackWebhook" placeholder="Slack Webhook URL" class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">メール通知</label>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="emailAlert" class="mr-2">
+                        <span class="text-sm text-gray-600">問題検出時にメール送信</span>
+                    </div>
+                    <input type="email" id="alertEmail" placeholder="通知先メールアドレス" class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                </div>
+            </div>
+        </div>
+
+        <!-- 監視結果 -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-gray-800">監視結果</h2>
+                <div class="text-sm text-gray-600" id="lastCheckTime">
+                    <!-- 最終チェック時刻 -->
+                </div>
+            </div>
+            <div id="monitorResults">
+                <div class="text-center text-gray-500 py-8">
+                    監視を開始すると結果がここに表示されます
+                </div>
+            </div>
+        </div>
+
+        <!-- クイックアクション -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">クイックアクション</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button id="checkSpecificBtn" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
+                    <i data-lucide="search" class="w-5 h-5 text-blue-600 mb-2"></i>
+                    <div class="font-medium">特定商品チェック</div>
+                    <div class="text-sm text-gray-600">ASINを指定して個別チェック</div>
+                </button>
+                <button id="categoryCheckBtn" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
+                    <i data-lucide="layers" class="w-5 h-5 text-green-600 mb-2"></i>
+                    <div class="font-medium">カテゴリ別チェック</div>
+                    <div class="text-sm text-gray-600">カテゴリごとに商品をチェック</div>
+                </button>
+                <button id="historyBtn" class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-left">
+                    <i data-lucide="clock" class="w-5 h-5 text-purple-600 mb-2"></i>
+                    <div class="font-medium">履歴表示</div>
+                    <div class="text-sm text-gray-600">過去の監視履歴を表示</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- モーダル: 特定商品チェック -->
+    <div id="specificCheckModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">特定商品チェック</h3>
+                    <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('specificCheckModal')">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ASIN</label>
+                        <input type="text" id="specificAsin" placeholder="B000FQTJZW" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="runSpecificCheck" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                            チェック実行
+                        </button>
+                        <button onclick="closeModal('specificCheckModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                            キャンセル
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- モーダル: 自動監視設定 -->
+    <div id="autoMonitorModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">自動監視設定</h3>
+                    <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('autoMonitorModal')">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">監視間隔</label>
+                        <select id="monitorInterval" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="1">1時間</option>
+                            <option value="6">6時間</option>
+                            <option value="12">12時間</option>
+                            <option value="24" selected>24時間</option>
+                            <option value="168">1週間</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="enableAutoMonitor" class="mr-2">
+                        <span class="text-sm text-gray-600">自動監視を有効にする</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="saveAutoMonitor" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                            設定保存
+                        </button>
+                        <button onclick="closeModal('autoMonitorModal')" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                            キャンセル
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import ProductMonitor from './js/admin/product-monitor.js';
+
+        // 商品監視システム初期化
+        let productMonitor = null;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🔍 商品監視システム初期化開始');
+            
+            try {
+                productMonitor = new ProductMonitor();
+                setupEventListeners();
+                loadSettings();
+                updateLastCheckTime();
+                
+                console.log('✅ 商品監視システム初期化完了');
+            } catch (error) {
+                console.error('❌ 初期化エラー:', error);
+            }
+            
+            // Lucideアイコン初期化
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+
+        function setupEventListeners() {
+            // 監視開始ボタン
+            document.getElementById('startMonitorBtn').addEventListener('click', async () => {
+                if (productMonitor) {
+                    await productMonitor.startProductHealthCheck();
+                    updateLastCheckTime();
+                }
+            });
+
+            // レポート出力ボタン
+            document.getElementById('exportReportBtn').addEventListener('click', () => {
+                if (productMonitor) {
+                    productMonitor.exportReportCSV();
+                }
+            });
+
+            // 自動監視設定ボタン
+            document.getElementById('autoMonitorBtn').addEventListener('click', () => {
+                document.getElementById('autoMonitorModal').classList.remove('hidden');
+            });
+
+            // 特定商品チェックボタン
+            document.getElementById('checkSpecificBtn').addEventListener('click', () => {
+                document.getElementById('specificCheckModal').classList.remove('hidden');
+            });
+
+            // 特定商品チェック実行
+            document.getElementById('runSpecificCheck').addEventListener('click', async () => {
+                const asin = document.getElementById('specificAsin').value.trim();
+                if (asin && productMonitor) {
+                    closeModal('specificCheckModal');
+                    // 特定商品のチェック実装
+                    alert(`${asin}の商品チェックを実行中... (実装予定)`);
+                }
+            });
+
+            // 自動監視設定保存
+            document.getElementById('saveAutoMonitor').addEventListener('click', () => {
+                const interval = parseInt(document.getElementById('monitorInterval').value);
+                const enabled = document.getElementById('enableAutoMonitor').checked;
+                
+                if (enabled && productMonitor) {
+                    productMonitor.startAutoMonitoring(interval);
+                } else if (productMonitor) {
+                    productMonitor.stopAutoMonitoring();
+                }
+                
+                saveSettings();
+                closeModal('autoMonitorModal');
+                alert('自動監視設定を保存しました');
+            });
+
+            // 更新ボタン
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                location.reload();
+            });
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function saveSettings() {
+            const settings = {
+                autoMonitor: document.getElementById('enableAutoMonitor').checked,
+                monitorInterval: document.getElementById('monitorInterval').value,
+                slackAlert: document.getElementById('slackAlert').checked,
+                slackWebhook: document.getElementById('slackWebhook').value,
+                emailAlert: document.getElementById('emailAlert').checked,
+                alertEmail: document.getElementById('alertEmail').value
+            };
+            
+            localStorage.setItem('productMonitorSettings', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('productMonitorSettings') || '{}');
+            
+            if (settings.autoMonitor !== undefined) {
+                document.getElementById('enableAutoMonitor').checked = settings.autoMonitor;
+            }
+            if (settings.monitorInterval) {
+                document.getElementById('monitorInterval').value = settings.monitorInterval;
+            }
+            if (settings.slackAlert !== undefined) {
+                document.getElementById('slackAlert').checked = settings.slackAlert;
+            }
+            if (settings.slackWebhook) {
+                document.getElementById('slackWebhook').value = settings.slackWebhook;
+            }
+            if (settings.emailAlert !== undefined) {
+                document.getElementById('emailAlert').checked = settings.emailAlert;
+            }
+            if (settings.alertEmail) {
+                document.getElementById('alertEmail').value = settings.alertEmail;
+            }
+        }
+
+        function updateLastCheckTime() {
+            const lastCheckElement = document.getElementById('lastCheckTime');
+            if (productMonitor && productMonitor.lastCheck && lastCheckElement) {
+                lastCheckElement.textContent = `最終チェック: ${productMonitor.lastCheck.toLocaleString('ja-JP')}`;
+            }
+        }
+
+        // グローバル関数
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>
