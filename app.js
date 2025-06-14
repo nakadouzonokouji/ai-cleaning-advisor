@@ -958,6 +958,12 @@ class AICleaningAdvisor {
     updateSelectedLocationDisplay() {
         const selectedLocationText = document.getElementById('selectedLocationText');
         
+        // HTML要素が存在しない場合は処理をスキップ
+        if (!selectedLocationText) {
+            console.log('ℹ️ selectedLocationText要素が見つかりません - 処理をスキップ');
+            return;
+        }
+        
         if (this.state.preSelectedLocation) {
             if (typeof window.COMPREHENSIVE_LOCATION_CONFIG === 'undefined') {
                 console.warn('⚠️ COMPREHENSIVE_LOCATION_CONFIG が未定義');
@@ -1031,8 +1037,6 @@ class AICleaningAdvisor {
                 selectedLocationText.textContent = text;
                 selectedLocationText.classList.remove('hidden');
                 console.log(`✅ 選択場所表示更新: ${text}`);
-            } else {
-                console.error('❌ selectedLocationText要素が見つかりません');
             }
 
             // 分析エリアでの表示
