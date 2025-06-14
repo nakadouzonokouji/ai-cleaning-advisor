@@ -318,7 +318,7 @@ class StepWiseCleaningAdvisor {
                     products.push({
                         title: product.name,
                         price: this.formatPrice(product.asin),
-                        image: 'dist/placeholder-product.svg', // ローカル画像を使用
+                        image: this.getPlaceholderImage(), // インライン画像を使用
                         rating: product.rating || 4.5,
                         url: `https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'asdfghj12-22'}`
                     });
@@ -332,14 +332,14 @@ class StepWiseCleaningAdvisor {
                 {
                     title: selectedProducts[0] || 'おすすめ洗剤',
                     price: '¥880',
-                    image: 'dist/placeholder-product.svg',
+                    image: this.getPlaceholderImage(),
                     rating: 4.5,
                     url: '#'
                 },
                 {
                     title: selectedProducts[1] || 'おすすめ用具',
                     price: '¥1,200',
-                    image: 'dist/placeholder-product.svg',
+                    image: this.getPlaceholderImage(),
                     rating: 4.3,
                     url: '#'
                 }
@@ -354,6 +354,25 @@ class StepWiseCleaningAdvisor {
         const priceRange = ['¥680', '¥880', '¥1,200', '¥1,580', '¥2,200'];
         const hash = asin ? asin.charCodeAt(0) % priceRange.length : 0;
         return priceRange[hash];
+    }
+    
+    getPlaceholderImage() {
+        // Base64エンコードされたSVG画像（外部依存なし）
+        const svg = `
+            <svg width="200" height="150" xmlns="http://www.w3.org/2000/svg">
+                <rect width="200" height="150" fill="#f3f4f6"/>
+                <text x="100" y="75" text-anchor="middle" dominant-baseline="middle" 
+                      font-family="Arial, sans-serif" font-size="14" fill="#6b7280">
+                    商品画像
+                </text>
+                <text x="100" y="95" text-anchor="middle" dominant-baseline="middle" 
+                      font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">
+                    準備中
+                </text>
+            </svg>
+        `;
+        
+        return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.trim())));
     }
     
     displayResult(result) {
@@ -385,7 +404,7 @@ class StepWiseCleaningAdvisor {
             productsElement.innerHTML = result.products.map(product => `
                 <div class="bg-white border rounded-lg p-4 shadow-sm">
                     <img src="${product.image}" alt="${product.title}" class="w-full h-32 object-cover rounded mb-3" 
-                         onerror="this.src='dist/placeholder-product.svg'">
+                         onerror="this.style.display='none'">
                     <h4 class="font-semibold text-gray-800 mb-1">${product.title}</h4>
                     <p class="text-lg font-bold text-green-600 mb-2">${product.price}</p>
                     <div class="flex items-center mb-3">
