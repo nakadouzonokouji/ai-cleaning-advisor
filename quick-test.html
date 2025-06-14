@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>クイックテスト</title>
+    <script>
+        console.log('=== AI掃除アドバイザー クイックテスト開始 ===');
+    </script>
+</head>
+<body>
+    <h1>AI掃除アドバイザー クイックテスト</h1>
+    <div id="results"></div>
+    
+    <script type="module">
+        console.log('📦 モジュールテスト開始');
+        
+        try {
+            const productsModule = await import('./js/config/products.js');
+            console.log('✅ products.js 読み込み成功');
+            console.log('productsModule:', productsModule);
+            
+            const productsData = productsModule.default || productsModule;
+            console.log('productsData:', productsData);
+            
+            if (productsData.COMPREHENSIVE_CLEANING_PRODUCTS) {
+                const categories = Object.keys(productsData.COMPREHENSIVE_CLEANING_PRODUCTS);
+                console.log(`🛒 商品カテゴリ数: ${categories.length}`);
+                console.log('カテゴリ一覧:', categories);
+                
+                let totalProducts = 0;
+                Object.values(productsData.COMPREHENSIVE_CLEANING_PRODUCTS).forEach(category => {
+                    if (category.products) {
+                        totalProducts += category.products.length;
+                        console.log(`- ${category.category}: ${category.products.length}件`);
+                    }
+                });
+                console.log(`📊 総商品数: ${totalProducts}件`);
+                
+                // 結果をページに表示
+                document.getElementById('results').innerHTML = `
+                    <h2>テスト結果</h2>
+                    <p>✅ モジュール読み込み成功</p>
+                    <p>🛒 商品カテゴリ数: ${categories.length}</p>
+                    <p>📊 総商品数: ${totalProducts}件</p>
+                    <p>詳細はコンソールを確認してください</p>
+                `;
+            } else {
+                console.error('❌ COMPREHENSIVE_CLEANING_PRODUCTS が見つかりません');
+                document.getElementById('results').innerHTML = '<p>❌ データ読み込み失敗</p>';
+            }
+            
+        } catch (error) {
+            console.error('❌ モジュール読み込みエラー:', error);
+            document.getElementById('results').innerHTML = `<p>❌ エラー: ${error.message}</p>`;
+        }
+    </script>
+</body>
+</html>

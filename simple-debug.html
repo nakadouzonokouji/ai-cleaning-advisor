@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>簡易デバッグ</title>
+</head>
+<body>
+    <h1>モジュール読み込みデバッグ</h1>
+    <pre id="log"></pre>
+    
+    <script>
+        const log = document.getElementById('log');
+        function addLog(text) {
+            log.textContent += text + '\n';
+            console.log(text);
+        }
+    </script>
+    
+    <script type="module">
+        addLog('=== 📦 モジュール読み込みテスト ===');
+        
+        try {
+            // products.jsのインポート
+            const productsModule = await import('./js/config/products.js');
+            addLog('✅ products.js インポート成功');
+            addLog('productsModule keys: ' + Object.keys(productsModule).join(', '));
+            
+            // 現在のindex.htmlと同じ分解方法
+            const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsModule;
+            
+            addLog('\n=== 📊 Named Export分解結果 ===');
+            addLog('COMPREHENSIVE_CLEANING_PRODUCTS: ' + (COMPREHENSIVE_CLEANING_PRODUCTS ? Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS).length + '個' : 'undefined'));
+            addLog('COMPREHENSIVE_PRODUCT_DATABASE: ' + (COMPREHENSIVE_PRODUCT_DATABASE ? Object.keys(COMPREHENSIVE_PRODUCT_DATABASE).length + '個' : 'undefined'));
+            addLog('DIRT_TYPE_MAPPING: ' + (DIRT_TYPE_MAPPING ? Object.keys(DIRT_TYPE_MAPPING).length + '個' : 'undefined'));
+            addLog('LOCATION_PRODUCTS: ' + (LOCATION_PRODUCTS ? Object.keys(LOCATION_PRODUCTS).length + '個' : 'undefined'));
+            
+            // Default export確認
+            if (productsModule.default) {
+                addLog('\n=== 📊 Default Export確認 ===');
+                const defaultExport = productsModule.default;
+                addLog('default keys: ' + Object.keys(defaultExport).join(', '));
+                
+                const { 
+                    COMPREHENSIVE_CLEANING_PRODUCTS: defProducts,
+                    COMPREHENSIVE_PRODUCT_DATABASE: defProductDB,
+                    DIRT_TYPE_MAPPING: defDirtMapping,
+                    LOCATION_PRODUCTS: defLocationProducts
+                } = defaultExport;
+                
+                addLog('default.COMPREHENSIVE_CLEANING_PRODUCTS: ' + (defProducts ? Object.keys(defProducts).length + '個' : 'undefined'));
+                addLog('default.COMPREHENSIVE_PRODUCT_DATABASE: ' + (defProductDB ? Object.keys(defProductDB).length + '個' : 'undefined'));
+                addLog('default.DIRT_TYPE_MAPPING: ' + (defDirtMapping ? Object.keys(defDirtMapping).length + '個' : 'undefined'));
+                addLog('default.LOCATION_PRODUCTS: ' + (defLocationProducts ? Object.keys(defLocationProducts).length + '個' : 'undefined'));
+            }
+            
+        } catch (error) {
+            addLog('❌ エラー: ' + error.message);
+        }
+        
+        try {
+            // dirt-mapping.jsのテスト
+            const dirtModule = await import('./js/config/dirt-mapping.js');
+            addLog('\n=== 🎯 汚れマッピングテスト ===');
+            addLog('dirt-mapping.js keys: ' + Object.keys(dirtModule).join(', '));
+            
+            const { COMPREHENSIVE_DIRT_MAPPING } = dirtModule;
+            addLog('COMPREHENSIVE_DIRT_MAPPING: ' + (COMPREHENSIVE_DIRT_MAPPING ? Object.keys(COMPREHENSIVE_DIRT_MAPPING).length + '個' : 'undefined'));
+            
+            if (dirtModule.default) {
+                const defaultDirt = dirtModule.default;
+                addLog('default.COMPREHENSIVE_DIRT_MAPPING: ' + (defaultDirt.COMPREHENSIVE_DIRT_MAPPING ? Object.keys(defaultDirt.COMPREHENSIVE_DIRT_MAPPING).length + '個' : 'undefined'));
+            }
+            
+        } catch (error) {
+            addLog('❌ 汚れマッピングエラー: ' + error.message);
+        }
+        
+        try {
+            // locations.jsのテスト
+            const locationModule = await import('./js/config/locations.js');
+            addLog('\n=== 📍 場所設定テスト ===');
+            addLog('locations.js keys: ' + Object.keys(locationModule).join(', '));
+            
+            const locations = locationModule.default;
+            addLog('default location config: ' + (locations ? Object.keys(locations).length + '個' : 'undefined'));
+            
+        } catch (error) {
+            addLog('❌ 場所設定エラー: ' + error.message);
+        }
+        
+        addLog('\n=== 🔍 結論 ===');
+        addLog('現在のindex.htmlの分解方法が正しいかどうかを確認できました。');
+    </script>
+</body>
+</html>

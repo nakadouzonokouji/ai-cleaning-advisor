@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コンソール出力テスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #output { 
+            background: #1a1a1a; 
+            color: #00ff00; 
+            padding: 20px; 
+            height: 500px; 
+            overflow-y: auto; 
+            font-family: monospace; 
+            white-space: pre-wrap;
+            border-radius: 5px;
+        }
+        .button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            margin: 5px; 
+            border-radius: 3px; 
+            cursor: pointer; 
+        }
+        .button:hover { background: #0056b3; }
+        .clear { background: #dc3545; }
+        .clear:hover { background: #c82333; }
+    </style>
+</head>
+<body>
+    <h1>🔍 AI掃除アドバイザー コンソール出力テスト</h1>
+    
+    <div>
+        <button class="button" onclick="location.href='http://localhost:8090/index.html'">メインアプリを開く</button>
+        <button class="button" onclick="captureConsole()">コンソールキャプチャ開始</button>
+        <button class="button clear" onclick="clearOutput()">クリア</button>
+    </div>
+    
+    <div id="output"></div>
+
+    <script>
+        const output = document.getElementById('output');
+        let isCapturing = false;
+        
+        function captureConsole() {
+            if (isCapturing) return;
+            isCapturing = true;
+            
+            const originalLog = console.log;
+            const originalWarn = console.warn;
+            const originalError = console.error;
+            
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                addToOutput('[LOG] ' + args.join(' '));
+            };
+            
+            console.warn = function(...args) {
+                originalWarn.apply(console, args);
+                addToOutput('[WARN] ' + args.join(' '));
+            };
+            
+            console.error = function(...args) {
+                originalError.apply(console, args);
+                addToOutput('[ERROR] ' + args.join(' '));
+            };
+            
+            addToOutput('📡 コンソールキャプチャ開始');
+            
+            // メインページのJavaScriptを実行
+            loadMainPage();
+        }
+        
+        function addToOutput(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearOutput() {
+            output.textContent = '';
+        }
+        
+        async function loadMainPage() {
+            try {
+                addToOutput('🚀 メインページスクリプト読み込み開始');
+                
+                // モジュールの読み込みをテスト
+                const productsModule = await import('./js/config/products.js');
+                const dirtMappingModule = await import('./js/config/dirt-mapping.js');
+                const locationsModule = await import('./js/config/locations.js');
+                
+                addToOutput('📦 モジュール読み込み確認:');
+                addToOutput('  productsModule: ' + (productsModule ? 'OK' : 'FAIL'));
+                addToOutput('  dirtMappingModule: ' + (dirtMappingModule ? 'OK' : 'FAIL'));
+                addToOutput('  locationsModule: ' + (locationsModule ? 'OK' : 'FAIL'));
+                
+                // データ分解テスト
+                const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsModule.default || productsModule;
+                const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingModule.default || dirtMappingModule;
+                const COMPREHENSIVE_LOCATION_CONFIG = locationsModule.default;
+                
+                addToOutput('📊 分解後データ確認:');
+                addToOutput('  COMPREHENSIVE_CLEANING_PRODUCTS: ' + Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS || {}).length + ' カテゴリ');
+                addToOutput('  COMPREHENSIVE_PRODUCT_DATABASE: ' + Object.keys(COMPREHENSIVE_PRODUCT_DATABASE || {}).length + ' カテゴリ');
+                addToOutput('  COMPREHENSIVE_DIRT_MAPPING: ' + Object.keys(COMPREHENSIVE_DIRT_MAPPING || {}).length + ' 汚れタイプ');
+                addToOutput('  COMPREHENSIVE_LOCATION_CONFIG: ' + Object.keys(COMPREHENSIVE_LOCATION_CONFIG || {}).length + ' 場所');
+                addToOutput('  DIRT_TYPE_MAPPING: ' + Object.keys(DIRT_TYPE_MAPPING || {}).length + ' マッピング');
+                addToOutput('  LOCATION_PRODUCTS: ' + Object.keys(LOCATION_PRODUCTS || {}).length + ' 場所別商品');
+                
+                // 商品総数カウント
+                let totalProducts = 0;
+                Object.values(COMPREHENSIVE_CLEANING_PRODUCTS || {}).forEach(category => {
+                    if (category.products && Array.isArray(category.products)) {
+                        totalProducts += category.products.length;
+                        addToOutput(`    ${category.category || '不明'}: ${category.products.length}件`);
+                    }
+                });
+                addToOutput('📊 総商品数: ' + totalProducts + '件');
+                
+                // システムチェック
+                const systemCheck = {
+                    productsLoaded: Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS || {}).length >= 5,
+                    dirtMappingLoaded: Object.keys(COMPREHENSIVE_DIRT_MAPPING || {}).length >= 15,
+                    locationsLoaded: Object.keys(COMPREHENSIVE_LOCATION_CONFIG || {}).length >= 7,
+                    sufficientProducts: totalProducts > 50
+                };
+                
+                addToOutput('🔍 システムチェック結果:');
+                Object.entries(systemCheck).forEach(([key, value]) => {
+                    addToOutput(`  ${value ? '✅' : '❌'} ${key}: ${value}`);
+                });
+                
+                const allChecksPass = Object.values(systemCheck).every(check => check === true);
+                addToOutput(`🏁 総合判定: ${allChecksPass ? '✅ 全テスト成功' : '❌ 一部テスト失敗'}`);
+                
+            } catch (error) {
+                addToOutput('❌ エラー: ' + error.message);
+                addToOutput('スタック: ' + error.stack);
+            }
+        }
+        
+        // ページ読み込み時に自動実行
+        window.addEventListener('load', () => {
+            addToOutput('🌟 テストページ読み込み完了');
+            setTimeout(captureConsole, 1000);
+        });
+    </script>
+</body>
+</html>

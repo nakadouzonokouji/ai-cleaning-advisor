@@ -602,8 +602,8 @@
         console.log('  COMPREHENSIVE_LOCATION_CONFIG:', COMPREHENSIVE_LOCATION_CONFIG);
         
         // 設定データを分解（.defaultから正しく取得）
-        const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsConfig.default || productsConfig;
-        const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingConfig.default || dirtMappingConfig;
+        const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsConfig;
+        const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingConfig;
         
         console.log('📊 分解後データ確認:');
         console.log('  COMPREHENSIVE_CLEANING_PRODUCTS:', Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS || {}).length);

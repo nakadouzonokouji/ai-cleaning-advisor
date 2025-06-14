@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コンソール確認テスト</title>
+</head>
+<body>
+    <h1>AI掃除アドバイザー - コンソール確認</h1>
+    <div id="output"></div>
+    
+    <script>
+        // コンソールログをページに表示
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        const output = document.getElementById('output');
+        
+        function addLogToPage(level, ...args) {
+            const div = document.createElement('div');
+            div.style.cssText = `
+                padding: 5px;
+                margin: 2px 0;
+                font-family: monospace;
+                border-left: 3px solid ${level === 'error' ? 'red' : level === 'warn' ? 'orange' : 'blue'};
+                background: ${level === 'error' ? '#ffebee' : level === 'warn' ? '#fff3e0' : '#e3f2fd'};
+            `;
+            div.textContent = `[${level.toUpperCase()}] ${args.join(' ')}`;
+            output.appendChild(div);
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addLogToPage('log', ...args);
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addLogToPage('warn', ...args);
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addLogToPage('error', ...args);
+        };
+        
+        console.log('🚀 コンソールテスト開始');
+    </script>
+    
+    <!-- モジュール読み込みテスト -->
+    <script type="module">
+        console.log('📦 モジュール読み込みテスト開始');
+        
+        try {
+            const productsModule = await import('./js/config/products.js');
+            console.log('✅ products.js読み込み成功');
+            console.log('productsModule:', productsModule);
+            console.log('productsModule.default:', productsModule.default);
+            console.log('productsModule.COMPREHENSIVE_CLEANING_PRODUCTS:', productsModule.COMPREHENSIVE_CLEANING_PRODUCTS);
+            
+            // データ構造確認
+            const products = productsModule.COMPREHENSIVE_CLEANING_PRODUCTS || productsModule.default?.COMPREHENSIVE_CLEANING_PRODUCTS;
+            if (products) {
+                console.log(`🛒 商品データ確認: ${Object.keys(products).length}カテゴリ`);
+                Object.entries(products).forEach(([key, data]) => {
+                    const productCount = data.products ? data.products.length : 0;
+                    console.log(`  ${key}: ${productCount}商品`);
+                });
+            } else {
+                console.error('❌ 商品データが見つかりません');
+            }
+            
+        } catch (error) {
+            console.error('❌ products.js読み込みエラー:', error);
+        }
+        
+        try {
+            const dirtModule = await import('./js/config/dirt-mapping.js');
+            console.log('✅ dirt-mapping.js読み込み成功');
+            console.log('dirtModule:', dirtModule);
+            
+            const dirtMapping = dirtModule.COMPREHENSIVE_DIRT_MAPPING || dirtModule.default?.COMPREHENSIVE_DIRT_MAPPING || dirtModule.default;
+            if (dirtMapping) {
+                console.log(`🎯 汚れマッピング確認: ${Object.keys(dirtMapping).length}種類`);
+            } else {
+                console.error('❌ 汚れマッピングが見つかりません');
+            }
+            
+        } catch (error) {
+            console.error('❌ dirt-mapping.js読み込みエラー:', error);
+        }
+        
+        try {
+            const locationModule = await import('./js/config/locations.js');
+            console.log('✅ locations.js読み込み成功');
+            console.log('locationModule:', locationModule);
+            
+            const locations = locationModule.default;
+            if (locations) {
+                console.log(`📍 場所設定確認: ${Object.keys(locations).length}箇所`);
+            } else {
+                console.error('❌ 場所設定が見つかりません');
+            }
+            
+        } catch (error) {
+            console.error('❌ locations.js読み込みエラー:', error);
+        }
+        
+        console.log('📦 モジュール読み込みテスト完了');
+    </script>
+    
+    <!-- メインのindex.htmlと同じモジュール設定をテスト -->
+    <script type="module">
+        console.log('🔄 index.htmlと同じ設定でテスト');
+        
+        try {
+            const productsConfig = await import('./js/config/products.js');
+            const dirtMappingConfig = await import('./js/config/dirt-mapping.js');
+            const COMPREHENSIVE_LOCATION_CONFIG = await import('./js/config/locations.js');
+            
+            console.log('📦 全モジュール読み込み確認:');
+            console.log('  productsConfig:', productsConfig);
+            console.log('  dirtMappingConfig:', dirtMappingConfig);
+            console.log('  COMPREHENSIVE_LOCATION_CONFIG:', COMPREHENSIVE_LOCATION_CONFIG.default);
+            
+            // index.htmlと同じ分解処理
+            const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsConfig.default || productsConfig;
+            const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingConfig.default || dirtMappingConfig;
+            
+            console.log('📊 分解後データ確認:');
+            console.log('  COMPREHENSIVE_CLEANING_PRODUCTS:', Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS || {}).length);
+            console.log('  COMPREHENSIVE_DIRT_MAPPING:', Object.keys(COMPREHENSIVE_DIRT_MAPPING || {}).length);
+            console.log('  COMPREHENSIVE_LOCATION_CONFIG:', Object.keys(COMPREHENSIVE_LOCATION_CONFIG.default || {}).length);
+            console.log('  DIRT_TYPE_MAPPING:', Object.keys(DIRT_TYPE_MAPPING || {}).length);
+            console.log('  LOCATION_PRODUCTS:', Object.keys(LOCATION_PRODUCTS || {}).length);
+            
+            // windowオブジェクトに設定
+            window.COMPREHENSIVE_CLEANING_PRODUCTS = COMPREHENSIVE_CLEANING_PRODUCTS;
+            window.COMPREHENSIVE_PRODUCT_DATABASE = COMPREHENSIVE_PRODUCT_DATABASE;
+            window.COMPREHENSIVE_DIRT_MAPPING = COMPREHENSIVE_DIRT_MAPPING;
+            window.COMPREHENSIVE_LOCATION_CONFIG = COMPREHENSIVE_LOCATION_CONFIG.default;
+            window.DIRT_TYPE_MAPPING = DIRT_TYPE_MAPPING;
+            window.LOCATION_PRODUCTS = LOCATION_PRODUCTS;
+            
+            console.log('✅ windowオブジェクト設定完了');
+            
+            // システムチェック実行
+            setTimeout(() => {
+                console.log('🏠 AI掃除アドバイザーシステム状況:');
+                console.log(`  🎯 汚れタイプ: ${Object.keys(window.COMPREHENSIVE_DIRT_MAPPING || {}).length}種類`);
+                console.log(`  🛒 商品カテゴリ: ${Object.keys(window.COMPREHENSIVE_PRODUCT_DATABASE || {}).length}カテゴリ`);
+                console.log(`  📍 対応場所: ${Object.keys(window.COMPREHENSIVE_LOCATION_CONFIG || {}).length}箇所`);
+                console.log(`  🚀 新商品DB: ${Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS || {}).length}カテゴリ`);
+                console.log(`  🔗 汚れマッピング: ${Object.keys(window.DIRT_TYPE_MAPPING || {}).length}種類`);
+                console.log(`  📍 場所別商品: ${Object.keys(window.LOCATION_PRODUCTS || {}).length}箇所`);
+                
+                const dirtCount = Object.keys(window.COMPREHENSIVE_DIRT_MAPPING || {}).length;
+                const productCount = Object.keys(window.COMPREHENSIVE_PRODUCT_DATABASE || {}).length;
+                const locationCount = Object.keys(window.COMPREHENSIVE_LOCATION_CONFIG || {}).length;
+                const newProductsCount = Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS || {}).length;
+                const dirtMappingCount = Object.keys(window.DIRT_TYPE_MAPPING || {}).length;
+                
+                if (dirtCount >= 15 && productCount >= 10 && locationCount >= 7 && newProductsCount >= 5 && dirtMappingCount >= 8) {
+                    console.log('✅ システム正常稼働中（リアルタイム検索対応）');
+                } else {
+                    console.warn('⚠️ システム不完全 - データベース統合確認が必要');
+                    console.log('📊 詳細:', {
+                        dirtCount,
+                        productCount,
+                        locationCount,
+                        newProductsCount,
+                        dirtMappingCount
+                    });
+                }
+            }, 100);
+            
+        } catch (error) {
+            console.error('❌ テスト実行エラー:', error);
+        }
+    </script>
+</body>
+</html>
