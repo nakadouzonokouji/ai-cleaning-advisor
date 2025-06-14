@@ -648,18 +648,15 @@ class AICleaningAdvisor {
     getAllProductCount() {
         let count = 0;
         
+        // COMPREHENSIVE_CLEANING_PRODUCTSから商品数を取得
+        // （COMPREHENSIVE_PRODUCT_DATABASEは同じデータなので重複カウントを避ける）
         Object.values(COMPREHENSIVE_CLEANING_PRODUCTS).forEach(category => {
-            if (category.products) {
+            if (category.products && Array.isArray(category.products)) {
                 count += category.products.length;
             }
         });
         
-        Object.values(COMPREHENSIVE_PRODUCT_DATABASE).forEach(category => {
-            if (category.products) {
-                count += category.products.length;
-            }
-        });
-        
+        console.log(`📊 総商品数計算: ${count}件`);
         return count;
     }
 

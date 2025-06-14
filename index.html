@@ -601,16 +601,23 @@
         console.log('  dirtMappingConfig:', dirtMappingConfig);
         console.log('  COMPREHENSIVE_LOCATION_CONFIG:', COMPREHENSIVE_LOCATION_CONFIG);
         
-        // 設定データを分解
-        const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsConfig;
-        const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingConfig;
+        // 設定データを分解（.defaultから正しく取得）
+        const { COMPREHENSIVE_CLEANING_PRODUCTS, DIRT_TYPE_MAPPING, LOCATION_PRODUCTS, COMPREHENSIVE_PRODUCT_DATABASE } = productsConfig.default || productsConfig;
+        const { COMPREHENSIVE_DIRT_MAPPING } = dirtMappingConfig.default || dirtMappingConfig;
         
         console.log('📊 分解後データ確認:');
         console.log('  COMPREHENSIVE_CLEANING_PRODUCTS:', Object.keys(COMPREHENSIVE_CLEANING_PRODUCTS || {}).length);
+        console.log('  COMPREHENSIVE_PRODUCT_DATABASE:', Object.keys(COMPREHENSIVE_PRODUCT_DATABASE || {}).length);
         console.log('  COMPREHENSIVE_DIRT_MAPPING:', Object.keys(COMPREHENSIVE_DIRT_MAPPING || {}).length);
         console.log('  COMPREHENSIVE_LOCATION_CONFIG:', Object.keys(COMPREHENSIVE_LOCATION_CONFIG || {}).length);
         console.log('  DIRT_TYPE_MAPPING:', Object.keys(DIRT_TYPE_MAPPING || {}).length);
         console.log('  LOCATION_PRODUCTS:', Object.keys(LOCATION_PRODUCTS || {}).length);
+        
+        console.log('🔍 詳細チェック:');
+        console.log('  productsConfig.default:', !!productsConfig.default);
+        console.log('  dirtMappingConfig.default:', !!dirtMappingConfig.default);
+        console.log('  COMPREHENSIVE_PRODUCT_DATABASE型:', typeof COMPREHENSIVE_PRODUCT_DATABASE);
+        console.log('  COMPREHENSIVE_CLEANING_PRODUCTS型:', typeof COMPREHENSIVE_CLEANING_PRODUCTS);
         
         // システムチェック用にwindowオブジェクトに設定
         window.COMPREHENSIVE_CLEANING_PRODUCTS = COMPREHENSIVE_CLEANING_PRODUCTS;
@@ -643,6 +650,12 @@
         // システム設定確認（モジュール読み込み後に実行）
         // タイミング問題を解決するため、window.onloadとsetTimeoutの両方で実行
         const runSystemCheck = () => {
+            console.log('🔍 システムチェック開始 - windowオブジェクト確認:');
+            console.log('  window.COMPREHENSIVE_DIRT_MAPPING:', !!window.COMPREHENSIVE_DIRT_MAPPING);
+            console.log('  window.COMPREHENSIVE_PRODUCT_DATABASE:', !!window.COMPREHENSIVE_PRODUCT_DATABASE);
+            console.log('  window.COMPREHENSIVE_LOCATION_CONFIG:', !!window.COMPREHENSIVE_LOCATION_CONFIG);
+            console.log('  window.COMPREHENSIVE_CLEANING_PRODUCTS:', !!window.COMPREHENSIVE_CLEANING_PRODUCTS);
+            
             const dirtCount = Object.keys(window.COMPREHENSIVE_DIRT_MAPPING || {}).length;
             const productCount = Object.keys(window.COMPREHENSIVE_PRODUCT_DATABASE || {}).length;
             const locationCount = Object.keys(window.COMPREHENSIVE_LOCATION_CONFIG || {}).length;
