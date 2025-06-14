@@ -268,18 +268,53 @@ class AICleaningAdvisor {
     analyzeByLocation() {
         console.log('📍 場所ベース分析開始');
         
-        const locationConfig = COMPREHENSIVE_LOCATION_CONFIG[this.state.selectedLocation];
+        let dirtType = 'ほこり';
+        let surface = '一般的な掃除';
         
-        if (!locationConfig) {
-            throw new Error('選択された場所の情報が見つかりません');
+        // 場所に基づく詳細な汚れ判定（日本語）
+        switch (this.state.selectedLocation) {
+            case 'kitchen':
+                dirtType = this.state.dirtSeverity === 'light' ? '軽い油汚れ' : '頑固な油汚れ';
+                surface = 'キッチン';
+                break;
+            case 'bathroom':
+                dirtType = this.state.dirtSeverity === 'light' ? '軽いカビ' : '頑固なカビ';
+                surface = 'バスルーム・浴室';
+                break;
+            case 'toilet':
+                dirtType = this.state.dirtSeverity === 'light' ? '軽い汚れ' : '頑固な汚れ';
+                surface = 'トイレ';
+                break;
+            case 'window':
+                dirtType = this.state.dirtSeverity === 'light' ? '軽い水垢' : '頑固な水垢';
+                surface = '窓・ガラス';
+                break;
+            case 'floor':
+                dirtType = this.state.dirtSeverity === 'light' ? 'ホコリ' : '頑固な汚れ';
+                surface = '床・フローリング';
+                break;
+            case 'living':
+                dirtType = this.state.dirtSeverity === 'light' ? 'ホコリ' : '皮脂汚れ';
+                surface = 'リビング';
+                break;
+            case 'aircon':
+                dirtType = 'ホコリ';
+                surface = 'エアコン';
+                break;
+            case 'washer':
+                dirtType = 'カビ汚れ';
+                surface = '洗濯機';
+                break;
+            default:
+                if (this.state.selectedLocation === 'custom' && this.state.customLocation) {
+                    surface = this.state.customLocation;
+                    dirtType = '汚れ';
+                }
         }
         
-        // 場所の一般的な汚れタイプを使用
-        const commonDirtType = locationConfig.commonDirtTypes?.[0] || 'ほこり';
-        
         const result = {
-            dirtType: commonDirtType,
-            surface: locationConfig.label || this.state.selectedLocation,
+            dirtType: dirtType,
+            surface: surface,
             dirtLevel: this.state.dirtSeverity,
             location: this.state.selectedLocation,
             analysisMethod: 'location-based'
@@ -348,89 +383,137 @@ class AICleaningAdvisor {
      * @param {string} severity - 汚れの程度
      * @returns {Object} 掃除方法
      */
-    generateCleaningMethod(dirtType, surface, severity) {
-        // 掃除方法のテンプレート
+    generateCleaningMethod(dirtType, surface, severity = 'heavy') {
+        console.log(`🧹 掃除方法生成: ${dirtType} - ${surface} (強度: ${severity})`);
+        
+        // 詳細な掃除方法テンプレート
         const methodTemplates = {
-            'カビ': {
-                light: {
-                    steps: [
-                        '中性洗剤で軽く拭き取る',
-                        '十分に乾燥させる',
-                        '換気を良くして湿度を下げる'
-                    ],
-                    warning: '軽度なので早めの対処で除去可能です',
-                    difficulty: 'easy'
-                },
-                heavy: {
-                    steps: [
-                        '塩素系漂白剤を使用（必ず換気）',
-                        '30分程度放置して除菌',
-                        'スポンジで軽くこする',
-                        '水で十分にすすぐ',
-                        '完全に乾燥させる'
-                    ],
-                    warning: '塩素系洗剤使用時は必ず換気し、他の洗剤と混ぜないでください',
-                    difficulty: 'hard'
-                }
-            },
             '油汚れ': {
                 light: {
+                    title: `${surface}の日常的な油汚れ除去法`,
+                    difficulty: '初級',
+                    time: '15-20分',
                     steps: [
-                        '中性洗剤で拭き取る',
-                        'マイクロファイバークロスで仕上げ'
+                        '🔧 準備：中性洗剤、スポンジ、布巾を用意',
+                        '🧴 軽く湿らせる：スポンジに少量の洗剤をつける',
+                        '🧽 軽く拭き取り：円を描くように優しくこする',
+                        '💧 すすぎ：水拭きで洗剤を拭き取る',
+                        '✨ 仕上げ：乾いた布で水分を拭き取る'
                     ],
-                    warning: '早めの掃除で簡単に除去できます',
-                    difficulty: 'easy'
+                    tips: '💡 日常的なお手入れなら、食器用洗剤でも十分効果的です。',
+                    warnings: '⚠️ 汚れが軽いうちに定期的にお手入れしましょう。'
                 },
                 heavy: {
+                    title: `${surface}の頑固な油汚れ除去法`,
+                    difficulty: '上級',
+                    time: '45-60分',
                     steps: [
-                        'アルカリ性洗剤を使用',
-                        '15-20分放置',
-                        'スポンジでこすり洗い',
-                        '中性洗剤で仕上げ拭き'
+                        '🔧 準備：強力アルカリ性洗剤、研磨スポンジ、保護手袋、ヘラを用意',
+                        '💨 安全確認：十分な換気を行い、保護手袋・マスクを着用する',
+                        '🧴 前処理：強力洗剤を厚めにスプレーし、15-20分放置',
+                        '🔥 加熱効果：可能であれば温風で温めて洗剤の効果を高める',
+                        '🧽 強力清掃：研磨スポンジで力を込めてこすり落とす',
+                        '🪚 固着除去：ヘラで固着した汚れを慎重に削り取る',
+                        '💧 念入りすすぎ：洗剤をしっかりと拭き取る',
+                        '✨ 仕上げ：乾いた布で完全に拭き取り、艶を出す'
                     ],
-                    warning: '頑固な油汚れには専用洗剤が効果的です',
-                    difficulty: 'medium'
+                    tips: '💡 重曹ペーストや業務用脱脂洗剤が効果的。複数回に分けて作業することも重要です。',
+                    warnings: '⚠️ 強力洗剤使用時は必ず保護具を着用し、十分な換気を行ってください。'
                 }
             },
-            '水垢': {
-                light: {
-                    steps: [
-                        '酸性洗剤を少量使用',
-                        'スポンジで軽くこする',
-                        '水で十分にすすぐ'
-                    ],
-                    warning: '定期的な掃除で予防できます',
-                    difficulty: 'easy'
-                },
-                heavy: {
-                    steps: [
-                        '酸性洗剤を厚めに塗布',
-                        '30分程度放置',
-                        'メラミンスポンジでこする',
-                        '中性洗剤で中和',
-                        '水で十分にすすぎ乾拭き'
-                    ],
-                    warning: '酸性洗剤は金属部分に注意して使用してください',
-                    difficulty: 'medium'
-                }
+            '頑固な油汚れ': {
+                title: `${surface}の頑固な油汚れ除去法`,
+                difficulty: '上級',
+                time: '45-60分',
+                steps: [
+                    '🔧 準備：強力アルカリ性洗剤、研磨スポンジ、保護手袋、ヘラを用意',
+                    '💨 安全確認：十分な換気を行い、保護手袋・マスクを着用する',
+                    '🧴 前処理：強力洗剤を厚めにスプレーし、15-20分放置',
+                    '🔥 加熱効果：可能であれば温風で温めて洗剤の効果を高める',
+                    '🧽 強力清掃：研磨スポンジで力を込めてこすり落とす',
+                    '🪚 固着除去：ヘラで固着した汚れを慎重に削り取る',
+                    '💧 念入りすすぎ：洗剤をしっかりと拭き取る',
+                    '✨ 仕上げ：乾いた布で完全に拭き取り、艶を出す'
+                ],
+                tips: '💡 重曹ペーストや業務用脱脂洗剤が効果的。複数回に分けて作業することも重要です。',
+                warnings: '⚠️ 強力洗剤使用時は必ず保護具を着用し、十分な換気を行ってください。'
+            },
+            'カビ汚れ': {
+                title: `${surface}のカビ除去法`,
+                difficulty: '上級',
+                time: '45-60分',
+                steps: [
+                    '🛡️ 準備：カビ取り剤、ブラシ、マスク、手袋、ゴーグルを用意',
+                    '💨 安全確認：強力な換気とマスク・手袋・ゴーグル着用',
+                    '🧴 前処理：カビ取り剤を患部に塗布し、10-15分放置',
+                    '🪥 清掃：専用ブラシで優しくこすり、カビを除去',
+                    '💧 すすぎ：大量の水でカビ取り剤を完全に洗い流す',
+                    '🌬️ 乾燥：しっかりと乾燥させ、湿気を除去',
+                    '🚿 除菌：アルコール系除菌剤で最終的な除菌を行う'
+                ],
+                tips: '💡 カビの根を完全に除去するため、できるだけ深くまで洗剤を浸透させましょう。',
+                warnings: '⚠️ カビ取り剤は強力な化学物質です。必ず換気と保護具着用を怠らないでください。'
+            },
+            '頑固なカビ': {
+                title: `${surface}の頑固なカビ除去法`,
+                difficulty: '上級',
+                time: '60-90分',
+                steps: [
+                    '🛡️ 準備：強力カビ取り剤、硬めブラシ、マスク、手袋、ゴーグルを用意',
+                    '💨 安全確認：強力な換気とマスク・手袋・ゴーグル着用',
+                    '🧴 前処理：強力カビ取り剤を厚めに塗布し、20-30分放置',
+                    '🪥 強力清掃：硬めブラシで根気よくこすり、カビを除去',
+                    '🔄 再処理：必要に応じて洗剤を再塗布し、さらに放置',
+                    '💧 念入りすすぎ：大量の水でカビ取り剤を完全に洗い流す',
+                    '🌬️ 完全乾燥：送風機などを使用してしっかりと乾燥させる',
+                    '🚿 除菌：アルコール系除菌剤で最終的な除菌を行う',
+                    '🔍 確認：カビの取り残しがないか念入りにチェック'
+                ],
+                tips: '💡 頑固なカビには時間をかけた処理が必要。急がず丁寧に作業しましょう。',
+                warnings: '⚠️ 強力なカビ取り剤使用時は特に注意。換気・保護具は絶対に必須です。'
+            },
+            'ホコリ': {
+                title: `${surface}のホコリ除去法`,
+                difficulty: '初級',
+                time: '10-15分',
+                steps: [
+                    '🔧 準備：ダスタークロス、掃除機、雑巾を用意',
+                    '💨 除塵：まずは掃除機でざっと吸い取る',
+                    '🧽 拭き取り：ダスタークロスで細かいホコリを除去',
+                    '💧 水拭き：軽く湿らせた雑巾で仕上げ拭き',
+                    '✨ 乾拭き：乾いた布で水分を拭き取る'
+                ],
+                tips: '💡 定期的な掃除でホコリの蓄積を防ぎましょう。',
+                warnings: '⚠️ ホコリは舞い上がりやすいので、上から下に向かって掃除しましょう。'
             }
         };
         
-        const template = methodTemplates[dirtType]?.[severity] || methodTemplates[dirtType]?.['heavy'];
+        // 汚れタイプに基づいてテンプレートを選択
+        let template;
+        if (severity === 'light' && methodTemplates[dirtType]?.light) {
+            template = methodTemplates[dirtType].light;
+        } else if (methodTemplates[dirtType]) {
+            template = methodTemplates[dirtType].heavy || methodTemplates[dirtType];
+        } else {
+            // 直接一致するテンプレートを探す
+            template = methodTemplates[dirtType];
+        }
         
         if (!template) {
             return this.generateFallbackCleaningMethod(dirtType);
         }
         
         return {
+            title: template.title || `${surface}の${dirtType}除去法`,
             dirtType,
             surface,
             severity,
-            steps: template.steps,
-            warning: template.warning,
-            difficulty: template.difficulty,
-            estimatedTime: this.getEstimatedTime(template.difficulty, template.steps.length)
+            difficulty: template.difficulty || 'medium',
+            time: template.time || '30分程度',
+            steps: template.steps || [],
+            tips: template.tips || '',
+            warnings: template.warnings || '適切な道具と方法で安全に作業してください。',
+            estimatedTime: template.time || '30分程度'
         };
     }
 
