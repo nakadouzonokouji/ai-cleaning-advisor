@@ -291,7 +291,12 @@ class StepWiseCleaningAdvisor {
             bathroom_floor: { name: 'お風呂（床）', icon: '🦶', type: 'bathroom_floor', mainType: 'bathroom' },
             bathroom_drain: { name: 'お風呂（排水口）', icon: '🕳️', type: 'bathroom_drain', mainType: 'bathroom' },
             bathroom: { name: 'お風呂（全般）', icon: '🛁', type: 'bathroom' }, // 後方互換性
-            toilet: { name: 'トイレ', icon: '🚽', type: 'toilet' },
+            
+            // トイレ細分化
+            toilet_bowl: { name: 'トイレ（便器内）', icon: '🚽', type: 'toilet_bowl', mainType: 'toilet' },
+            toilet_seat: { name: 'トイレ（便座・蓋）', icon: '🪑', type: 'toilet_seat', mainType: 'toilet' },
+            toilet_floor: { name: 'トイレ（床・壁）', icon: '🧱', type: 'toilet_floor', mainType: 'toilet' },
+            toilet: { name: 'トイレ（全般）', icon: '🚽', type: 'toilet' }, // 後方互換性
             window: { name: '窓・ガラス', icon: '🪟', type: 'window' },
             floor: { name: '床・絨毯', icon: '🧹', type: 'floor' },
             living: { name: 'リビング', icon: '🛋️', type: 'living' }
@@ -766,6 +771,142 @@ class StepWiseCleaningAdvisor {
                     description: "頑固な油汚れ・プロ仕様"
                 }
             ],
+            // お風呂浴槽（皮脂汚れ・湯垢・石鹸カス）
+            bathroom_tub: [
+                {
+                    title: "花王 バスマジックリン 泡立ちスプレー",
+                    asin: "B001TJ6AEW",
+                    price: "¥348",
+                    rating: 4.3,
+                    reviews: 8765,
+                    amazonChoice: true,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "浴槽皮脂汚れ専用・Amazonチョイス"
+                },
+                {
+                    title: "重曹 お風呂用",
+                    asin: "B075XVJK89",
+                    price: "¥580",
+                    rating: 4.4,
+                    reviews: 6789,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "浴槽優しい研磨・天然成分"
+                },
+                {
+                    title: "ライオン ルック まめピカ",
+                    asin: "B076QWXF2D",
+                    price: "¥598",
+                    rating: 4.4,
+                    reviews: 5432,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "浴槽毎日掃除用・ベストセラー"
+                }
+            ],
+            // お風呂壁・天井（カビ・水垢・石鹸カス）
+            bathroom_wall: [
+                {
+                    title: "ジョンソン カビキラー",
+                    asin: "B000FQ8KL2",
+                    price: "¥398",
+                    rating: 4.2,
+                    reviews: 12450,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "壁カビ取り最強・ベストセラー"
+                },
+                {
+                    title: "カビハイター 強力ジェル",
+                    asin: "B087HJKLMN",
+                    price: "¥698",
+                    rating: 4.5,
+                    reviews: 7890,
+                    professional: true,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "壁天井カビ専用・Amazonチョイス"
+                },
+                {
+                    title: "茂木和哉 お風呂用",
+                    asin: "B089PQRSTU",
+                    price: "¥1,280",
+                    rating: 4.6,
+                    reviews: 3456,
+                    professional: true,
+                    category: "洗剤",
+                    description: "壁水垢除去・茂木和哉ブランド"
+                }
+            ],
+            // お風呂床（カビ・ヌメリ・皮脂汚れ）
+            bathroom_floor: [
+                {
+                    title: "お風呂床用洗剤",
+                    asin: "B085VWXYZ1",
+                    price: "¥798",
+                    rating: 4.3,
+                    reviews: 4567,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "床ヌメリ除去専用・Amazonチョイス"
+                },
+                {
+                    title: "カビキラー 床用スプレー",
+                    asin: "B087ABCDEF",
+                    price: "¥598",
+                    rating: 4.2,
+                    reviews: 6789,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "床カビ・黒ずみ除去・ベストセラー"
+                },
+                {
+                    title: "重曹＋クエン酸セット",
+                    asin: "B089GHIJKL",
+                    price: "¥980",
+                    rating: 4.4,
+                    reviews: 2345,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "床ヌメリ天然除去・環境配慮"
+                }
+            ],
+            // お風呂排水口（髪の毛・ヌメリ・悪臭）
+            bathroom_drain: [
+                {
+                    title: "パイプユニッシュ 強力ジェル",
+                    asin: "B000FQZAB8",
+                    price: "¥498",
+                    rating: 4.3,
+                    reviews: 9876,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "排水口ヌメリ除去・ベストセラー"
+                },
+                {
+                    title: "業務用パイプクリーナー",
+                    asin: "B087MNOPQR",
+                    price: "¥1,280",
+                    rating: 4.5,
+                    reviews: 3456,
+                    professional: true,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "排水口強力洗浄・Amazonチョイス"
+                },
+                {
+                    title: "髪の毛溶かすパイプ洗剤",
+                    asin: "B089STUVWX",
+                    price: "¥798",
+                    rating: 4.4,
+                    reviews: 5678,
+                    professional: true,
+                    category: "洗剤",
+                    description: "髪の毛・タンパク質分解専用"
+                }
+            ],
+            // お風呂全般（後方互換性）
             bathroom: [
                 {
                     title: "ジョンソン カビキラー",
@@ -775,7 +916,7 @@ class StepWiseCleaningAdvisor {
                     reviews: 12450,
                     bestseller: true,
                     category: "洗剤",
-                    description: "お風呂カビ取り・ベストセラー"
+                    description: "お風呂万能カビ取り・ベストセラー"
                 },
                 {
                     title: "花王 バスマジックリン",
@@ -785,7 +926,7 @@ class StepWiseCleaningAdvisor {
                     reviews: 8765,
                     amazonChoice: true,
                     category: "洗剤",
-                    description: "お風呂掃除・Amazonチョイス"
+                    description: "お風呂万能掃除・Amazonチョイス"
                 },
                 {
                     title: "ライオン ルック まめピカ",
@@ -797,6 +938,108 @@ class StepWiseCleaningAdvisor {
                     description: "お風呂の毎日掃除用"
                 }
             ],
+            // トイレ便器内（尿石・黄ばみ・水垢）
+            toilet_bowl: [
+                {
+                    title: "サンポール 尿石除去",
+                    asin: "B00FQRB8K6",
+                    price: "¥498",
+                    rating: 4.5,
+                    reviews: 9876,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "便器内尿石除去最強・ベストセラー"
+                },
+                {
+                    title: "強力トイレ洗剤 業務用",
+                    asin: "B087QRSTUV",
+                    price: "¥798",
+                    rating: 4.4,
+                    reviews: 4567,
+                    professional: true,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "便器内頑固汚れ・Amazonチョイス"
+                },
+                {
+                    title: "クエン酸トイレ洗剤",
+                    asin: "B089WXYZAB",
+                    price: "¥580",
+                    rating: 4.3,
+                    reviews: 3456,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "便器内天然成分・環境配慮"
+                }
+            ],
+            // トイレ便座・蓋（除菌・汚れ）
+            toilet_seat: [
+                {
+                    title: "花王 トイレマジックリン 消臭・除菌",
+                    asin: "B000Z2B8VW",
+                    price: "¥298",
+                    rating: 4.2,
+                    reviews: 7543,
+                    amazonChoice: true,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "便座除菌専用・Amazonチョイス"
+                },
+                {
+                    title: "アルコール除菌シート",
+                    asin: "B087CDEFGH",
+                    price: "¥398",
+                    rating: 4.4,
+                    reviews: 8765,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "便座即効除菌・ベストセラー"
+                },
+                {
+                    title: "次亜塩素酸水スプレー",
+                    asin: "B089IJKLMN",
+                    price: "¥680",
+                    rating: 4.3,
+                    reviews: 2345,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "便座強力除菌・安全成分"
+                }
+            ],
+            // トイレ床・壁（尿の飛び散り・臭い）
+            toilet_floor: [
+                {
+                    title: "トイレ床壁用洗剤",
+                    asin: "B085OPQRST",
+                    price: "¥498",
+                    rating: 4.2,
+                    reviews: 5678,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "床壁尿汚れ専用・ベストセラー"
+                },
+                {
+                    title: "重曹スプレー",
+                    asin: "B089UVWXYZ",
+                    price: "¥580",
+                    rating: 4.4,
+                    reviews: 3456,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "床壁消臭・天然成分"
+                },
+                {
+                    title: "セスキ炭酸ソーダ",
+                    asin: "B087ABCDEF",
+                    price: "¥380",
+                    rating: 4.3,
+                    reviews: 4567,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "床壁アルカリ洗浄・エコ洗剤"
+                }
+            ],
+            // トイレ全般（後方互換性）
             toilet: [
                 {
                     title: "サンポール 尿石除去",
@@ -806,7 +1049,7 @@ class StepWiseCleaningAdvisor {
                     reviews: 9876,
                     bestseller: true,
                     category: "洗剤",
-                    description: "トイレ尿石除去・ベストセラー"
+                    description: "トイレ万能洗剤・ベストセラー"
                 },
                 {
                     title: "花王 トイレマジックリン",
@@ -816,7 +1059,7 @@ class StepWiseCleaningAdvisor {
                     reviews: 7543,
                     amazonChoice: true,
                     category: "洗剤",
-                    description: "トイレ掃除・Amazonチョイス"
+                    description: "トイレ万能掃除・Amazonチョイス"
                 }
             ],
             window: [
