@@ -264,8 +264,8 @@ class StepWiseCleaningAdvisor {
         // 掃除方法を生成
         const cleaningMethod = this.generateCleaningMethod(locationInfo, levelInfo);
         
-        // おすすめ商品を取得（Amazon APIを使用）
-        const products = await this.getRecommendedProductsWithApi(locationInfo, levelInfo);
+        // おすすめ商品を取得（事前リスト化商品を使用）
+        const products = this.getRecommendedProducts(locationInfo, levelInfo);
         
         return {
             location: locationInfo,
@@ -721,36 +721,6 @@ class StepWiseCleaningAdvisor {
         return products.slice(0, 4); // 最大4商品を返す
     }
     
-    async getRecommendedProductsWithApi(location, level) {
-        console.log('🛒 Amazon API商品推薦開始:', { location: location.type, level: level.intensity });
-        
-        try {
-            // 基本商品リストを取得
-            const baseProducts = this.getRecommendedProducts(location, level);
-            
-            // APIクライアントが利用可能かチェック
-            if (window.APIClient && typeof window.APIClient.enrichProductsWithAmazonData === 'function') {
-                console.log('✅ APIクライアント利用可能 - リアルタイムデータ取得中...');
-                
-                // リアルタイムAmazonデータで商品情報を強化
-                const enrichedProducts = await window.APIClient.enrichProductsWithAmazonData(baseProducts);
-                
-                if (enrichedProducts && enrichedProducts.length > 0) {
-                    console.log(`🚀 ${enrichedProducts.length}商品のリアルタイムデータ取得成功`);
-                    return enrichedProducts.slice(0, 4);
-                }
-            }
-            
-            // APIが利用できない場合はフォールバック
-            console.log('⚠️ APIクライアント利用不可 - 静的データを使用');
-            return baseProducts;
-            
-        } catch (error) {
-            console.error('❌ Amazon API商品取得エラー:', error);
-            // エラー時は基本商品リストにフォールバック
-            return this.getRecommendedProducts(location, level);
-        }
-    }
     
     getProductDescription(product, location, level) {
         // 商品の説明を動的に生成
@@ -808,9 +778,18 @@ class StepWiseCleaningAdvisor {
     }
     
     getAmazonImageUrl(asin) {
-        // Amazon商品画像URLを生成（サイズ：中サイズ）
+        // Amazon商品画像URLを生成（複数サイズを試行）
         if (!asin) return this.getPlaceholderImage();
-        return `https://images-na.ssl-images-amazon.com/images/P/${asin}.01.MZZZZZZZ.jpg`;
+        
+        // より安定したAmazon画像URL形式を使用
+        const imageUrls = [
+            `https://images-na.ssl-images-amazon.com/images/P/${asin}.01._SL500_.jpg`,
+            `https://images-na.ssl-images-amazon.com/images/P/${asin}.01.MAIN._SL500_.jpg`,
+            `https://m.media-amazon.com/images/I/${asin}.jpg`
+        ];
+        
+        // 最初のURLを返す（エラー時は画像側でフォールバック）
+        return imageUrls[0];
     }
     
     disableExternalPlaceholders() {
@@ -917,13 +896,14 @@ class StepWiseCleaningAdvisor {
                     ${product.bestseller ? '<div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">ベストセラー</div>' : ''}
                     ${product.professional ? '<div class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">プロ仕様</div>' : ''}
                     
-                    <img src="${product.image || this.getAmazonImageUrl(product.asin)}" alt="${product.title}" class="w-full h-32 object-cover rounded mb-3" 
-                         onerror="this.src='${this.getPlaceholderImage()}'; this.onerror=null;">
+                    <img src="${this.getAmazonImageUrl(product.asin)}" alt="${product.title}" class="w-full h-32 object-cover rounded mb-3" 
+                         onerror="this.src='${this.getPlaceholderImage()}'; this.onerror=null;"
+                         loading="lazy">
                     
                     <h4 class="font-semibold text-gray-800 mb-2 line-clamp-2">${product.title}</h4>
                     
                     <div class="flex items-center justify-between mb-2">
-                        <p class="text-lg font-bold text-green-600">${product.price || 'Amazon価格取得中...'}</p>
+                        <p class="text-lg font-bold text-green-600">${product.price}</p>
                         <div class="flex items-center">
                             <div class="flex text-yellow-400">
                                 ${Array(5).fill().map((_, i) => 
