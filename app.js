@@ -13,6 +13,10 @@ class StepWiseCleaningAdvisor {
     init() {
         // イベントリスナーを設定
         this.setupEventListeners();
+        
+        // 外部プレースホルダーを無効化
+        this.disableExternalPlaceholders();
+        
         console.log('✅ 初期化完了');
     }
     
@@ -375,8 +379,21 @@ class StepWiseCleaningAdvisor {
         return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.trim())));
     }
     
+    disableExternalPlaceholders() {
+        // 全てのimg要素をチェックして外部プレースホルダーを無効化
+        document.querySelectorAll('img').forEach(img => {
+            if (img.src && (img.src.includes('via.placeholder') || img.src.includes('placeholder'))) {
+                img.src = this.getPlaceholderImage();
+                img.onerror = () => { img.style.display = 'none'; };
+            }
+        });
+    }
+    
     displayResult(result) {
         console.log('📊 結果表示:', result);
+        
+        // 外部プレースホルダーを無効化
+        this.disableExternalPlaceholders();
         
         // 掃除方法を表示
         const methodElement = document.getElementById('cleaningMethod');
