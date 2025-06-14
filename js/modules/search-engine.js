@@ -12,7 +12,49 @@ export class RealtimeSearchEngine {
         this.searchHistory = [];
         this.maxHistorySize = 100;
         
+        // データベース利用可能性チェック
+        this.databaseStatus = this.checkDatabaseAvailability();
+        
         console.log('🔍 リアルタイム検索エンジン初期化');
+        if (this.databaseStatus.hasIssues) {
+            console.warn('⚠️ 一部データベースが利用できません:', this.databaseStatus.issues);
+        }
+    }
+
+    /**
+     * データベース利用可能性をチェック
+     * @returns {Object} データベース状態
+     */
+    checkDatabaseAvailability() {
+        const status = {
+            hasIssues: false,
+            issues: []
+        };
+
+        try {
+            if (!COMPREHENSIVE_CLEANING_PRODUCTS) {
+                status.hasIssues = true;
+                status.issues.push('COMPREHENSIVE_CLEANING_PRODUCTS未定義');
+            } else if (typeof COMPREHENSIVE_CLEANING_PRODUCTS !== 'object') {
+                status.hasIssues = true;
+                status.issues.push('COMPREHENSIVE_CLEANING_PRODUCTS型不正');
+            }
+
+            if (!COMPREHENSIVE_PRODUCT_DATABASE) {
+                status.hasIssues = true;
+                status.issues.push('COMPREHENSIVE_PRODUCT_DATABASE未定義');
+            }
+
+            if (!COMPREHENSIVE_DIRT_MAPPING) {
+                status.hasIssues = true;
+                status.issues.push('COMPREHENSIVE_DIRT_MAPPING未定義');
+            }
+        } catch (error) {
+            status.hasIssues = true;
+            status.issues.push(`データベースアクセスエラー: ${error.message}`);
+        }
+
+        return status;
     }
 
     /**
