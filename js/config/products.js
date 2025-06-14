@@ -15,31 +15,52 @@ export const COMPREHENSIVE_CLEANING_PRODUCTS = {
         products: [
             {
                 name: "マジックリン ハンディスプレー 油汚れ用",
-                asin: "B000FQTJZW", // 確認済み有効ASIN
+                asin: "B000FQTJZW",
                 type: "洗剤",
                 target: ["油汚れ", "換気扇", "コンロ"],
                 strength: "強力",
                 bestseller: true,
-                rating: 4.3,
-                reviews: 15420,
                 why_recommended: "日本で最も信頼されている油汚れ用洗剤。スプレータイプで使いやすく、アルカリ性成分が油汚れを効率的に分解します。",
-                price_range: "¥300-¥500",
-                usage_amount: "1回あたり約10円"
+                // 静的データ強化
+                amazon_url: "https://www.amazon.co.jp/dp/B000FQTJZW",
+                features: [
+                    "強力なアルカリ性成分で油汚れを分解",
+                    "スプレータイプで使いやすい",
+                    "換気扇・コンロに最適",
+                    "家庭用として安全性確保"
+                ],
+                usage_instructions: [
+                    "汚れに直接スプレー",
+                    "5-10分放置",
+                    "スポンジで軽くこする",
+                    "水で洗い流す"
+                ]
             },
             {
                 name: "リンレイ ウルトラハードクリーナー 油汚れ用",
-                asin: "B00OOCWP44", // 確認済み有効ASIN
+                asin: "B00OOCWP44",
                 type: "洗剤",
                 target: ["頑固な油汚れ", "換気扇", "コンロ", "五徳"],
                 strength: "超強力",
                 professional: true,
-                rating: 4.6,
-                reviews: 9834,
                 safety_warning: "強力洗剤 - 手袋推奨",
                 why_recommended: "業務用レベルの超強力洗剤。長年蓄積した頑固な油汚れも短時間で分解。プロの清掃業者も愛用する実力派。",
-                price_range: "¥800-¥1,200",
-                usage_amount: "1回あたり約25円",
-                best_for: "頑固な油汚れ・年末大掃除"
+                best_for: "頑固な油汚れ・年末大掃除",
+                // 静的データ強化  
+                amazon_url: "https://www.amazon.co.jp/dp/B00OOCWP44",
+                features: [
+                    "業務用レベルの強力洗浄力",
+                    "頑固な油汚れも短時間で分解",
+                    "プロ清掃業者愛用",
+                    "年末大掃除に最適"
+                ],
+                usage_instructions: [
+                    "換気を確保し手袋着用",
+                    "汚れに厚めにスプレー",
+                    "15-20分放置",
+                    "ブラシで強めにこする",
+                    "大量の水で洗い流す"
+                ]
             },
             {
                 name: "花王 キュキュット CLEAR泡スプレー",

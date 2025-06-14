@@ -352,26 +352,15 @@ class AICleaningAdvisor {
                 analysisResult.location || this.state.selectedLocation
             );
             
-            // Amazon APIで商品情報を取得・エンリッチ
-            if (recommendedProducts.length > 0) {
-                const asins = recommendedProducts
-                    .filter(p => p.asin)
-                    .map(p => p.asin)
-                    .slice(0, 8); // 最大8件
-                
-                if (asins.length > 0) {
-                    const enrichedProducts = await this.apiClient.enrichProductsWithAmazonData(
-                        recommendedProducts,
-                        asins
-                    );
-                    
-                    analysisResult.recommendedProducts = enrichedProducts;
-                } else {
-                    analysisResult.recommendedProducts = recommendedProducts;
-                }
-            } else {
-                analysisResult.recommendedProducts = [];
-            }
+            // 静的商品データをそのまま使用（APIエラー回避）
+            analysisResult.recommendedProducts = recommendedProducts.map(product => ({
+                ...product,
+                // 表示に必要な基本情報を保証
+                displayName: product.name || '清掃用品',
+                description: product.why_recommended || '効果的な清掃用品です',
+                amazonUrl: product.amazon_url || `https://www.amazon.co.jp/dp/${product.asin}`,
+                imageUrl: product.image_url || null // 画像はフォールバック処理
+            }));
             
             // 掃除方法の生成
             analysisResult.cleaningMethod = this.generateCleaningMethod(
