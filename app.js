@@ -499,24 +499,33 @@ class StepWiseCleaningAdvisor {
         // 既存の包括的商品データベースを活用
         let products = [];
         
+        console.log('🛒 商品推薦開始:', { location: location.type, level: level.intensity });
+        
         if (window.COMPREHENSIVE_CLEANING_PRODUCTS) {
-            // 場所と汚れレベルに最適な商品カテゴリを選択
+            console.log('📦 利用可能な商品カテゴリ:', Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS));
+            
+            // 実際のデータベースキーに合わせて修正
             const categoryMap = {
-                kitchen: ['oil_grease', 'kitchen_cleaning'],
-                bathroom: ['mold_mildew', 'bathroom_cleaning'], 
-                toilet: ['toilet_cleaning', 'disinfection'],
-                window: ['glass_cleaning', 'window_cleaning'],
-                floor: ['floor_cleaning', 'vacuum_tools'],
-                living: ['general_cleaning', 'dust_removal']
+                kitchen: ['oil_grease'],
+                bathroom: ['mold_bathroom'], 
+                toilet: ['toilet_cleaning'],
+                window: ['glass_cleaning'],
+                floor: ['floor_cleaning'],
+                living: ['general_cleaning']
             };
             
-            const relevantCategories = categoryMap[location.type] || ['oil_grease', 'general_cleaning'];
+            const relevantCategories = categoryMap[location.type] || ['oil_grease'];
             const allCategories = Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS);
+            
+            console.log('🎯 対象カテゴリ:', relevantCategories);
             
             // まず関連カテゴリから商品を取得
             for (const categoryName of relevantCategories) {
+                console.log(`🔍 カテゴリ "${categoryName}" をチェック中...`);
+                
                 if (window.COMPREHENSIVE_CLEANING_PRODUCTS[categoryName]?.products) {
                     const categoryProducts = window.COMPREHENSIVE_CLEANING_PRODUCTS[categoryName].products;
+                    console.log(`✅ カテゴリ "${categoryName}" で ${categoryProducts.length} 商品発見`);
                     
                     // 汚れレベルに応じて商品を選択
                     let selectedProducts;
@@ -532,6 +541,8 @@ class StepWiseCleaningAdvisor {
                     if (selectedProducts.length === 0) {
                         selectedProducts = categoryProducts;
                     }
+                    
+                    console.log(`🔎 レベル ${level.intensity} で選択された商品数: ${selectedProducts.length}`);
                     
                     // 上位2-3商品を追加
                     selectedProducts.slice(0, 3).forEach(product => {
@@ -552,13 +563,19 @@ class StepWiseCleaningAdvisor {
             
             // 商品が足りない場合は他のカテゴリからも追加
             if (products.length < 4) {
+                console.log(`🔄 商品不足 (${products.length}/4) - 他カテゴリから補充中...`);
+                
                 for (const categoryName of allCategories) {
                     if (products.length >= 4) break;
                     if (relevantCategories.includes(categoryName)) continue;
                     
+                    console.log(`🔍 補充カテゴリ "${categoryName}" をチェック中...`);
+                    
                     const categoryData = window.COMPREHENSIVE_CLEANING_PRODUCTS[categoryName];
                     if (categoryData?.products?.length > 0) {
                         const product = categoryData.products[0];
+                        console.log(`✅ 補充商品追加: "${product.name}"`);
+                        
                         products.push({
                             title: product.name,
                             price: this.formatPrice(product.asin),
@@ -572,10 +589,16 @@ class StepWiseCleaningAdvisor {
                     }
                 }
             }
+            
+            console.log(`📊 最終商品数: ${products.length}`);
+        } else {
+            console.warn('❌ COMPREHENSIVE_CLEANING_PRODUCTS が見つかりません');
         }
         
         // フォールバック用商品データ
         if (products.length === 0) {
+            console.log('🚨 フォールバック商品を使用します');
+            
             const fallbackProducts = [
                 {
                     title: `${location.name}用強力洗剤`,
@@ -583,8 +606,9 @@ class StepWiseCleaningAdvisor {
                     image: this.getPlaceholderImage(),
                     rating: 4.4,
                     reviews: 2150,
-                    url: '#',
-                    description: `${location.name}の${level.name}に特化した洗剤です`
+                    url: 'https://www.amazon.co.jp/s?k=' + encodeURIComponent(`${location.name} 掃除 洗剤`) + '&tag=' + (window.ENV?.AMAZON_ASSOCIATE_TAG || 'asdfghj12-22'),
+                    description: `${location.name}の${level.name}に特化した洗剤です`,
+                    bestseller: true
                 },
                 {
                     title: `プロ仕様清掃ブラシセット`,
@@ -592,8 +616,9 @@ class StepWiseCleaningAdvisor {
                     image: this.getPlaceholderImage(),
                     rating: 4.6,
                     reviews: 1850,
-                    url: '#',
-                    description: '様々な汚れに対応できる万能ブラシセットです'
+                    url: 'https://www.amazon.co.jp/s?k=' + encodeURIComponent('清掃 ブラシ セット') + '&tag=' + (window.ENV?.AMAZON_ASSOCIATE_TAG || 'asdfghj12-22'),
+                    description: '様々な汚れに対応できる万能ブラシセットです',
+                    professional: true
                 },
                 {
                     title: `マイクロファイバークロス10枚セット`,
@@ -601,8 +626,17 @@ class StepWiseCleaningAdvisor {
                     image: this.getPlaceholderImage(),
                     rating: 4.3,
                     reviews: 3200,
-                    url: '#',
+                    url: 'https://www.amazon.co.jp/s?k=' + encodeURIComponent('マイクロファイバー クロス') + '&tag=' + (window.ENV?.AMAZON_ASSOCIATE_TAG || 'asdfghj12-22'),
                     description: '仕上げ拭きに最適な高品質クロスです'
+                },
+                {
+                    title: `${location.name}清掃用品セット`,
+                    price: '¥1,580',
+                    image: this.getPlaceholderImage(),
+                    rating: 4.5,
+                    reviews: 1750,
+                    url: 'https://www.amazon.co.jp/s?k=' + encodeURIComponent(`${location.name} 掃除 セット`) + '&tag=' + (window.ENV?.AMAZON_ASSOCIATE_TAG || 'asdfghj12-22'),
+                    description: `${location.name}の清掃に必要な道具がセットになっています`
                 }
             ];
             
