@@ -151,9 +151,6 @@ class AICleaningAdvisor {
         try {
             this.state.selectedLocation = location;
             
-            // UIを更新
-            this.uiComponents.updateLocationSelection(location);
-            
             // 場所に関連する汚れタイプを取得・表示
             const locationConfig = COMPREHENSIVE_LOCATION_CONFIG[location];
             if (locationConfig && locationConfig.commonDirtTypes) {
@@ -254,16 +251,27 @@ class AICleaningAdvisor {
     async analyzeWithAI() {
         console.log('🤖 AI画像分析開始');
         
-        const result = await this.apiClient.analyzeImage(this.state.uploadedImage);
-        
-        // 汚れ度合いを状態に保存
-        if (result.dirtLevel) {
-            this.state.dirtSeverity = result.dirtLevel;
-            this.uiComponents.updateSeveritySelection(result.dirtLevel);
+        try {
+            const result = await this.apiClient.analyzeImage(this.state.uploadedImage);
+            
+            // AI分析が成功した場合
+            if (result && result.dirtType && result.success !== false) {
+                // 汚れ度合いを状態に保存
+                if (result.dirtLevel) {
+                    this.state.dirtSeverity = result.dirtLevel;
+                    this.uiComponents.updateSeveritySelection(result.dirtLevel);
+                }
+                
+                console.log('🤖 AI分析結果:', result);
+                return result;
+            } else {
+                console.warn('⚠️ AI分析失敗、場所ベース分析にフォールバック');
+                return this.analyzeByLocation();
+            }
+        } catch (error) {
+            console.warn('⚠️ AI分析エラー、場所ベース分析にフォールバック:', error);
+            return this.analyzeByLocation();
         }
-        
-        console.log('🤖 AI分析結果:', result);
-        return result;
     }
 
     /**
