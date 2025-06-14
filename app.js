@@ -1,44 +1,19 @@
-// ステップバイステップ AI掃除アドバイザー
+// ステップバイステップ AI掃除アドバイザー - シンプル版
 class StepWiseCleaningAdvisor {
     constructor() {
         this.currentStep = 1;
         this.selectedLocation = null;
         this.selectedLevel = null;
         this.selectedImage = null;
-        this.apiClient = null;
         
+        console.log('🚀 ステップバイステップ AI掃除アドバイザー初期化開始');
         this.init();
     }
     
-    async init() {
-        console.log('🚀 ステップバイステップ AI掃除アドバイザー初期化開始');
-        
-        // 既存のモジュールを読み込み
-        await this.loadModules();
-        
+    init() {
         // イベントリスナーを設定
         this.setupEventListeners();
-        
         console.log('✅ 初期化完了');
-    }
-    
-    async loadModules() {
-        try {
-            // 既存のデータベースとAPIクライアントを利用
-            if (window.COMPREHENSIVE_CLEANING_PRODUCTS) {
-                this.productsData = window.COMPREHENSIVE_CLEANING_PRODUCTS;
-            }
-            if (window.COMPREHENSIVE_DIRT_MAPPING) {
-                this.dirtMapping = window.COMPREHENSIVE_DIRT_MAPPING;
-            }
-            if (window.COMPREHENSIVE_LOCATION_CONFIG) {
-                this.locationConfig = window.COMPREHENSIVE_LOCATION_CONFIG;
-            }
-            
-            console.log('✅ 既存モジュール読み込み完了');
-        } catch (error) {
-            console.error('❌ モジュール読み込みエラー:', error);
-        }
     }
     
     setupEventListeners() {
@@ -57,34 +32,59 @@ class StepWiseCleaningAdvisor {
         });
         
         // ナビゲーションボタン
-        document.getElementById('backToStep1')?.addEventListener('click', () => this.goToStep(1));
-        document.getElementById('backToStep2')?.addEventListener('click', () => this.goToStep(2));
+        const backToStep1 = document.getElementById('backToStep1');
+        if (backToStep1) {
+            backToStep1.addEventListener('click', () => this.goToStep(1));
+        }
+        
+        const backToStep2 = document.getElementById('backToStep2');
+        if (backToStep2) {
+            backToStep2.addEventListener('click', () => this.goToStep(2));
+        }
         
         // ステップ3: 写真関連
-        document.getElementById('selectImageBtn')?.addEventListener('click', () => {
-            document.getElementById('imageInput').click();
-        });
+        const selectImageBtn = document.getElementById('selectImageBtn');
+        if (selectImageBtn) {
+            selectImageBtn.addEventListener('click', () => {
+                document.getElementById('imageInput').click();
+            });
+        }
         
-        document.getElementById('imageInput')?.addEventListener('change', (e) => {
-            this.handleImageSelection(e);
-        });
+        const imageInput = document.getElementById('imageInput');
+        if (imageInput) {
+            imageInput.addEventListener('change', (e) => {
+                this.handleImageSelection(e);
+            });
+        }
         
-        document.getElementById('skipPhoto')?.addEventListener('click', () => {
-            this.analyzeWithoutPhoto();
-        });
+        const skipPhoto = document.getElementById('skipPhoto');
+        if (skipPhoto) {
+            skipPhoto.addEventListener('click', () => {
+                this.analyzeWithoutPhoto();
+            });
+        }
         
-        document.getElementById('analyzeWithPhoto')?.addEventListener('click', () => {
-            this.analyzeWithPhoto();
-        });
+        const analyzeWithPhoto = document.getElementById('analyzeWithPhoto');
+        if (analyzeWithPhoto) {
+            analyzeWithPhoto.addEventListener('click', () => {
+                this.analyzeWithPhoto();
+            });
+        }
         
         // ステップ4: 結果画面
-        document.getElementById('newAnalysis')?.addEventListener('click', () => {
-            this.resetAnalysis();
-        });
+        const newAnalysis = document.getElementById('newAnalysis');
+        if (newAnalysis) {
+            newAnalysis.addEventListener('click', () => {
+                this.resetAnalysis();
+            });
+        }
         
-        document.getElementById('shareResult')?.addEventListener('click', () => {
-            this.shareResult();
-        });
+        const shareResult = document.getElementById('shareResult');
+        if (shareResult) {
+            shareResult.addEventListener('click', () => {
+                this.shareResult();
+            });
+        }
     }
     
     selectLocation(location) {
@@ -132,10 +132,15 @@ class StepWiseCleaningAdvisor {
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = document.getElementById('previewImg');
-            img.src = e.target.result;
-            document.getElementById('imagePreview').classList.remove('hidden');
-            document.getElementById('analyzeWithPhoto').classList.remove('hidden');
-            this.selectedImage = e.target.result;
+            const imagePreview = document.getElementById('imagePreview');
+            const analyzeWithPhoto = document.getElementById('analyzeWithPhoto');
+            
+            if (img && imagePreview && analyzeWithPhoto) {
+                img.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+                analyzeWithPhoto.classList.remove('hidden');
+                this.selectedImage = e.target.result;
+            }
         };
         reader.readAsDataURL(file);
     }
@@ -154,8 +159,11 @@ class StepWiseCleaningAdvisor {
         this.goToStep(4);
         
         // ローディング表示
-        document.getElementById('analysisLoading').classList.remove('hidden');
-        document.getElementById('analysisResult').classList.add('hidden');
+        const analysisLoading = document.getElementById('analysisLoading');
+        const analysisResult = document.getElementById('analysisResult');
+        
+        if (analysisLoading) analysisLoading.classList.remove('hidden');
+        if (analysisResult) analysisResult.classList.add('hidden');
         
         try {
             // 分析実行
@@ -168,7 +176,7 @@ class StepWiseCleaningAdvisor {
             console.error('❌ 分析エラー:', error);
             this.displayError(error);
         } finally {
-            document.getElementById('analysisLoading').classList.add('hidden');
+            if (analysisLoading) analysisLoading.classList.add('hidden');
         }
     }
     
@@ -185,18 +193,15 @@ class StepWiseCleaningAdvisor {
         // おすすめ商品を取得
         const products = this.getRecommendedProducts(locationInfo, levelInfo);
         
-        // 写真分析（もしあれば）
-        let imageAnalysis = null;
-        if (withPhoto && this.selectedImage) {
-            imageAnalysis = await this.analyzeImage(this.selectedImage);
-        }
+        // 2秒間の分析シミュレーション
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
         return {
             location: locationInfo,
             level: levelInfo,
             cleaningMethod,
             products,
-            imageAnalysis
+            imageAnalysis: withPhoto ? { detectedDirt: '油汚れ', confidence: 0.85 } : null
         };
     }
     
@@ -239,6 +244,21 @@ class StepWiseCleaningAdvisor {
                 1: 'トイレクリーナーで軽く拭き取り、仕上げに除菌シートで拭いてください。',
                 2: '酸性洗剤を便器に塗布し、ブラシでしっかりと擦り洗いしてください。',
                 3: '強力な酸性洗剤で30分つけ置きし、専用ブラシで念入りに擦り洗いしてください。'
+            },
+            window: {
+                1: 'ガラスクリーナーをスプレーし、マイクロファイバークロスで拭き取ってください。',
+                2: '中性洗剤を薄めた水で洗い、水切りワイパーで仕上げてください。',
+                3: '専用ガラス洗剤で汚れを浮かせ、スクレーパーとワイパーで丁寧に清掃してください。'
+            },
+            floor: {
+                1: '掃除機でゴミを吸い取り、フロアワイパーで乾拭きしてください。',
+                2: 'フロアクリーナーでモップ掛けし、よく乾燥させてください。',
+                3: '専用洗剤でつけ置き洗いし、ブラシで擦ってからモップで仕上げてください。'
+            },
+            living: {
+                1: 'マイクロファイバークロスで乾拭きし、ホコリを除去してください。',
+                2: '中性洗剤を薄めた水で拭き取り、乾いた布で仕上げ拭きしてください。',
+                3: '専用クリーナーで清拭し、汚れが落ちない場合は部分的にブラシを使用してください。'
             }
         };
         
@@ -247,47 +267,46 @@ class StepWiseCleaningAdvisor {
     }
     
     getRecommendedProducts(location, level) {
-        // 既存の商品データベースから適切な商品を選択
-        const products = [];
+        // 既存のデータベースがあれば使用、なければダミーデータ
+        let products = [];
         
-        // ダミーデータ（実際は既存のデータベースから取得）
-        const sampleProducts = [
-            {
-                title: 'おすすめ洗剤A',
-                price: '¥880',
-                image: 'https://via.placeholder.com/150',
-                rating: 4.5,
-                url: '#'
-            },
-            {
-                title: 'おすすめブラシB',
-                price: '¥1,200',
-                image: 'https://via.placeholder.com/150',
-                rating: 4.3,
-                url: '#'
+        if (window.COMPREHENSIVE_CLEANING_PRODUCTS) {
+            // 既存データベースから選択
+            const dbCategories = Object.keys(window.COMPREHENSIVE_CLEANING_PRODUCTS);
+            const category = dbCategories[0]; // 最初のカテゴリを使用
+            
+            if (window.COMPREHENSIVE_CLEANING_PRODUCTS[category]?.products) {
+                products = window.COMPREHENSIVE_CLEANING_PRODUCTS[category].products.slice(0, 2).map(product => ({
+                    title: product.name,
+                    price: '¥1,200',
+                    image: 'https://m.media-amazon.com/images/I/71YrY+VbIiL._AC_SL1500_.jpg',
+                    rating: product.rating || 4.5,
+                    url: `https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'asdfghj12-22'}`
+                }));
             }
-        ];
-        
-        return sampleProducts;
-    }
-    
-    async analyzeImage(imageData) {
-        try {
-            console.log('🤖 AI画像分析開始...');
-            // 実際のAI分析ロジックをここに実装
-            // 現在は簡単なダミー応答を返す
-            
-            await new Promise(resolve => setTimeout(resolve, 2000)); // 2秒待機
-            
-            return {
-                confidence: 0.85,
-                detectedDirt: '油汚れ',
-                suggestions: '中性洗剤での清拭をおすすめします'
-            };
-        } catch (error) {
-            console.error('❌ 画像分析エラー:', error);
-            return null;
         }
+        
+        // フォールバック用ダミーデータ
+        if (products.length === 0) {
+            products = [
+                {
+                    title: 'おすすめ洗剤A',
+                    price: '¥880',
+                    image: 'https://m.media-amazon.com/images/I/71YrY+VbIiL._AC_SL1500_.jpg',
+                    rating: 4.5,
+                    url: '#'
+                },
+                {
+                    title: 'おすすめブラシB',
+                    price: '¥1,200',
+                    image: 'https://m.media-amazon.com/images/I/71YrY+VbIiL._AC_SL1500_.jpg',
+                    rating: 4.3,
+                    url: '#'
+                }
+            ];
+        }
+        
+        return products;
     }
     
     displayResult(result) {
@@ -307,7 +326,6 @@ class StepWiseCleaningAdvisor {
                     <div class="bg-green-50 p-4 rounded-lg">
                         <h4 class="font-semibold text-green-800 mb-2">📷 AI画像分析結果</h4>
                         <p class="text-green-700">検出された汚れ: ${result.imageAnalysis.detectedDirt}</p>
-                        <p class="text-green-700">提案: ${result.imageAnalysis.suggestions}</p>
                         <p class="text-sm text-green-600">信頼度: ${Math.round(result.imageAnalysis.confidence * 100)}%</p>
                     </div>
                 ` : ''}
@@ -319,14 +337,15 @@ class StepWiseCleaningAdvisor {
         if (productsElement && result.products) {
             productsElement.innerHTML = result.products.map(product => `
                 <div class="bg-white border rounded-lg p-4 shadow-sm">
-                    <img src="${product.image}" alt="${product.title}" class="w-full h-32 object-cover rounded mb-3">
+                    <img src="${product.image}" alt="${product.title}" class="w-full h-32 object-cover rounded mb-3" 
+                         onerror="this.src='https://via.placeholder.com/200x150?text=商品画像'">
                     <h4 class="font-semibold text-gray-800 mb-1">${product.title}</h4>
                     <p class="text-lg font-bold text-green-600 mb-2">${product.price}</p>
                     <div class="flex items-center mb-3">
                         <span class="text-yellow-500">★</span>
                         <span class="text-sm text-gray-600 ml-1">${product.rating}</span>
                     </div>
-                    <a href="${product.url}" class="bg-orange-500 text-white px-4 py-2 rounded text-sm hover:bg-orange-600 block text-center">
+                    <a href="${product.url}" target="_blank" class="bg-orange-500 text-white px-4 py-2 rounded text-sm hover:bg-orange-600 block text-center">
                         Amazonで見る
                     </a>
                 </div>
@@ -334,7 +353,10 @@ class StepWiseCleaningAdvisor {
         }
         
         // 結果表示
-        document.getElementById('analysisResult').classList.remove('hidden');
+        const analysisResult = document.getElementById('analysisResult');
+        if (analysisResult) {
+            analysisResult.classList.remove('hidden');
+        }
     }
     
     displayError(error) {
@@ -348,7 +370,10 @@ class StepWiseCleaningAdvisor {
             `;
         }
         
-        document.getElementById('analysisResult').classList.remove('hidden');
+        const analysisResult = document.getElementById('analysisResult');
+        if (analysisResult) {
+            analysisResult.classList.remove('hidden');
+        }
     }
     
     goToStep(stepNumber) {
@@ -401,9 +426,13 @@ class StepWiseCleaningAdvisor {
         });
         
         // 画像プレビューをリセット
-        document.getElementById('imagePreview').classList.add('hidden');
-        document.getElementById('analyzeWithPhoto').classList.add('hidden');
-        document.getElementById('imageInput').value = '';
+        const imagePreview = document.getElementById('imagePreview');
+        const analyzeWithPhoto = document.getElementById('analyzeWithPhoto');
+        const imageInput = document.getElementById('imageInput');
+        
+        if (imagePreview) imagePreview.classList.add('hidden');
+        if (analyzeWithPhoto) analyzeWithPhoto.classList.add('hidden');
+        if (imageInput) imageInput.value = '';
         
         // ステップ1に戻る
         this.goToStep(1);
@@ -412,7 +441,7 @@ class StepWiseCleaningAdvisor {
     shareResult() {
         console.log('📤 結果シェア');
         
-        const shareText = `AI掃除アドバイザーで${this.selectedLocation}の${this.selectedLevel}の掃除方法を診断しました！`;
+        const shareText = `AI掃除アドバイザーで${this.getLocationInfo(this.selectedLocation).name}の${this.getLevelInfo(this.selectedLevel).name}の掃除方法を診断しました！`;
         
         if (navigator.share) {
             navigator.share({
@@ -424,6 +453,8 @@ class StepWiseCleaningAdvisor {
             // フォールバック: クリップボードにコピー
             navigator.clipboard.writeText(`${shareText} ${window.location.href}`).then(() => {
                 alert('結果をクリップボードにコピーしました！');
+            }).catch(() => {
+                alert('シェア機能が利用できません');
             });
         }
     }
@@ -433,22 +464,25 @@ class StepWiseCleaningAdvisor {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🎉 DOM読み込み完了 - ステップバイステップ AI掃除アドバイザー開始');
     
-    // 既存のモジュールが読み込まれるまで少し待つ
+    // 少し待ってから初期化（他のスクリプト読み込み完了を待つ）
     setTimeout(() => {
         window.stepWiseAdvisor = new StepWiseCleaningAdvisor();
-    }, 1000);
+    }, 500);
 });
 
-// ローディングスピナーアニメーション用CSS
-const style = document.createElement('style');
-style.textContent = `
-    .loading-spinner {
-        animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
+// ローディングスピナーアニメーション用CSS（既に存在しない場合）
+if (!document.querySelector('#spinner-style')) {
+    const style = document.createElement('style');
+    style.id = 'spinner-style';
+    style.textContent = `
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+}
