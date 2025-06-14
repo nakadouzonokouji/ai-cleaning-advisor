@@ -25,6 +25,9 @@ jobs:
         # Copy new modular JS structure
         cp -r js upload/ || echo "No js directory to copy"
         
+        # Copy dist folder for production assets
+        cp -r dist upload/ || echo "No dist directory to copy"
+        
         mkdir upload/server
         cp server/*.js upload/server/
         cp server/*.php upload/server/ || echo "No PHP files to copy"
