@@ -5,8 +5,9 @@
  */
 
 // UI操作とDOM管理を統合するクラス
-export class UIComponents {
+export class UIComponents extends EventTarget {
     constructor() {
+        super();
         this.state = {
             selectedImage: null,
             preSelectedLocation: '',
@@ -251,6 +252,9 @@ export class UIComponents {
         
         console.log(`🎉 場所選択完了: "${locationId}"`);
         this.showSuccessNotification(`場所選択: ${locationId}`);
+        
+        // イベント発火
+        this.emit('locationSelected', locationId);
     }
 
     // 🎯 汚れの強度選択処理
@@ -277,6 +281,9 @@ export class UIComponents {
         
         this.updateSelectedSeverityDisplay(severity);
         console.log(`💾 汚れの強度設定完了: ${severity}`);
+        
+        // イベント発火
+        this.emit('severityChanged', severity);
     }
 
     // 🖼️ 画像アップロード処理
@@ -313,6 +320,9 @@ export class UIComponents {
                     uploadedImage.style.display = 'block';
                     console.log('✅ 画像表示完了');
                 }
+                
+                // イベント発火
+                this.emit('imageUploaded', e.target.result);
                 
                 const uploadedImageArea = document.getElementById('uploadedImageArea');
                 if (uploadedImageArea) {
@@ -1330,7 +1340,25 @@ export class UIComponents {
     // ダミーメソッド（分析処理は別モジュールが担当）
     executeAnalysis() {
         console.log('🚀 分析実行要求 - 別モジュールが処理');
-        // このメソッドは実際には別のモジュールから呼び出される
+        this.emit('analyzeRequested');
+    }
+
+    /**
+     * イベントリスナー追加（EventTarget互換）
+     * @param {string} eventType - イベントタイプ
+     * @param {Function} callback - コールバック関数
+     */
+    on(eventType, callback) {
+        this.addEventListener(eventType, callback);
+    }
+
+    /**
+     * イベント発火（EventTarget互換）
+     * @param {string} eventType - イベントタイプ
+     * @param {*} detail - イベントデータ
+     */
+    emit(eventType, detail = null) {
+        this.dispatchEvent(new CustomEvent(eventType, { detail }));
     }
 }
 
