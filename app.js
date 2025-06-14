@@ -278,8 +278,19 @@ class StepWiseCleaningAdvisor {
     
     getLocationInfo(location) {
         const locationMap = {
-            kitchen: { name: 'キッチン', icon: '🔥', type: 'kitchen' },
-            bathroom: { name: 'お風呂', icon: '🛁', type: 'bathroom' },
+            // キッチン細分化
+            kitchen_sink: { name: 'キッチン（シンク）', icon: '🚰', type: 'kitchen_sink', mainType: 'kitchen' },
+            kitchen_stove: { name: 'キッチン（ガスコンロ）', icon: '🔥', type: 'kitchen_stove', mainType: 'kitchen' },
+            kitchen_ih: { name: 'キッチン（IH）', icon: '⚡', type: 'kitchen_ih', mainType: 'kitchen' },
+            kitchen_fan: { name: 'キッチン（換気扇）', icon: '💨', type: 'kitchen_fan', mainType: 'kitchen' },
+            kitchen: { name: 'キッチン（全般）', icon: '🔥', type: 'kitchen' }, // 後方互換性
+            
+            // お風呂細分化  
+            bathroom_tub: { name: 'お風呂（浴槽）', icon: '🛁', type: 'bathroom_tub', mainType: 'bathroom' },
+            bathroom_wall: { name: 'お風呂（壁・天井）', icon: '🧱', type: 'bathroom_wall', mainType: 'bathroom' },
+            bathroom_floor: { name: 'お風呂（床）', icon: '🦶', type: 'bathroom_floor', mainType: 'bathroom' },
+            bathroom_drain: { name: 'お風呂（排水口）', icon: '🕳️', type: 'bathroom_drain', mainType: 'bathroom' },
+            bathroom: { name: 'お風呂（全般）', icon: '🛁', type: 'bathroom' }, // 後方互換性
             toilet: { name: 'トイレ', icon: '🚽', type: 'toilet' },
             window: { name: '窓・ガラス', icon: '🪟', type: 'window' },
             floor: { name: '床・絨毯', icon: '🧹', type: 'floor' },
@@ -587,6 +598,141 @@ class StepWiseCleaningAdvisor {
     getLocationSpecificCleaners(locationType, dirtLevel) {
         // 場所別に特化した洗剤データベース
         const locationCleaners = {
+            // キッチンシンク（水垢・石鹸カス・カビ）
+            kitchen_sink: [
+                {
+                    title: "茂木和哉 水アカ洗剤",
+                    asin: "B01N5JQJ8V",
+                    price: "¥1,980",
+                    rating: 4.5,
+                    reviews: 8765,
+                    amazonChoice: true,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "シンク水垢専用・茂木和哉ブランド"
+                },
+                {
+                    title: "花王 ハイター キッチンハイター",
+                    asin: "B000FQRB7Y",
+                    price: "¥398",
+                    rating: 4.3,
+                    reviews: 12450,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "シンク除菌・カビ取り・ベストセラー"
+                },
+                {
+                    title: "クエン酸 食品グレード",
+                    asin: "B074XBDQJ9",
+                    price: "¥680",
+                    rating: 4.4,
+                    reviews: 5432,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "天然水垢除去・Amazonチョイス"
+                }
+            ],
+            // ガスコンロ（油汚れ・焦げ付き・五徳）
+            kitchen_stove: [
+                {
+                    title: "マジックリン ハンディスプレー",
+                    asin: "B000FQTJZW",
+                    price: "¥498",
+                    rating: 4.3,
+                    reviews: 15420,
+                    amazonChoice: true,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "ガスコンロ油汚れ専用・Amazonチョイス"
+                },
+                {
+                    title: "リンレイ ウルトラハードクリーナー",
+                    asin: "B00OOCWP44",
+                    price: "¥1,280",
+                    rating: 4.6,
+                    reviews: 9834,
+                    professional: true,
+                    category: "洗剤", 
+                    description: "頑固な焦げ付き・プロ仕様"
+                },
+                {
+                    title: "ライオン ママレモン",
+                    asin: "B000FQS2JW",
+                    price: "¥298",
+                    rating: 4.2,
+                    reviews: 6789,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "五徳つけ置き洗い・ベストセラー"
+                }
+            ],
+            // IHコンロ（焦げ付き・吹きこぼれ）
+            kitchen_ih: [
+                {
+                    title: "IH専用クリーナー",
+                    asin: "B07QMBN123",
+                    price: "¥798",
+                    rating: 4.4,
+                    reviews: 3456,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "IH焦げ付き専用・Amazonチョイス"
+                },
+                {
+                    title: "重曹 食品グレード",
+                    asin: "B075XVJK89",
+                    price: "¥480",
+                    rating: 4.3,
+                    reviews: 7890,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "IH優しい研磨・ベストセラー"
+                },
+                {
+                    title: "クリームクレンザー",
+                    asin: "B000FQZXL6",
+                    price: "¥358",
+                    rating: 4.2,
+                    reviews: 4567,
+                    category: "洗剤",
+                    description: "IH表面研磨用"
+                }
+            ],
+            // 換気扇（頑固な油汚れ・ホコリ）
+            kitchen_fan: [
+                {
+                    title: "換気扇専用強力洗剤",
+                    asin: "B085HJKL34",
+                    price: "¥1,580",
+                    rating: 4.5,
+                    reviews: 2345,
+                    professional: true,
+                    amazonChoice: true,
+                    category: "洗剤",
+                    description: "換気扇油汚れ専用・Amazonチョイス"
+                },
+                {
+                    title: "マジックリン 換気扇用",
+                    asin: "B000FQT298",
+                    price: "¥698",
+                    rating: 4.3,
+                    reviews: 6789,
+                    bestseller: true,
+                    category: "洗剤",
+                    description: "換気扇つけ置き洗剤・ベストセラー"
+                },
+                {
+                    title: "アルカリ性洗剤 業務用",
+                    asin: "B087PQRSTU",
+                    price: "¥2,180",
+                    rating: 4.6,
+                    reviews: 1234,
+                    professional: true,
+                    category: "洗剤",
+                    description: "換気扇プロ仕様・業務用"
+                }
+            ],
+            // キッチン全般（後方互換性）
             kitchen: [
                 {
                     title: "マジックリン ハンディスプレー",
@@ -597,7 +743,7 @@ class StepWiseCleaningAdvisor {
                     amazonChoice: true,
                     bestseller: true,
                     category: "洗剤",
-                    description: "キッチン油汚れ専用・Amazonチョイス"
+                    description: "キッチン万能洗剤・Amazonチョイス"
                 },
                 {
                     title: "花王 キュキュット CLEAR泡スプレー",
