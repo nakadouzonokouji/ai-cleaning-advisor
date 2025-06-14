@@ -111,6 +111,16 @@ export class UIComponents extends EventTarget {
         // 分析実行
         this.addEventListenerSafe('analyzeBtn', 'click', () => this.executeAnalysis());
 
+        // 汚れの程度選択ボタン
+        const severityButtons = document.querySelectorAll('.severity-btn');
+        severityButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const severity = e.target.closest('[data-severity]').dataset.severity;
+                console.log(`🎯 汚れの程度選択: ${severity}`);
+                this.selectDirtSeverity(severity);
+            });
+        });
+
         // 結果操作
         this.addEventListenerSafe('correctionBtn', 'click', () => this.toggleCorrection());
         this.addEventListenerSafe('copyResultBtn', 'click', () => this.copyAnalysisResult());
