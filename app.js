@@ -1610,7 +1610,7 @@ class StepWiseCleaningAdvisor {
                     <h3 class="text-lg font-bold text-gray-800 mb-4 px-4">
                         ${this.getCategoryIcon(categoryName)} ${categoryName}
                     </h3>
-                    <div class="amazon-product-scroll overflow-x-auto pb-4" style="overflow-x: scroll; -webkit-overflow-scrolling: touch; touch-action: pan-x;">
+                    <div class="amazon-product-scroll overflow-x-auto pb-4" style="overflow-x: scroll; -webkit-overflow-scrolling: touch; touch-action: manipulation;">
                         <div class="flex space-x-3 px-4" style="width: max-content; min-width: 100%; flex-wrap: nowrap;">
                             ${categoryProducts.map(product => this.createProductCard(product)).join('')}
                         </div>

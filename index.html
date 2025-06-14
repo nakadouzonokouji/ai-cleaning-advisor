@@ -120,6 +120,13 @@
                 padding-right: 0.75rem;
             }
             
+            /* 縦スクロール問題対策 */
+            body {
+                touch-action: manipulation;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+            
             /* 強制的に2カラム表示 */
             .grid.grid-cols-2 {
                 display: grid !important;
@@ -139,11 +146,11 @@
             /* Amazon商品横スクロール完全修正 */
             .overflow-x-auto {
                 overflow-x: scroll !important;
-                overflow-y: hidden !important;
+                overflow-y: visible !important;
                 -webkit-overflow-scrolling: touch !important;
                 scrollbar-width: none; /* Firefox */
                 -ms-overflow-style: none; /* IE */
-                touch-action: pan-x !important;
+                touch-action: pan-x pan-y !important;
                 white-space: nowrap !important;
             }
             
@@ -177,10 +184,11 @@
             .amazon-product-scroll {
                 width: 100% !important;
                 overflow-x: scroll !important;
-                overflow-y: hidden !important;
+                overflow-y: visible !important;
                 -webkit-overflow-scrolling: touch !important;
                 padding-bottom: 10px !important;
                 position: relative !important;
+                touch-action: manipulation !important;
             }
             
             /* スクロールヒント表示 */
