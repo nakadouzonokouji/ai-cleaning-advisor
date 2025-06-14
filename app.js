@@ -382,7 +382,7 @@ class StepWiseCleaningAdvisor {
     disableExternalPlaceholders() {
         // 全てのimg要素をチェックして外部プレースホルダーを無効化
         document.querySelectorAll('img').forEach(img => {
-            if (img.src && (img.src.includes('via.placeholder') || img.src.includes('placeholder') || img.src.includes('placekitten') || img.src.includes('lorempixel'))) {
+            if (img.src && (img.src.includes('via.placeholder') || img.src.includes('placeholder') || img.src.includes('placekitten') || img.src.includes('lorempixel') || img.src.includes('picsum') || img.src.includes('unsplash') || img.src.startsWith('https://via.'))) {
                 console.log(`🔧 外部プレースホルダー画像を置換: ${img.src}`);
                 img.src = this.getPlaceholderImage();
                 img.onerror = () => { 
@@ -399,7 +399,7 @@ class StepWiseCleaningAdvisor {
                     if (node.nodeType === 1) { // Element node
                         const imgs = node.querySelectorAll ? node.querySelectorAll('img') : [];
                         imgs.forEach(img => {
-                            if (img.src && (img.src.includes('via.placeholder') || img.src.includes('placeholder'))) {
+                            if (img.src && (img.src.includes('via.placeholder') || img.src.includes('placeholder') || img.src.includes('placekitten') || img.src.includes('lorempixel') || img.src.includes('picsum') || img.src.startsWith('https://via.'))) {
                                 console.log(`🔧 動的に追加された外部プレースホルダー画像を置換: ${img.src}`);
                                 img.src = this.getPlaceholderImage();
                                 img.onerror = () => { img.style.display = 'none'; };
