@@ -36,8 +36,8 @@ Thumbs.db
 .temp/
 .tmp/
 
-# Build outputs
-dist/
+# Build outputs (allow dist/ for production assets)
+# dist/
 build/
 
 # Server specific

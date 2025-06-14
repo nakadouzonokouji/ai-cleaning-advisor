@@ -94,7 +94,14 @@
       "Bash(/home/knaka/.nvm/versions/node/v18.20.8/lib/node_modules/@anthropic-ai/claude-code/vendor/ripgrep/x64-linux/rg -n \"class AICleaningAdvisor|function.*analyzeImage|async analyzeImage\" /mnt/c/Users/knaka/Desktop/ai-cleaner/app.js)",
       "Bash(diff:*)",
       "Bash(python:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(npm init:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(npm run build-css-prod:*)",
+      "Bash(./node_modules/.bin/tailwindcss:*)",
+      "Bash(npx:*)",
+      "WebFetch(domain:cdn.jsdelivr.net)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }
