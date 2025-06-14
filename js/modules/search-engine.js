@@ -172,19 +172,36 @@ export class RealtimeSearchEngine {
             '白カビ': ['mold_bathroom', 'cleaning_tools'],
             '青カビ': ['mold_bathroom', 'cleaning_tools'],
             '油汚れ': ['oil_grease', 'cleaning_tools', 'detergents'],
+            '頑固な油汚れ': ['oil_grease', 'cleaning_tools', 'detergents'], // 追加
+            '軽い油汚れ': ['oil_grease', 'cleaning_tools', 'detergents'], // 追加
             '水垢': ['limescale', 'cleaning_tools'],
+            '頑固な水垢': ['limescale', 'cleaning_tools'], // 追加
+            '軽い水垢': ['limescale', 'cleaning_tools'], // 追加
+            'カビ汚れ': ['mold_bathroom', 'cleaning_tools', 'protective_gear'], // 追加
+            '頑固なカビ': ['mold_bathroom', 'cleaning_tools', 'protective_gear'], // 追加
+            '軽いカビ': ['mold_bathroom', 'cleaning_tools'], // 追加
             '石鹸カス': ['limescale', 'cleaning_tools'],
             '黄ばみ': ['detergents', 'cleaning_tools'],
+            'ホコリ': ['cleaning_tools', 'protective_gear'], // ひらがな追加
             'ほこり': ['cleaning_tools', 'protective_gear'],
             '焦げ': ['oil_grease', 'cleaning_tools'],
             '血液': ['detergents', 'cleaning_tools'],
             'ワイン汚れ': ['detergents', 'cleaning_tools'],
             'コーヒー汚れ': ['detergents', 'cleaning_tools'],
             '尿汚れ': ['detergents', 'cleaning_tools'],
-            '便汚れ': ['detergents', 'cleaning_tools', 'protective_gear']
+            '便汚れ': ['detergents', 'cleaning_tools', 'protective_gear'],
+            '皮脂汚れ': ['detergents', 'cleaning_tools'] // 追加
         };
         
-        return categoryMapping[dirtType] || ['cleaning_tools', 'detergents'];
+        // 部分マッチも試行（「頑固な」「軽い」などを除去）
+        let matchedCategory = categoryMapping[dirtType];
+        if (!matchedCategory) {
+            // 「頑固な」「軽い」などの修飾語を除去して再試行
+            const cleanedDirtType = dirtType.replace(/^(頑固な|軽い|しつこい|厳しい)\s*/, '');
+            matchedCategory = categoryMapping[cleanedDirtType];
+        }
+        
+        return matchedCategory || ['cleaning_tools', 'detergents'];
     }
 
     /**
