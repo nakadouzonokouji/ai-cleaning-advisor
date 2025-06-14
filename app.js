@@ -946,22 +946,54 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // エラーハンドリング強化
     window.addEventListener('error', (event) => {
-        console.warn('🚨 グローバルエラーをキャッチ:', event.error);
-        // via.placeholder関連のエラーは無視
-        if (event.filename && event.filename.includes('via.placeholder')) {
-            console.log('🔧 via.placeholder関連エラーは無視します');
-            return true; // エラーを抑制
+        const errorMsg = event.error?.message || event.message || '';
+        
+        // 無視するエラーパターン
+        const ignoredPatterns = [
+            'via.placeholder',
+            'Extension context invalidated',
+            'chrome-extension://',
+            'moz-extension://',
+            'Non-Error promise rejection',
+            'ResizeObserver loop limit exceeded'
+        ];
+        
+        if (ignoredPatterns.some(pattern => 
+            errorMsg.includes(pattern) || 
+            (event.filename && event.filename.includes(pattern))
+        )) {
+            console.log('🔧 無害なエラーを無視:', errorMsg.substring(0, 50) + '...');
+            event.preventDefault();
+            return false;
         }
+        
+        console.warn('🚨 グローバルエラーをキャッチ:', errorMsg);
     });
     
     // 未処理のPromise拒否をキャッチ
     window.addEventListener('unhandledrejection', (event) => {
-        console.warn('🚨 未処理のPromise拒否:', event.reason);
-        // 外部画像関連のエラーは無視
-        if (event.reason && event.reason.toString().includes('placeholder')) {
-            console.log('🔧 placeholder関連エラーは無視します');
+        const reason = event.reason?.toString() || '';
+        
+        // 無視するエラーパターン
+        const ignoredPatterns = [
+            'placeholder',
+            'message channel closed',
+            'listener indicated an asynchronous response',
+            'Extension context invalidated',
+            'chrome-extension://',
+            'moz-extension://',
+            'Non-Error promise rejection',
+            'ResizeObserver loop limit exceeded',
+            'Load failed'
+        ];
+        
+        if (ignoredPatterns.some(pattern => reason.includes(pattern))) {
+            console.log('🔧 無害なPromise拒否を無視:', reason.substring(0, 50) + '...');
             event.preventDefault();
+            return;
         }
+        
+        console.warn('🚨 未処理のPromise拒否:', reason);
     });
     
     // 少し待ってから初期化（他のスクリプト読み込み完了を待つ）
