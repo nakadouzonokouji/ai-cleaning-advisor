@@ -1214,6 +1214,617 @@ class StepWiseCleaningAdvisor {
                     }
                 ]
             },
+            
+            // 🛁 浴室 - 軽い汚れ用
+            bathroom_light: {
+                cleaners: [
+                    {
+                        title: "花王 バスマジックリン",
+                        asin: "B000FQTJZW",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 18760,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "日常のお風呂掃除・99.9%除菌"
+                    },
+                    {
+                        title: "ライオン ルックプラス バスタブクレンジング",
+                        asin: "B000FQS2JW",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 12340,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "こすらず流すだけ・時短清掃"
+                    },
+                    {
+                        title: "ジョンソン スクラビングバブル",
+                        asin: "B000FQZXJ4",
+                        price: "¥498",
+                        rating: 4.2,
+                        reviews: 15670,
+                        amazonChoice: true,
+                        category: "洗剤", 
+                        description: "泡で浮かす・軽い汚れ専用"
+                    },
+                    {
+                        title: "エコベール バスルームクリーナー",
+                        asin: "B073QMVN7P",
+                        price: "¥780",
+                        rating: 4.5,
+                        reviews: 6540,
+                        category: "洗剤",
+                        description: "植物由来・環境配慮・赤ちゃんに優しい"
+                    },
+                    {
+                        title: "重曹クリーナー お風呂用",
+                        asin: "B000FQT298",
+                        price: "¥680",
+                        rating: 4.1,
+                        reviews: 8970,
+                        category: "洗剤",
+                        description: "天然成分・安全・石鹸カス除去"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "3M バスシャイン スポンジ 3個セット",
+                        asin: "B000FQZXL6",
+                        price: "¥798",
+                        rating: 4.4,
+                        reviews: 14560,
+                        amazonChoice: true,
+                        category: "道具",
+                        description: "3M製・傷つけない・抗菌加工"
+                    },
+                    {
+                        title: "レック 激落ちくん お風呂用",
+                        asin: "B000Z2B8VW",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 22340,
+                        bestseller: true,
+                        category: "道具",
+                        description: "メラミンスポンジ・水垢に強い"
+                    },
+                    {
+                        title: "お風呂ブラシ 長柄 抗菌",
+                        asin: "B001TJ6AEW",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 9870,
+                        category: "道具",
+                        description: "届きにくい場所・抗菌・日本製"
+                    },
+                    {
+                        title: "マイクロファイバータオル 5枚",
+                        asin: "B000FQPQJ8",
+                        price: "¥680",
+                        rating: 4.6,
+                        reviews: 11230,
+                        bestseller: true,
+                        category: "道具",
+                        description: "拭き取り専用・吸水力・速乾"
+                    },
+                    {
+                        title: "お風呂掃除 足ブラシ",
+                        asin: "B000Z6NFVM",
+                        price: "¥1,480",
+                        rating: 4.2,
+                        reviews: 6780,
+                        category: "道具",
+                        description: "足踏み式・床掃除・楽々清掃"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "ゴム手袋 お風呂用 滑り止め",
+                        asin: "B005AILJ3O",
+                        price: "¥598",
+                        rating: 4.3,
+                        reviews: 18760,
+                        amazonChoice: true,
+                        category: "保護具",
+                        description: "滑り止め付・お風呂専用・握りやすい"
+                    },
+                    {
+                        title: "防水エプロン お風呂掃除用",
+                        asin: "B000FQTJZ8",
+                        price: "¥1,580",
+                        rating: 4.4,
+                        reviews: 7890,
+                        category: "保護具",
+                        description: "完全防水・お洒落・洗濯機対応"
+                    },
+                    {
+                        title: "ニーパッド 膝当て 防水",
+                        asin: "B00OOCWP44",
+                        price: "¥980",
+                        rating: 4.1,
+                        reviews: 5670,
+                        category: "保護具",
+                        description: "浴槽掃除時・膝保護・滑り止め"
+                    },
+                    {
+                        title: "マスク 防湿タイプ 50枚",
+                        asin: "B000FQZAB8",
+                        price: "¥1,280",
+                        rating: 4.0,
+                        reviews: 12340,
+                        category: "保護具",
+                        description: "湿気対応・カビ胞子防止・快適"
+                    },
+                    {
+                        title: "アームカバー 防水 お風呂用",
+                        asin: "B000FQZXJ4",
+                        price: "¥798",
+                        rating: 4.2,
+                        reviews: 8970,
+                        category: "保護具",
+                        description: "腕まくり不要・防水・調整可能"
+                    }
+                ]
+            },
+            
+            // 🛁 浴室 - 頑固な汚れ用
+            bathroom_heavy: {
+                cleaners: [
+                    {
+                        title: "ジョンソン カビキラー 特濃ジェル",
+                        asin: "B000FQ8KL2",
+                        price: "¥598",
+                        rating: 4.5,
+                        reviews: 15670,
+                        amazonChoice: true,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "頑固なカビ・密着ジェル・Amazonチョイス"
+                    },
+                    {
+                        title: "茂木和哉 お風呂用",
+                        asin: "B01N5JQJ8V",
+                        price: "¥1,980",
+                        rating: 4.6,
+                        reviews: 8765,
+                        professional: true,
+                        category: "洗剤",
+                        description: "水垢・湯垢専用・プロ仕様・研磨剤入"
+                    },
+                    {
+                        title: "花王 強力カビハイター",
+                        asin: "B000FQRB7Y",
+                        price: "¥698",
+                        rating: 4.4,
+                        reviews: 12450,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "塩素系・強力漂白・ゴムパッキン対応"
+                    },
+                    {
+                        title: "業務用 浴室洗剤 強力タイプ",
+                        asin: "B074XBDQJ9",
+                        price: "¥1,480",
+                        rating: 4.3,
+                        reviews: 5432,
+                        professional: true,
+                        category: "洗剤",
+                        description: "業務用濃度・頑固汚れ・大容量"
+                    },
+                    {
+                        title: "クエン酸 水垢除去剤 強力",
+                        asin: "B074W9NKJZ",
+                        price: "¥880",
+                        rating: 4.2,
+                        reviews: 9870,
+                        category: "洗剤",
+                        description: "酸性・水垢溶解・天然成分・安全"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "ダイヤモンドパッド 水垢取り",
+                        asin: "B076QWXF2D",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 6540,
+                        professional: true,
+                        category: "道具",
+                        description: "ダイヤモンド研磨・頑固な水垢・プロ仕様"
+                    },
+                    {
+                        title: "3M 研磨パッド 強力タイプ",
+                        asin: "B075XVJK89",
+                        price: "¥980",
+                        rating: 4.4,
+                        reviews: 8970,
+                        amazonChoice: true,
+                        category: "道具",
+                        description: "3M製・研磨力強・傷つけない"
+                    },
+                    {
+                        title: "カビ取りブラシ 細毛タイプ",
+                        asin: "B078QZDFG2",
+                        price: "¥798",
+                        rating: 4.3,
+                        reviews: 11230,
+                        category: "道具",
+                        description: "ゴムパッキン専用・細かい溝・届く"
+                    },
+                    {
+                        title: "スチールウール #0000 超細",
+                        asin: "B000FQS2JW",
+                        price: "¥580",
+                        rating: 4.2,
+                        reviews: 7890,
+                        category: "道具",
+                        description: "超細番手・優しい研磨・仕上げ用"
+                    },
+                    {
+                        title: "高圧スプレーボトル 頑固汚れ用",
+                        asin: "B08TMJ45HD",
+                        price: "¥1,580",
+                        rating: 4.4,
+                        reviews: 4560,
+                        category: "道具",
+                        description: "高圧噴射・洗剤浸透・効率的"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "耐薬品手袋 塩素系対応",
+                        asin: "B08DCHR6YQ",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 6540,
+                        professional: true,
+                        category: "保護具",
+                        description: "塩素系洗剤対応・厚手・化学品耐性"
+                    },
+                    {
+                        title: "防水エプロン プロ仕様",
+                        asin: "B000FQTJZ8",
+                        price: "¥2,280",
+                        rating: 4.4,
+                        reviews: 3450,
+                        professional: true,
+                        category: "保護具",
+                        description: "完全防水・業務用・耐久性抜群"
+                    },
+                    {
+                        title: "防塵マスク N95 カビ対応",
+                        asin: "B001TJ6AEW",
+                        price: "¥1,580",
+                        rating: 4.6,
+                        reviews: 8970,
+                        category: "保護具",
+                        description: "N95規格・カビ胞子・粉塵ブロック"
+                    },
+                    {
+                        title: "保護メガネ 化学品対応",
+                        asin: "B075XVJK89",
+                        price: "¥1,980",
+                        rating: 4.3,
+                        reviews: 2340,
+                        category: "保護具",
+                        description: "薬品飛沫防止・密閉型・安全"
+                    },
+                    {
+                        title: "膝当て プロ仕様 防水",
+                        asin: "B078QZDFG2",
+                        price: "¥1,680",
+                        rating: 4.1,
+                        reviews: 5670,
+                        category: "保護具",
+                        description: "長時間作業・膝保護・防水仕様"
+                    }
+                ]
+            },
+            
+            // 🚽 トイレ - 軽い汚れ用
+            toilet_light: {
+                cleaners: [
+                    {
+                        title: "花王 トイレマジックリン 消臭洗浄スプレー",
+                        asin: "B000FQTJZW",
+                        price: "¥398",
+                        rating: 4.4,
+                        reviews: 22340,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "日常清掃・99.9%除菌・消臭効果"
+                    },
+                    {
+                        title: "ライオン ルック トイレの洗剤",
+                        asin: "B000FQS2JW",
+                        price: "¥298",
+                        rating: 4.3,
+                        reviews: 18760,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "便器・床・壁・3in1・ベストセラー"
+                    },
+                    {
+                        title: "ジョンソン トイレ用クリーナー",
+                        asin: "B000FQZXJ4",
+                        price: "¥348",
+                        rating: 4.2,
+                        reviews: 15670,
+                        category: "洗剤",
+                        description: "泡で密着・汚れ浮かし・スッキリ"
+                    },
+                    {
+                        title: "重曹クリーナー トイレ用",
+                        asin: "B000FQT298",
+                        price: "¥580",
+                        rating: 4.1,
+                        reviews: 8970,
+                        category: "洗剤",
+                        description: "天然成分・安全・環境配慮・無香料"
+                    },
+                    {
+                        title: "エコベール トイレクリーナー",
+                        asin: "B073QMVN7P",
+                        price: "¥680",
+                        rating: 4.5,
+                        reviews: 6540,
+                        category: "洗剤",
+                        description: "植物由来・除菌・赤ちゃんに優しい"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "トイレブラシ 抗菌加工 ケース付",
+                        asin: "B001TJ6AEW",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 14560,
+                        amazonChoice: true,
+                        category: "道具",
+                        description: "抗菌加工・収納ケース・清潔・日本製"
+                    },
+                    {
+                        title: "流せるトイレブラシ 本体+替え12個",
+                        asin: "B000Z2B8VW",
+                        price: "¥1,580",
+                        rating: 4.4,
+                        reviews: 18790,
+                        bestseller: true,
+                        category: "道具",
+                        description: "使い捨て・衛生的・流せる・12個入"
+                    },
+                    {
+                        title: "マイクロファイバークロス トイレ用",
+                        asin: "B000FQPQJ8",
+                        price: "¥598",
+                        rating: 4.6,
+                        reviews: 11230,
+                        category: "道具",
+                        description: "拭き取り専用・除菌・速乾・5枚セット"
+                    },
+                    {
+                        title: "除菌シート トイレ用 50枚",
+                        asin: "B000Z6NFVM",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 25670,
+                        bestseller: true,
+                        category: "道具",
+                        description: "大判・除菌99.9%・便座拭き・50枚"
+                    },
+                    {
+                        title: "トイレ掃除シート 厚手 30枚",
+                        asin: "B000FQZXL6",
+                        price: "¥498",
+                        rating: 4.2,
+                        reviews: 9870,
+                        category: "道具",
+                        description: "厚手・破れにくい・洗剤付・30枚"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "ビニール手袋 トイレ掃除用 100枚",
+                        asin: "B005AILJ3O",
+                        price: "¥498",
+                        rating: 4.3,
+                        reviews: 23450,
+                        amazonChoice: true,
+                        category: "保護具",
+                        description: "薄手・作業しやすい・使い捨て・100枚"
+                    },
+                    {
+                        title: "防水エプロン 簡易タイプ",
+                        asin: "B000FQTJZ8",
+                        price: "¥880",
+                        rating: 4.1,
+                        reviews: 7890,
+                        category: "保護具",
+                        description: "軽量・防水・お洒落・洗濯可能"
+                    },
+                    {
+                        title: "マスク 使い捨て 50枚",
+                        asin: "B000FQZAB8",
+                        price: "¥980",
+                        rating: 4.0,
+                        reviews: 15680,
+                        category: "保護具",
+                        description: "3層構造・飛沫防止・快適フィット"
+                    },
+                    {
+                        title: "アームカバー 使い捨て 20個",
+                        asin: "B00OOCWP44",
+                        price: "¥598",
+                        rating: 4.2,
+                        reviews: 5670,
+                        category: "保護具",
+                        description: "袖濡れ防止・使い捨て・20個入"
+                    },
+                    {
+                        title: "ニトリル手袋 厚手 50枚",
+                        asin: "B000FQZXJ4",
+                        price: "¥898",
+                        rating: 4.4,
+                        reviews: 12340,
+                        category: "保護具",
+                        description: "厚手・丈夫・耐久性・パウダーフリー"
+                    }
+                ]
+            },
+            
+            // 🚽 トイレ - 頑固な汚れ用
+            toilet_heavy: {
+                cleaners: [
+                    {
+                        title: "サンポール 尿石除去 業務用",
+                        asin: "B000FQ8KL2",
+                        price: "¥698",
+                        rating: 4.5,
+                        reviews: 12450,
+                        amazonChoice: true,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "酸性洗剤・尿石分解・Amazonチョイス"
+                    },
+                    {
+                        title: "業務用 トイレ洗剤 強力タイプ",
+                        asin: "B074XBDQJ9",
+                        price: "¥1,280",
+                        rating: 4.4,
+                        reviews: 8765,
+                        professional: true,
+                        category: "洗剤",
+                        description: "業務用濃度・頑固な黄ばみ・大容量"
+                    },
+                    {
+                        title: "花王 ハイター トイレ用",
+                        asin: "B000FQRB7Y",
+                        price: "¥498",
+                        rating: 4.3,
+                        reviews: 15670,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "塩素系・強力漂白・除菌・ベストセラー"
+                    },
+                    {
+                        title: "茂木和哉 トイレ洗剤",
+                        asin: "B01N5JQJ8V",
+                        price: "¥1,480",
+                        rating: 4.6,
+                        reviews: 5432,
+                        professional: true,
+                        category: "洗剤",
+                        description: "尿石・黄ばみ専用・プロ仕様・研磨剤"
+                    },
+                    {
+                        title: "クエン酸 尿石除去剤",
+                        asin: "B074W9NKJZ",
+                        price: "¥780",
+                        rating: 4.2,
+                        reviews: 9870,
+                        category: "洗剤",
+                        description: "酸性・天然成分・尿石溶解・安全"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "尿石取りブラシ 専用形状",
+                        asin: "B076QWXF2D",
+                        price: "¥1,480",
+                        rating: 4.5,
+                        reviews: 6540,
+                        professional: true,
+                        category: "道具",
+                        description: "便器フチ裏専用・曲がる・届く・プロ仕様"
+                    },
+                    {
+                        title: "ポンプ式トイレブラシ 強力",
+                        asin: "B075XVJK89",
+                        price: "¥1,980",
+                        rating: 4.4,
+                        reviews: 4560,
+                        category: "道具",
+                        description: "ポンプ圧力・頑固汚れ・効果的・楽々"
+                    },
+                    {
+                        title: "研磨パッド トイレ用 硬質",
+                        asin: "B078QZDFG2",
+                        price: "¥798",
+                        rating: 4.3,
+                        reviews: 8970,
+                        category: "道具",
+                        description: "研磨効果・尿石除去・傷つけない"
+                    },
+                    {
+                        title: "スクレーパー プラスチック製",
+                        asin: "B08TMJ45HD",
+                        price: "¥580",
+                        rating: 4.2,
+                        reviews: 7890,
+                        category: "道具",
+                        description: "こびりつき除去・安全・便器に優しい"
+                    },
+                    {
+                        title: "高圧洗浄器 トイレ用ノズル",
+                        asin: "B08DCHR6YQ",
+                        price: "¥2,580",
+                        rating: 4.6,
+                        reviews: 3450,
+                        professional: true,
+                        category: "道具",
+                        description: "高圧水流・プロ仕様・頑固汚れ・効率的"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "耐薬品手袋 酸性洗剤対応",
+                        asin: "B08DCHR6YQ",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 6540,
+                        professional: true,
+                        category: "保護具",
+                        description: "酸性洗剤対応・厚手・化学品耐性"
+                    },
+                    {
+                        title: "防水エプロン 完全防水",
+                        asin: "B000FQTJZ8",
+                        price: "¥1,880",
+                        rating: 4.4,
+                        reviews: 3450,
+                        category: "保護具",
+                        description: "完全防水・業務用・耐久性・洗濯可"
+                    },
+                    {
+                        title: "防塵マスク 化学品対応",
+                        asin: "B001TJ6AEW",
+                        price: "¥1,580",
+                        rating: 4.6,
+                        reviews: 8970,
+                        category: "保護具",
+                        description: "化学品蒸気・粉塵・N95規格・安全"
+                    },
+                    {
+                        title: "保護メガネ 密閉タイプ",
+                        asin: "B075XVJK89",
+                        price: "¥1,680",
+                        rating: 4.3,
+                        reviews: 2340,
+                        category: "保護具",
+                        description: "飛沫防止・密閉設計・曇り止め"
+                    },
+                    {
+                        title: "膝当て 防水仕様",
+                        asin: "B078QZDFG2",
+                        price: "¥1,280",
+                        rating: 4.1,
+                        reviews: 5670,
+                        category: "保護具",
+                        description: "床掃除時・膝保護・防水・滑り止め"
+                    }
+                ]
+            },
+            
             // キッチン全般（後方互換性）
             kitchen: [
                 {
@@ -1651,6 +2262,8 @@ class StepWiseCleaningAdvisor {
         let specificLocation = locationType;
         if (locationType === 'kitchen') {
             specificLocation = 'kitchen_sink'; // デフォルトでシンクを選択
+        } else if (locationType === 'bathroom') {
+            specificLocation = 'bathroom'; // 浴室はそのまま
         }
         
         const locationKey = specificLocation + dirtLevelSuffix;
