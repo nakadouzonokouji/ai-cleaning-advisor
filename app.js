@@ -1020,24 +1020,297 @@ class StepWiseCleaningAdvisor {
         return sublocationMap[sublocation] || { name: sublocation, icon: '🏠' };
     }
     
-    generateCleaningMethod(location, level, sublocation = null) {
+    generateCleaningMethod(location, sublocation, level) {
+        const locationKey = location || this.selectedLocation;
+        const sublocationKey = sublocation || this.selectedSublocation;
+        const levelKey = level || this.selectedLevel;
+        
         const methods = {
-            kitchen: {
-                1: '中性洗剤で軽く拭き取り、水で流してから乾いた布で仕上げ拭きをしてください。',
-                2: '専用の強力洗剤を使用し、つけ置きしてからブラシでしっかりと擦り洗いしてください。'
+            // キッチン系
+            kitchen_sink: {
+                1: {
+                    steps: [
+                        {
+                            title: "前準備",
+                            description: "食器や調理器具を移動し、シンク周りを整理します",
+                            tips: "作業スペースを確保することで効率的に清掃できます"
+                        },
+                        {
+                            title: "水垢除去",
+                            description: "クエン酸を水に溶かしてスプレーし、5-10分放置します",
+                            tips: "クエン酸の濃度は5%程度が適切です"
+                        },
+                        {
+                            title: "軽く擦り洗い",
+                            description: "スポンジで優しく擦り、水で洗い流します",
+                            tips: "傷つけないよう柔らかいスポンジを使用"
+                        },
+                        {
+                            title: "仕上げ",
+                            description: "マイクロファイバークロスで水気を拭き取り完了",
+                            tips: "水滴を残すと新たな水垢の原因になります"
+                        }
+                    ],
+                    warning: "クエン酸は酸性のため、大理石などには使用しないでください"
+                },
+                2: {
+                    steps: [
+                        {
+                            title: "前準備・保護",
+                            description: "手袋を着用し、換気を十分に行います",
+                            tips: "強力洗剤使用時は必ず保護具を着用"
+                        },
+                        {
+                            title: "強力洗剤適用",
+                            description: "業務用水垢除去剤を塗布し、15-20分つけ置きします",
+                            tips: "頑固な汚れには時間をかけて化学反応を待つ"
+                        },
+                        {
+                            title: "研磨作業",
+                            description: "研磨パッドで頑固な汚れを物理的に除去します",
+                            tips: "力を入れすぎず、円を描くように研磨"
+                        },
+                        {
+                            title: "徹底洗浄",
+                            description: "大量の水で洗剤をしっかり洗い流します",
+                            tips: "洗剤残りは変色や腐食の原因になります"
+                        },
+                        {
+                            title: "最終仕上げ",
+                            description: "乾いたクロスで水気を拭き取り、艶出し剤で仕上げ",
+                            tips: "艶出し剤は汚れ防止効果もあります"
+                        }
+                    ],
+                    warning: "強力な酸性洗剤使用時は必ず手袋・マスクを着用し、十分な換気を行ってください"
+                }
             },
-            bathroom: {
-                1: 'バスクリーナーで軽く拭き取り、シャワーで洗い流してください。',
-                2: '強力カビ取り剤で30分つけ置きし、ブラシとスポンジで徹底的に擦り洗いしてください。'
+            kitchen_gas: {
+                1: {
+                    steps: [
+                        {
+                            title: "安全確認",
+                            description: "ガスの元栓を閉め、コンロが完全に冷めていることを確認",
+                            tips: "安全第一、火傷に注意してください"
+                        },
+                        {
+                            title: "五徳取り外し",
+                            description: "五徳とバーナーキャップを取り外します",
+                            tips: "部品の配置を覚えておくと組み立てが楽です"
+                        },
+                        {
+                            title: "漬け置き洗い",
+                            description: "五徳を重曹水に30分漬け置きします",
+                            tips: "40℃程度のぬるま湯を使うと効果的"
+                        },
+                        {
+                            title: "本体清拭",
+                            description: "天板を中性洗剤で拭き、水拭きで仕上げます",
+                            tips: "電気部分に水がかからないよう注意"
+                        },
+                        {
+                            title: "組み立て",
+                            description: "乾燥させた部品を元の位置に戻します",
+                            tips: "完全に乾燥してから組み立ててください"
+                        }
+                    ],
+                    warning: "必ずガスの元栓を閉めてから作業を開始してください"
+                },
+                2: {
+                    steps: [
+                        {
+                            title: "安全準備",
+                            description: "ガス栓を閉め、手袋・保護眼鏡を着用します",
+                            tips: "強力洗剤の飛沫から目と手を保護"
+                        },
+                        {
+                            title: "分解作業",
+                            description: "五徳、バーナーキャップ、点火プラグカバーを全て外します",
+                            tips: "写真を撮っておくと組み立て時に便利"
+                        },
+                        {
+                            title: "強力洗剤処理",
+                            description: "油汚れ専用洗剤で全体を覆い、30分放置します",
+                            tips: "焦げ付きがひどい場合は1時間程度つけ置き"
+                        },
+                        {
+                            title: "物理的除去",
+                            description: "金属たわしやスクレーパーで焦げを削り落とします",
+                            tips: "傷つけない程度の力で根気よく作業"
+                        },
+                        {
+                            title: "詳細清掃",
+                            description: "歯ブラシでバーナーの目詰まりを除去します",
+                            tips: "目詰まりは不完全燃焼の原因になります"
+                        },
+                        {
+                            title: "最終仕上げ",
+                            description: "全体を水洗いし、完全に乾燥させてから組み立て",
+                            tips: "水気が残ると錆の原因になります"
+                        }
+                    ],
+                    warning: "強力洗剤使用時は換気を十分に行い、皮膚や目への接触を避けてください"
+                }
             },
-            toilet: {
-                1: 'トイレクリーナーで軽く拭き取り、仕上げに除菌シートで拭いてください。',
-                2: '強力な酸性洗剤で30分つけ置きし、専用ブラシで念入りに擦り洗いしてください。'
+            kitchen_ih: {
+                1: {
+                    steps: [
+                        {
+                            title: "電源確認",
+                            description: "IHの電源を切り、天板が冷めていることを確認",
+                            tips: "高温時の清掃は火傷の危険があります"
+                        },
+                        {
+                            title: "専用洗剤適用",
+                            description: "IH専用クリーナーを天板全体に塗布します",
+                            tips: "IH専用洗剤は天板を傷めません"
+                        },
+                        {
+                            title: "汚れ浮上待機",
+                            description: "5-10分放置して汚れを浮き上がらせます",
+                            tips: "時間を置くことで軽い力で汚れが落ちます"
+                        },
+                        {
+                            title: "優しく清拭",
+                            description: "セラミック用クロスで円を描くように拭き取ります",
+                            tips: "直線的に拭くと傷が目立ちやすくなります"
+                        },
+                        {
+                            title: "最終仕上げ",
+                            description: "乾いたクロスで仕上げ拭きを行います",
+                            tips: "水滴跡を残さないよう丁寧に"
+                        }
+                    ],
+                    warning: "天板に傷をつけないよう、必ずIH専用の清掃用具を使用してください"
+                },
+                2: {
+                    steps: [
+                        {
+                            title: "安全確認",
+                            description: "電源を切り、コンセントも抜いて安全を確保",
+                            tips: "水を使う作業前は必ず電源を遮断"
+                        },
+                        {
+                            title: "強力洗剤適用",
+                            description: "IH用強力クリーナーを焦げ部分に厚く塗布",
+                            tips: "焦げ付きが厚い場合は洗剤も厚めに"
+                        },
+                        {
+                            title: "長時間放置",
+                            description: "ラップで覆い、30-60分しっかりつけ置きします",
+                            tips: "ラップで密封すると洗剤の効果が高まります"
+                        },
+                        {
+                            title: "専用スクレーパー作業",
+                            description: "IH専用スクレーパーで焦げを丁寧に削り取ります",
+                            tips: "45度の角度で一方向に削るのがコツ"
+                        },
+                        {
+                            title: "研磨処理",
+                            description: "IH用研磨パッドで細かい傷と汚れを除去",
+                            tips: "軽い力で円を描くように研磨"
+                        },
+                        {
+                            title: "復活処理",
+                            description: "IH復活剤で天板の光沢を回復させます",
+                            tips: "復活剤は保護膜も形成します"
+                        }
+                    ],
+                    warning: "IH天板は傷つきやすいため、必ずIH専用の工具・洗剤を使用してください"
+                }
+            },
+            // 浴室系
+            bathroom_floor: {
+                1: {
+                    steps: [
+                        {
+                            title: "前準備",
+                            description: "床の物を移動し、簡単に水で流します",
+                            tips: "事前に大まかな汚れを落としておくと効率的"
+                        },
+                        {
+                            title: "洗剤適用",
+                            description: "浴室用中性洗剤を床全体にスプレーします",
+                            tips: "隅々まで均等に洗剤を行き渡らせる"
+                        },
+                        {
+                            title: "軽く擦り洗い",
+                            description: "柔らかいブラシで優しく擦り洗いします",
+                            tips: "力を入れすぎると床材を傷める可能性があります"
+                        },
+                        {
+                            title: "洗い流し",
+                            description: "シャワーでしっかりと洗剤を洗い流します",
+                            tips: "洗剤残りはぬめりの原因になります"
+                        },
+                        {
+                            title: "水切り",
+                            description: "スクイージーで水を排水口に導きます",
+                            tips: "水滴を残すとカビの原因になります"
+                        }
+                    ],
+                    warning: "濡れた床は滑りやすいので、転倒に注意してください"
+                },
+                2: {
+                    steps: [
+                        {
+                            title: "保護具着用",
+                            description: "手袋、マスク、保護眼鏡を着用し換気を行います",
+                            tips: "強力洗剤は皮膚や呼吸器に刺激があります"
+                        },
+                        {
+                            title: "カビ取り剤適用",
+                            description: "強力カビ取り剤を床全体、特に目地に重点的に塗布",
+                            tips: "目地の奥まで洗剤が浸透するよう時間をかける"
+                        },
+                        {
+                            title: "長時間放置",
+                            description: "30分から1時間、洗剤を浸透させます",
+                            tips: "頑固なカビには時間をかけて化学的に分解"
+                        },
+                        {
+                            title: "強力ブラシ作業",
+                            description: "硬いブラシで目地のカビを徹底的に除去",
+                            tips: "古い歯ブラシも細かい部分の清掃に有効"
+                        },
+                        {
+                            title: "高圧洗浄",
+                            description: "シャワーの強い水圧で洗剤とカビを完全に除去",
+                            tips: "洗剤が残ると変色の原因になります"
+                        },
+                        {
+                            title: "防カビ処理",
+                            description: "完全に乾燥させた後、防カビスプレーを適用",
+                            tips: "定期的な防カビ処理で再発を防止"
+                        }
+                    ],
+                    warning: "塩素系洗剤使用時は絶対に酸性洗剤と混ぜないでください。有毒ガスが発生します"
+                }
             }
         };
         
-        const locationMethods = methods[location.type] || methods.kitchen;
-        return locationMethods[level.intensity] || locationMethods[1];
+        // デフォルトメソッド
+        const defaultMethod = {
+            steps: [
+                {
+                    title: "基本清掃",
+                    description: "適切な洗剤を使用して汚れを除去します",
+                    tips: "場所に応じた専用洗剤を使用することをお勧めします"
+                },
+                {
+                    title: "すすぎ・仕上げ",
+                    description: "きれいな水で洗い流し、乾いた布で仕上げます",
+                    tips: "洗剤を残さないようしっかりとすすぎましょう"
+                }
+            ],
+            warning: "清掃時は換気を行い、適切な保護具を着用してください"
+        };
+        
+        const locationMethods = methods[sublocationKey];
+        if (locationMethods && locationMethods[levelKey]) {
+            return locationMethods[levelKey];
+        }
+        
+        return defaultMethod;
     }
     
     async analyzeImage(imageData) {
