@@ -2437,7 +2437,11 @@ class StepWiseCleaningAdvisor {
                         description: "粉塵対応・N95規格・快適・安全"
                     }
                 ]
-            },
+            }
+        };
+        
+        // 場所別洗剤データベース（シンプル版）
+        const locationCleaners = {
             
             // キッチン全般（後方互換性）
             kitchen: [
@@ -2867,8 +2871,10 @@ class StepWiseCleaningAdvisor {
                 category: "洗剤",
                 description: "Amazonチョイス・環境配慮型洗剤"
             }
-        ];
-        
+            ]
+        };
+    
+    getLocationSpecificCleanersNew(locationType, dirtLevel, sublocation = null) {
         // 新しいデータベース構造に対応した商品選択ロジック
         const dirtLevelSuffix = dirtLevel === 1 ? '_light' : '_heavy';
         
