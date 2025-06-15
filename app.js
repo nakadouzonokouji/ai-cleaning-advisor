@@ -628,7 +628,7 @@ class StepWiseCleaningAdvisor {
             kitchen_fan: [
                 {
                     title: "換気扇専用強力洗剤",
-                    asin: "B085HJKL34",
+                    asin: "B000FQTJZW",
                     price: "¥1,580",
                     rating: 4.5,
                     reviews: 2345,
@@ -1544,7 +1544,7 @@ class StepWiseCleaningAdvisor {
                     <div class="space-y-3 mb-4">
                         ${method.steps.map((step, index) => `
                             <div class="flex items-start space-x-3">
-                                <span class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
+                                <span class="bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-1">
                                     ${index + 1}
                                 </span>
                                 <p class="text-blue-700 flex-1">${step}</p>
@@ -1610,11 +1610,10 @@ class StepWiseCleaningAdvisor {
                     <h3 class="text-lg font-bold text-gray-800 mb-4 px-4">
                         ${this.getCategoryIcon(categoryName)} ${categoryName}
                     </h3>
-                    <div class="amazon-product-scroll overflow-x-auto pb-4" style="overflow-x: scroll; -webkit-overflow-scrolling: touch; touch-action: manipulation;">
-                        <div class="flex space-x-3 px-4" style="width: max-content; min-width: 100%; flex-wrap: nowrap;">
-                            ${categoryProducts.map(product => this.createProductCard(product)).join('')}
+                    <div class="amazon-scroll-container pb-4">
+                        <div class="amazon-scroll-content">
+                            ${categoryProducts.map(product => this.createAmazonProductCard(product)).join('')}
                         </div>
-                        <div class="scroll-hint md:hidden">→</div>
                     </div>
                 </div>
             `;
@@ -1668,6 +1667,50 @@ class StepWiseCleaningAdvisor {
                        target="_blank" 
                        class="bg-orange-500 text-white px-3 py-2 rounded text-xs hover:bg-orange-600 block text-center transition-colors font-semibold">
                         🛒 Amazonで購入
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+    
+    createAmazonProductCard(product) {
+        return `
+            <div class="amazon-product-card bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 relative">
+                ${product.amazonChoice ? '<div class="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded z-10">Amazon\'s Choice</div>' : ''}
+                ${product.bestseller ? '<div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full z-10">ベストセラー</div>' : ''}
+                ${product.professional ? '<div class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full z-10">プロ仕様</div>' : ''}
+                
+                <div class="p-3">
+                    <div class="relative mb-3">
+                        <img src="${this.getAmazonImageUrl(product.asin)}" alt="${product.title}" 
+                             class="w-full h-32 object-contain rounded bg-gray-50" 
+                             onerror="this.src='${this.getPlaceholderImage()}'; this.onerror=null;"
+                             loading="lazy">
+                    </div>
+                    
+                    <h4 class="font-medium text-gray-900 mb-2 text-sm leading-tight" style="height: 2.5rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                        ${product.title}
+                    </h4>
+                    
+                    <div class="flex items-center mb-2">
+                        <div class="flex text-yellow-400 mr-1">
+                            ${Array(5).fill().map((_, i) => 
+                                `<span class="text-xs ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}">★</span>`
+                            ).join('')}
+                        </div>
+                        <span class="text-xs text-gray-600">${product.rating}</span>
+                        <span class="text-xs text-gray-500 ml-1">(${product.reviews || 100})</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="text-lg font-bold text-red-600">${product.price}</span>
+                        ${product.originalPrice ? `<span class="text-sm text-gray-500 line-through ml-2">${product.originalPrice}</span>` : ''}
+                    </div>
+                    
+                    <a href="https://www.amazon.co.jp/dp/${product.asin}?tag=${window.ENV?.AMAZON_ASSOCIATE_TAG || 'asdfghj12-22'}" 
+                       target="_blank" 
+                       class="bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 px-3 py-2 rounded text-xs font-bold block text-center transition-all duration-200 shadow-sm hover:shadow-md">
+                        🛒 カートに入れる
                     </a>
                 </div>
             </div>

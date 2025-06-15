@@ -143,30 +143,51 @@
                 font-size: 2.5rem;
             }
             
-            /* Amazon商品横スクロール完全修正 */
-            .overflow-x-auto {
-                overflow-x: scroll !important;
+            /* Amazon風横スクロール実装 */
+            .amazon-scroll-container {
+                overflow-x: auto !important;
                 overflow-y: visible !important;
                 -webkit-overflow-scrolling: touch !important;
-                scrollbar-width: none; /* Firefox */
-                -ms-overflow-style: none; /* IE */
-                touch-action: pan-x pan-y !important;
-                white-space: nowrap !important;
+                scrollbar-width: thin !important;
+                scrollbar-color: #ddd transparent !important;
+                scroll-behavior: smooth !important;
             }
             
-            .overflow-x-auto::-webkit-scrollbar {
-                display: none !important; /* Chrome, Safari */
+            .amazon-scroll-container::-webkit-scrollbar {
+                height: 6px !important;
+                background: transparent !important;
             }
             
-            /* 商品カードの幅とレイアウト強制 */
-            .flex-shrink-0 {
+            .amazon-scroll-container::-webkit-scrollbar-track {
+                background: #f1f1f1 !important;
+                border-radius: 3px !important;
+            }
+            
+            .amazon-scroll-container::-webkit-scrollbar-thumb {
+                background: #ccc !important;
+                border-radius: 3px !important;
+            }
+            
+            .amazon-scroll-container::-webkit-scrollbar-thumb:hover {
+                background: #999 !important;
+            }
+            
+            /* Amazon風商品カード */
+            .amazon-product-card {
                 flex-shrink: 0 !important;
-                min-width: 160px !important;
-                max-width: 160px !important;
-                width: 160px !important;
-                display: inline-block !important;
-                vertical-align: top !important;
-                white-space: normal !important;
+                min-width: 180px !important;
+                max-width: 180px !important;
+                width: 180px !important;
+                margin-right: 16px !important;
+                scroll-snap-align: start !important;
+            }
+            
+            /* Amazon風スクロールフレックス */
+            .amazon-scroll-content {
+                display: flex !important;
+                gap: 0 !important;
+                padding: 0 16px !important;
+                scroll-snap-type: x mandatory !important;
             }
             
             /* フレックスコンテナ最適化 */
