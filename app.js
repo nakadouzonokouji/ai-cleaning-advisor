@@ -1068,14 +1068,117 @@ class StepWiseCleaningAdvisor {
     displayResult(result) {
         console.log('📊 結果表示:', result);
         
-        // 結果表示の実装
+        // ローディングを非表示
+        const loading = document.getElementById('analysisLoading');
+        if (loading) {
+            loading.classList.add('hidden');
+        }
+        
+        // 結果表示エリアを表示
         const analysisResult = document.getElementById('analysisResult');
         if (analysisResult) {
             analysisResult.classList.remove('hidden');
         }
         
-        // 結果の詳細表示
-        // TODO: 結果表示UIの実装
+        // 掃除方法を表示
+        this.displayCleaningMethod(result);
+        
+        // おすすめ商品を表示
+        this.displayRecommendedProducts(result);
+    }
+    
+    displayCleaningMethod(result) {
+        const cleaningMethodDiv = document.getElementById('cleaningMethod');
+        if (!cleaningMethodDiv) return;
+        
+        const location = this.getLocationInfo(this.selectedLocation);
+        const sublocation = this.getSublocationInfo(this.selectedSublocation);
+        const level = this.getLevelInfo(this.selectedLevel);
+        
+        const method = this.generateCleaningMethod(this.selectedLocation, this.selectedSublocation, this.selectedLevel);
+        
+        cleaningMethodDiv.innerHTML = `
+            <div class="cleaning-method-content">
+                <div class="mb-4">
+                    <h4 class="font-semibold text-lg mb-2">📍 対象場所</h4>
+                    <p class="text-gray-700">${location.name} → ${sublocation.name}</p>
+                    <p class="text-sm text-gray-600">${sublocation.description}</p>
+                </div>
+                <div class="mb-4">
+                    <h4 class="font-semibold text-lg mb-2">🎯 汚れレベル</h4>
+                    <p class="text-gray-700">${level.name}</p>
+                    <p class="text-sm text-gray-600">${level.description}</p>
+                </div>
+                <div class="mb-4">
+                    <h4 class="font-semibold text-lg mb-2">🧽 推奨手順</h4>
+                    <div class="cleaning-steps">
+                        ${method.steps.map((step, index) => `
+                            <div class="step-item mb-3 p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-start">
+                                    <span class="step-number bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-1">${index + 1}</span>
+                                    <div>
+                                        <h5 class="font-medium text-gray-800">${step.title}</h5>
+                                        <p class="text-gray-600 text-sm mt-1">${step.description}</p>
+                                        ${step.tips ? `<p class="text-blue-600 text-sm mt-1">💡 ${step.tips}</p>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                ${method.warning ? `
+                    <div class="warning-box bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-yellow-800 mb-2">⚠️ 注意事項</h4>
+                        <p class="text-yellow-700">${method.warning}</p>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    displayRecommendedProducts(result) {
+        const productsDiv = document.getElementById('recommendedProducts');
+        if (!productsDiv) return;
+        
+        // 商品を取得
+        const products = this.getLocationSpecificCleaners(
+            this.selectedLocation, 
+            this.selectedLevel, 
+            this.selectedSublocation
+        );
+        
+        if (products.length === 0) {
+            productsDiv.innerHTML = `
+                <div class="col-span-full text-center py-8 text-gray-500">
+                    <p>商品情報を取得できませんでした。</p>
+                    <p class="text-sm mt-2">一般的な住宅用洗剤をお試しください。</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // 商品カードを生成
+        productsDiv.innerHTML = products.slice(0, 6).map(product => `
+            <div class="product-card bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div class="product-header mb-3">
+                    <h4 class="font-semibold text-gray-800 text-sm">${product.title}</h4>
+                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mt-1">${product.category}</span>
+                </div>
+                <div class="product-body mb-3">
+                    <p class="text-gray-600 text-xs mb-2">${product.description}</p>
+                    <p class="text-green-600 font-medium text-sm">${product.price}</p>
+                </div>
+                <div class="product-footer">
+                    <p class="text-blue-600 text-xs mb-2">💡 ${product.why_recommended}</p>
+                    <button class="w-full bg-orange-500 text-white text-xs py-2 px-3 rounded hover:bg-orange-600 transition-colors" 
+                            onclick="window.open('https://amazon.co.jp/s?k=${encodeURIComponent(product.amazon_search)}', '_blank')">
+                        Amazonで検索
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        console.log(`✅ ${products.length}件の商品を表示しました`);
     }
     
     displayError(error) {
