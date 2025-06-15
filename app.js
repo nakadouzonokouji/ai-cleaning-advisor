@@ -831,14 +831,286 @@ class StepWiseCleaningAdvisor {
     
     goToStep(stepNumber) {
         console.log(`📍 ステップ ${stepNumber} に移動`);
-        // ステップ移動ロジック
+        
+        // 現在のステップを非表示
+        document.querySelectorAll('.step-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        
+        // 新しいステップを表示
+        const newStep = document.getElementById(`step${stepNumber}`);
+        if (newStep) {
+            newStep.classList.remove('hidden');
+            newStep.classList.add('fade-in');
+        }
+        
+        // ステップインジケーターを更新
+        this.updateStepIndicator(stepNumber);
+        
+        this.currentStep = stepNumber;
+    }
+    
+    updateStepIndicator(currentStep) {
+        for (let i = 1; i <= 5; i++) {
+            const indicator = document.getElementById(`step${i}-indicator`);
+            if (!indicator) continue;
+            
+            indicator.classList.remove('active', 'completed');
+            
+            if (i < currentStep) {
+                indicator.classList.add('completed');
+            } else if (i === currentStep) {
+                indicator.classList.add('active');
+            }
+        }
+    }
+    
+    handleImageSelection(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        console.log('📷 画像選択:', file.name);
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.getElementById('previewImg');
+            if (img) {
+                img.src = e.target.result;
+            }
+            const imagePreview = document.getElementById('imagePreview');
+            if (imagePreview) {
+                imagePreview.classList.remove('hidden');
+            }
+            const analyzeBtn = document.getElementById('analyzeWithPhoto');
+            if (analyzeBtn) {
+                analyzeBtn.classList.remove('hidden');
+            }
+            this.selectedImage = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    analyzeWithoutPhoto() {
+        console.log('🔍 写真なしで分析開始');
+        this.startAnalysis(false);
+    }
+    
+    analyzeWithPhoto() {
+        console.log('🔍 写真ありで分析開始');
+        this.startAnalysis(true);
+    }
+    
+    async startAnalysis(withPhoto = false) {
+        this.goToStep(5);
+        
+        // ローディング表示
+        const analysisLoading = document.getElementById('analysisLoading');
+        if (analysisLoading) {
+            analysisLoading.classList.remove('hidden');
+        }
+        const analysisResult = document.getElementById('analysisResult');
+        if (analysisResult) {
+            analysisResult.classList.add('hidden');
+        }
+        
+        try {
+            // 分析実行
+            const result = await this.performAnalysis(withPhoto);
+            
+            // 結果表示
+            this.displayResult(result);
+            
+        } catch (error) {
+            console.error('❌ 分析エラー:', error);
+            this.displayError(error);
+        } finally {
+            if (analysisLoading) {
+                analysisLoading.classList.add('hidden');
+            }
+        }
+    }
+    
+    async performAnalysis(withPhoto) {
+        console.log('🤖 AI分析実行中...');
+        
+        // 基本的な分析ロジック
+        const locationInfo = this.getLocationInfo(this.selectedLocation);
+        const levelInfo = this.getLevelInfo(this.selectedLevel);
+        const sublocationInfo = this.getSublocationInfo(this.selectedSublocation);
+        
+        // 掃除方法を生成
+        const cleaningMethod = this.generateCleaningMethod(locationInfo, levelInfo, sublocationInfo);
+        
+        // おすすめ商品を取得
+        const products = this.getLocationSpecificCleaners(this.selectedLocation, this.selectedLevel, this.selectedSublocation);
+        
+        // 写真分析（もしあれば）
+        let imageAnalysis = null;
+        if (withPhoto && this.selectedImage) {
+            imageAnalysis = await this.analyzeImage(this.selectedImage);
+        }
+        
+        return {
+            location: locationInfo,
+            level: levelInfo,
+            sublocation: sublocationInfo,
+            cleaningMethod,
+            products,
+            imageAnalysis
+        };
+    }
+    
+    getLocationInfo(location) {
+        const locationMap = {
+            kitchen: { name: 'キッチン', icon: '🔥', type: 'kitchen' },
+            bathroom: { name: 'お風呂', icon: '🛁', type: 'bathroom' },
+            toilet: { name: 'トイレ', icon: '🚽', type: 'toilet' },
+            window: { name: '窓・ガラス', icon: '🪟', type: 'window' },
+            floor: { name: '床・絨毯', icon: '🧹', type: 'floor' },
+            living: { name: 'リビング', icon: '🛋️', type: 'living' }
+        };
+        
+        return locationMap[location] || locationMap.kitchen;
+    }
+    
+    getLevelInfo(level) {
+        const levelMap = {
+            1: { name: '軽い汚れ', intensity: 1, icon: '✨' },
+            2: { name: '頑固な汚れ', intensity: 2, icon: '🚨' },
+            light: { name: '軽い汚れ', intensity: 1, icon: '✨' },
+            heavy: { name: '頑固な汚れ', intensity: 2, icon: '🚨' }
+        };
+        
+        return levelMap[level] || levelMap[1];
+    }
+    
+    getSublocationInfo(sublocation) {
+        if (!sublocation) return null;
+        
+        const sublocationMap = {
+            // キッチン
+            kitchen_sink: { name: 'シンク', icon: '🚰' },
+            kitchen_gas: { name: 'ガスコンロ', icon: '🔥' },
+            kitchen_ih: { name: 'IHコンロ', icon: '⚡' },
+            kitchen_vent: { name: '換気扇', icon: '💨' },
+            kitchen_cabinet: { name: '食器棚', icon: '🗄️' },
+            
+            // 浴室
+            bathroom_tub: { name: '浴槽', icon: '🛁' },
+            bathroom_walls: { name: '壁・天井', icon: '🧱' },
+            bathroom_floor: { name: '床', icon: '🏠' },
+            bathroom_drain: { name: '排水口', icon: '🕳️' },
+            bathroom_mirror: { name: '鏡・洗面', icon: '🪞' },
+            
+            // トイレ
+            toilet_bowl: { name: '便器内', icon: '🚽' },
+            toilet_seat: { name: '便座・蓋', icon: '🪑' },
+            toilet_floor_wall: { name: '床・壁', icon: '🧱' },
+            toilet_tank: { name: 'タンク', icon: '💧' },
+            toilet_washbasin: { name: '手洗い', icon: '🚰' },
+            
+            // リビング
+            living_sofa: { name: 'ソファ', icon: '🛋️' },
+            living_carpet: { name: '絨毯', icon: '🏠' },
+            living_flooring: { name: 'フローリング', icon: '🏠' },
+            living_furniture: { name: '家具', icon: '🪑' },
+            living_tv: { name: 'TV台', icon: '📺' }
+        };
+        
+        return sublocationMap[sublocation] || { name: sublocation, icon: '🏠' };
+    }
+    
+    generateCleaningMethod(location, level, sublocation = null) {
+        const methods = {
+            kitchen: {
+                1: '中性洗剤で軽く拭き取り、水で流してから乾いた布で仕上げ拭きをしてください。',
+                2: '専用の強力洗剤を使用し、つけ置きしてからブラシでしっかりと擦り洗いしてください。'
+            },
+            bathroom: {
+                1: 'バスクリーナーで軽く拭き取り、シャワーで洗い流してください。',
+                2: '強力カビ取り剤で30分つけ置きし、ブラシとスポンジで徹底的に擦り洗いしてください。'
+            },
+            toilet: {
+                1: 'トイレクリーナーで軽く拭き取り、仕上げに除菌シートで拭いてください。',
+                2: '強力な酸性洗剤で30分つけ置きし、専用ブラシで念入りに擦り洗いしてください。'
+            }
+        };
+        
+        const locationMethods = methods[location.type] || methods.kitchen;
+        return locationMethods[level.intensity] || locationMethods[1];
+    }
+    
+    async analyzeImage(imageData) {
+        try {
+            console.log('🤖 AI画像分析開始...');
+            // 実際のAI分析ロジックをここに実装
+            // 現在は簡単なダミー応答を返す
+            
+            await new Promise(resolve => setTimeout(resolve, 2000)); // 2秒待機
+            
+            return {
+                detected: true,
+                dirtType: '油汚れ',
+                severity: 'medium',
+                confidence: 0.85,
+                recommendations: [
+                    '油汚れが検出されました',
+                    'アルカリ性洗剤の使用をお勧めします',
+                    '温水での洗浄が効果的です'
+                ]
+            };
+        } catch (error) {
+            console.error('❌ 画像分析エラー:', error);
+            return null;
+        }
+    }
+    
+    displayResult(result) {
+        console.log('📊 結果表示:', result);
+        
+        // 結果表示の実装
+        const analysisResult = document.getElementById('analysisResult');
+        if (analysisResult) {
+            analysisResult.classList.remove('hidden');
+        }
+        
+        // 結果の詳細表示
+        // TODO: 結果表示UIの実装
+    }
+    
+    displayError(error) {
+        console.error('❌ エラー表示:', error);
+        // エラー表示の実装
+        // TODO: エラー表示UIの実装
+    }
+    
+    resetAnalysis() {
+        console.log('🔄 分析リセット');
+        
+        // 選択状態をリセット
+        this.selectedLocation = null;
+        this.selectedSublocation = null;
+        this.selectedLevel = null;
+        this.selectedImage = null;
+        
+        // UI選択状態をリセット
+        document.querySelectorAll('.choice-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // 最初のステップに戻る
+        this.goToStep(1);
+    }
+    
+    shareResult() {
+        console.log('📤 結果共有');
+        // 結果共有の実装
+        // TODO: 共有機能の実装
     }
     
     disableExternalPlaceholders() {
         console.log('🔧 外部プレースホルダー無効化');
     }
-    
-    // その他のメソッドは省略
 }
 
 // DOM読み込み完了後に初期化
