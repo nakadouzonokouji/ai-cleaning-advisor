@@ -297,9 +297,17 @@ class StepWiseCleaningAdvisor {
             toilet_seat: { name: 'トイレ（便座・蓋）', icon: '🪑', type: 'toilet_seat', mainType: 'toilet' },
             toilet_floor: { name: 'トイレ（床・壁）', icon: '🧱', type: 'toilet_floor', mainType: 'toilet' },
             toilet: { name: 'トイレ（全般）', icon: '🚽', type: 'toilet' }, // 後方互換性
+            
+            // リビング細分化
+            living_sofa: { name: 'リビング（ソファ）', icon: '🛋️', type: 'living_sofa', mainType: 'living' },
+            living_carpet: { name: 'リビング（絨毯・カーペット）', icon: '🟫', type: 'living_carpet', mainType: 'living' },
+            living_floor: { name: 'リビング（フローリング）', icon: '🟤', type: 'living_floor', mainType: 'living' },
+            living_furniture: { name: 'リビング（家具）', icon: '🪑', type: 'living_furniture', mainType: 'living' },
+            living_tv: { name: 'リビング（TV台・電子機器）', icon: '📺', type: 'living_tv', mainType: 'living' },
+            living: { name: 'リビング（全般）', icon: '🛋️', type: 'living' }, // 後方互換性
+            
             window: { name: '窓・ガラス', icon: '🪟', type: 'window' },
-            floor: { name: '床・絨毯', icon: '🧹', type: 'floor' },
-            living: { name: 'リビング', icon: '🛋️', type: 'living' }
+            floor: { name: '床・絨毯', icon: '🧹', type: 'floor' }
         };
         
         return locationMap[location] || locationMap.kitchen;
@@ -2435,6 +2443,1015 @@ class StepWiseCleaningAdvisor {
                         reviews: 7890,
                         category: "保護具",
                         description: "粉塵対応・N95規格・快適・安全"
+                    }
+                ]
+            },
+            
+            // === リビング関連商品データベース ===
+            
+            // リビング・ソファ（軽い汚れ）
+            living_sofa_light: {
+                cleaners: [
+                    {
+                        title: "中性洗剤 家具用",
+                        asin: "B08SOFA123",
+                        price: "¥680",
+                        rating: 4.3,
+                        reviews: 2340,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "布製ソファ・優しい洗浄・Amazonチョイス"
+                    },
+                    {
+                        title: "ファブリッククリーナー",
+                        asin: "B08FABR456",
+                        price: "¥980",
+                        rating: 4.5,
+                        reviews: 4567,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "布製品専用・シミ除去・ベストセラー"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "ソファブラシ 柔らか毛",
+                        asin: "B08BRUSH12",
+                        price: "¥580",
+                        rating: 4.2,
+                        reviews: 3456,
+                        category: "道具",
+                        description: "布ソファ用・優しい毛・毛玉除去"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "薄手手袋 掃除用",
+                        asin: "B08GLOVE56",
+                        price: "¥298",
+                        rating: 4.1,
+                        reviews: 2345,
+                        category: "保護具",
+                        description: "薄手・作業しやすい・肌保護"
+                    }
+                ]
+            },
+            
+            // リビング・ソファ（頑固な汚れ）
+            living_sofa_heavy: {
+                cleaners: [
+                    {
+                        title: "強力ファブリッククリーナー",
+                        asin: "B08STRON78",
+                        price: "¥1,480",
+                        rating: 4.5,
+                        reviews: 3456,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固なシミ・業務用・強力洗浄"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "スチームクリーナー 小型",
+                        asin: "B08STEAM78",
+                        price: "¥8,980",
+                        rating: 4.5,
+                        reviews: 1234,
+                        professional: true,
+                        category: "道具",
+                        description: "高温スチーム・殺菌・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "厚手ゴム手袋",
+                        asin: "B08THICK90",
+                        price: "¥680",
+                        rating: 4.2,
+                        reviews: 1890,
+                        category: "保護具",
+                        description: "厚手・強力洗剤対応・安全"
+                    }
+                ]
+            },
+            
+            // リビング・絨毯カーペット（軽い汚れ）
+            living_carpet_light: {
+                cleaners: [
+                    {
+                        title: "カーペットクリーナー 泡タイプ",
+                        asin: "B08CARP123",
+                        price: "¥780",
+                        rating: 4.4,
+                        reviews: 5678,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "泡で浮かす・簡単・Amazonチョイス"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "カーペットブラシ",
+                        asin: "B08CARPBR67",
+                        price: "¥680",
+                        rating: 4.3,
+                        reviews: 2890,
+                        category: "道具",
+                        description: "絨毯専用・毛起こし・汚れ除去"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "膝パッド 掃除用",
+                        asin: "B08KNEE012",
+                        price: "¥880",
+                        rating: 4.1,
+                        reviews: 1234,
+                        category: "保護具",
+                        description: "膝保護・クッション・快適作業"
+                    }
+                ]
+            },
+            
+            // リビング・絨毯カーペット（頑固な汚れ）  
+            living_carpet_heavy: {
+                cleaners: [
+                    {
+                        title: "カーペット強力洗剤",
+                        asin: "B08CARPS34",
+                        price: "¥1,280",
+                        rating: 4.6,
+                        reviews: 3456,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固なシミ・業務用・強力分解"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "カーペット洗浄機",
+                        asin: "B08CARPM78",
+                        price: "¥15,800",
+                        rating: 4.7,
+                        reviews: 890,
+                        professional: true,
+                        category: "道具",
+                        description: "業務用・水洗い・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "作業用エプロン 防水",
+                        asin: "B08APRON12",
+                        price: "¥1,280",
+                        rating: 4.2,
+                        reviews: 2345,
+                        category: "保護具",
+                        description: "防水・汚れ防止・作業用"
+                    }
+                ]
+            },
+            
+            // リビング・フローリング（軽い汚れ）
+            living_floor_light: {
+                cleaners: [
+                    {
+                        title: "フローリング用中性洗剤",
+                        asin: "B08FLOOR34",
+                        price: "¥480",
+                        rating: 4.5,
+                        reviews: 7890,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "木材優しい・艶出し・Amazonチョイス"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "フローリングワイパー",
+                        asin: "B08WIPER78",
+                        price: "¥1,980",
+                        rating: 4.6,
+                        reviews: 5678,
+                        bestseller: true,
+                        category: "道具",
+                        description: "マイクロファイバー・立体・ベストセラー"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "滑り止めスリッパ",
+                        asin: "B08SLIP12",
+                        price: "¥798",
+                        rating: 4.0,
+                        reviews: 2345,
+                        category: "保護具",
+                        description: "滑り止め・安全・清掃用"
+                    }
+                ]
+            },
+            
+            // リビング・フローリング（頑固な汚れ）
+            living_floor_heavy: {
+                cleaners: [
+                    {
+                        title: "フローリング強力洗剤",
+                        asin: "B08FLOORH34",
+                        price: "¥980",
+                        rating: 4.5,
+                        reviews: 2890,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固な汚れ・業務用・強力除去"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "デッキブラシ 床用",
+                        asin: "B08DECKBR78",
+                        price: "¥880",
+                        rating: 4.2,
+                        reviews: 1890,
+                        category: "道具",
+                        description: "剛毛・広範囲・効率的"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "防護ゴーグル",
+                        asin: "B08GOGGLE12",
+                        price: "¥880",
+                        rating: 4.1,
+                        reviews: 1456,
+                        category: "保護具",
+                        description: "目保護・薬品対応・安全"
+                    }
+                ]
+            },
+            
+            // リビング・家具（軽い汚れ）
+            living_furniture_light: {
+                cleaners: [
+                    {
+                        title: "木製家具用クリーナー",
+                        asin: "B08WOODC34",
+                        price: "¥780",
+                        rating: 4.4,
+                        reviews: 3456,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "木材専用・艶出し・Amazonチョイス"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "家具用マイクロファイバー",
+                        asin: "B08FURNIT78",
+                        price: "¥398",
+                        rating: 4.5,
+                        reviews: 5678,
+                        bestseller: true,
+                        category: "道具",
+                        description: "極細繊維・傷付けない・ベストセラー"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "指先保護手袋",
+                        asin: "B08FINGER12",
+                        price: "¥480",
+                        rating: 4.0,
+                        reviews: 1234,
+                        category: "保護具",
+                        description: "指先保護・精密作業・安全"
+                    }
+                ]
+            },
+            
+            // リビング・家具（頑固な汚れ）
+            living_furniture_heavy: {
+                cleaners: [
+                    {
+                        title: "家具用強力洗剤",
+                        asin: "B08FURNITS34",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 1890,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固な汚れ・業務用・強力除去"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "家具用研磨パッド",
+                        asin: "B08SANDP78",
+                        price: "¥880",
+                        rating: 4.3,
+                        reviews: 1456,
+                        professional: true,
+                        category: "道具",
+                        description: "研磨・傷取り・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "防塵マスク 木材用",
+                        asin: "B08DUSTM12",
+                        price: "¥980",
+                        rating: 4.2,
+                        reviews: 1234,
+                        category: "保護具",
+                        description: "粉塵対応・呼吸保護・安全"
+                    }
+                ]
+            },
+            
+            // リビング・TV台電子機器（軽い汚れ）
+            living_tv_light: {
+                cleaners: [
+                    {
+                        title: "電子機器用クリーナー",
+                        asin: "B08ELECTR34",
+                        price: "¥680",
+                        rating: 4.4,
+                        reviews: 4567,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "電子機器専用・静電気防止・Amazonチョイス"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "電子機器用クロス",
+                        asin: "B08ECLOTH78",
+                        price: "¥398",
+                        rating: 4.6,
+                        reviews: 6789,
+                        amazonChoice: true,
+                        category: "道具",
+                        description: "静電気防止・極細繊維・Amazonチョイス"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "静電気防止手袋",
+                        asin: "B08STATIC12",
+                        price: "¥580",
+                        rating: 4.1,
+                        reviews: 1890,
+                        category: "保護具",
+                        description: "静電気防止・精密作業・安全"
+                    }
+                ]
+            },
+            
+            // リビング・TV台電子機器（頑固な汚れ）
+            living_tv_heavy: {
+                cleaners: [
+                    {
+                        title: "電子機器強力クリーナー",
+                        asin: "B08ELECTH34",
+                        price: "¥980",
+                        rating: 4.5,
+                        reviews: 2345,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固な汚れ・業務用・安全"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "電子機器用ブロワー",
+                        asin: "B08BLOWER78",
+                        price: "¥2,980",
+                        rating: 4.4,
+                        reviews: 890,
+                        professional: true,
+                        category: "道具",
+                        description: "強力送風・ホコリ除去・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "絶縁手袋 電子機器用",
+                        asin: "B08INSULAT12",
+                        price: "¥1,480",
+                        rating: 4.2,
+                        reviews: 567,
+                        professional: true,
+                        category: "保護具",
+                        description: "絶縁・電気安全・プロ仕様"
+                    }
+                ]
+            },
+            
+            // === 浴室関連商品データベース ===
+            
+            // 浴室・浴槽（軽い汚れ）
+            bathroom_tub_light: {
+                cleaners: [
+                    {
+                        title: "花王 バスマジックリン",
+                        asin: "B000FQTJZW",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 18760,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "日常の浴槽掃除・99.9%除菌・Amazonチョイス"
+                    },
+                    {
+                        title: "ライオン ルックプラス バスタブクレンジング",
+                        asin: "B000FQS2JW",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 12340,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "こすらず流すだけ・時短清掃・ベストセラー"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "浴槽用スポンジ 柔らか",
+                        asin: "B08TUBSP123",
+                        price: "¥380",
+                        rating: 4.2,
+                        reviews: 5678,
+                        category: "道具",
+                        description: "浴槽専用・傷付けない・柔らか素材"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "バス用手袋",
+                        asin: "B08BATHGL45",
+                        price: "¥298",
+                        rating: 4.0,
+                        reviews: 2345,
+                        category: "保護具",
+                        description: "防水・滑り止め・浴室作業"
+                    }
+                ]
+            },
+            
+            // 浴室・浴槽（頑固な汚れ）
+            bathroom_tub_heavy: {
+                cleaners: [
+                    {
+                        title: "茂木和哉 お風呂用",
+                        asin: "B0015X3G2Q",
+                        price: "¥1,280",
+                        rating: 4.6,
+                        reviews: 3456,
+                        professional: true,
+                        category: "洗剤",
+                        description: "水垢除去・茂木和哉ブランド・プロ仕様"
+                    },
+                    {
+                        title: "強力浴槽洗剤 業務用",
+                        asin: "B08STRONGT67",
+                        price: "¥980",
+                        rating: 4.4,
+                        reviews: 2890,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固な水垢・業務用・強力除去"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "浴槽用研磨スポンジ",
+                        asin: "B08ABRASIVE89",
+                        price: "¥680",
+                        rating: 4.3,
+                        reviews: 1890,
+                        professional: true,
+                        category: "道具",
+                        description: "研磨力・水垢除去・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "耐薬品手袋 厚手",
+                        asin: "B08CHEMGL01",
+                        price: "¥880",
+                        rating: 4.2,
+                        reviews: 1456,
+                        category: "保護具",
+                        description: "耐薬品・厚手・安全作業"
+                    }
+                ]
+            },
+            
+            // 浴室・壁天井（軽い汚れ）
+            bathroom_wall_light: {
+                cleaners: [
+                    {
+                        title: "カビハイター 浴室用",
+                        asin: "B07FQBR5TW",
+                        price: "¥698",
+                        rating: 4.5,
+                        reviews: 7890,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "壁カビ除去・Amazonチョイス・安全"
+                    },
+                    {
+                        title: "浴室壁用中性洗剤",
+                        asin: "B08WALLCL23",
+                        price: "¥580",
+                        rating: 4.2,
+                        reviews: 4567,
+                        category: "洗剤",
+                        description: "壁面優しい・中性・環境配慮"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "浴室壁用ブラシ",
+                        asin: "B08WALLBR45",
+                        price: "¥780",
+                        rating: 4.3,
+                        reviews: 3456,
+                        category: "道具",
+                        description: "壁面専用・届きやすい・効率的"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "防水エプロン",
+                        asin: "B08WATERAPR67",
+                        price: "¥980",
+                        rating: 4.1,
+                        reviews: 2345,
+                        category: "保護具",
+                        description: "防水・汚れ防止・作業用"
+                    }
+                ]
+            },
+            
+            // 浴室・壁天井（頑固な汚れ）
+            bathroom_wall_heavy: {
+                cleaners: [
+                    {
+                        title: "強力カビ取り剤",
+                        asin: "B08MOLDKIL89",
+                        price: "¥1,280",
+                        rating: 4.6,
+                        reviews: 3456,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固なカビ・業務用・強力除去"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "高圧洗浄ブラシ",
+                        asin: "B08PRESSUR01",
+                        price: "¥1,980",
+                        rating: 4.4,
+                        reviews: 1890,
+                        professional: true,
+                        category: "道具",
+                        description: "高圧・強力・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "防護マスク カビ用",
+                        asin: "B08MOLDMSK23",
+                        price: "¥1,480",
+                        rating: 4.3,
+                        reviews: 1234,
+                        category: "保護具",
+                        description: "カビ胞子対応・呼吸保護・安全"
+                    }
+                ]
+            },
+            
+            // 浴室・床（軽い汚れ）
+            bathroom_floor_light: {
+                cleaners: [
+                    {
+                        title: "お風呂床用洗剤",
+                        asin: "B08HTXR4JG",
+                        price: "¥798",
+                        rating: 4.3,
+                        reviews: 4567,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "床ヌメリ除去専用・Amazonチョイス"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "浴室床ブラシ",
+                        asin: "B08FLOORBR45",
+                        price: "¥680",
+                        rating: 4.2,
+                        reviews: 3456,
+                        category: "道具",
+                        description: "床専用・ヌメリ除去・効果的"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "浴室用滑り止めマット",
+                        asin: "B08SLIPMAT67",
+                        price: "¥1,280",
+                        rating: 4.0,
+                        reviews: 2345,
+                        category: "保護具",
+                        description: "滑り止め・安全・作業用"
+                    }
+                ]
+            },
+            
+            // 浴室・床（頑固な汚れ）
+            bathroom_floor_heavy: {
+                cleaners: [
+                    {
+                        title: "強力床用洗剤 業務用",
+                        asin: "B08FLOORSTR89",
+                        price: "¥1,480",
+                        rating: 4.5,
+                        reviews: 2890,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固なヌメリ・業務用・強力分解"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "強力床ブラシ 剛毛",
+                        asin: "B08HARDFLR01",
+                        price: "¥980",
+                        rating: 4.3,
+                        reviews: 1890,
+                        professional: true,
+                        category: "道具",
+                        description: "剛毛・強力・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "膝パッド 防水",
+                        asin: "B08KNEEPW23",
+                        price: "¥1,280",
+                        rating: 4.1,
+                        reviews: 1456,
+                        category: "保護具",
+                        description: "膝保護・防水・床作業用"
+                    }
+                ]
+            },
+            
+            // 浴室・排水口（軽い汚れ）
+            bathroom_drain_light: {
+                cleaners: [
+                    {
+                        title: "パイプユニッシュ",
+                        asin: "B008WXE9EY",
+                        price: "¥798",
+                        rating: 4.4,
+                        reviews: 5678,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "髪の毛溶かす・ベストセラー・定番"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "排水口ブラシ 細い",
+                        asin: "B08DRAINBR45",
+                        price: "¥380",
+                        rating: 4.2,
+                        reviews: 3456,
+                        category: "道具",
+                        description: "細部清掃・髪の毛除去・効果的"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "使い捨て手袋 薄手",
+                        asin: "B08DISPGL67",
+                        price: "¥398",
+                        rating: 4.0,
+                        reviews: 4567,
+                        category: "保護具",
+                        description: "使い捨て・衛生的・薄手"
+                    }
+                ]
+            },
+            
+            // 浴室・排水口（頑固な汚れ）
+            bathroom_drain_heavy: {
+                cleaners: [
+                    {
+                        title: "業務用パイプクリーナー",
+                        asin: "B08JKRMX4Q",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 3456,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固な詰まり・業務用・強力分解"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "排水口専用工具セット",
+                        asin: "B08DRAINTL89",
+                        price: "¥1,980",
+                        rating: 4.4,
+                        reviews: 1890,
+                        professional: true,
+                        category: "道具",
+                        description: "専用工具・詰まり除去・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "防護手袋 耐薬品",
+                        asin: "B08CHEMPRGL01",
+                        price: "¥1,280",
+                        rating: 4.2,
+                        reviews: 1456,
+                        category: "保護具",
+                        description: "耐薬品・防護・安全作業"
+                    }
+                ]
+            },
+            
+            // === トイレ関連商品データベース ===
+            
+            // トイレ・便器内（軽い汚れ）
+            toilet_bowl_light: {
+                cleaners: [
+                    {
+                        title: "花王 トイレマジックリン",
+                        asin: "B000Z2B8VW",
+                        price: "¥298",
+                        rating: 4.2,
+                        reviews: 7543,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "便器内専用・Amazonチョイス・定番"
+                    },
+                    {
+                        title: "トイレ用中性洗剤",
+                        asin: "B08TOILET123",
+                        price: "¥380",
+                        rating: 4.1,
+                        reviews: 4567,
+                        category: "洗剤",
+                        description: "便器内優しい・中性・環境配慮"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "トイレブラシ 柔らか毛",
+                        asin: "B08TOILETBR45",
+                        price: "¥580",
+                        rating: 4.3,
+                        reviews: 3456,
+                        category: "道具",
+                        description: "便器内専用・柔らか毛・効果的"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "使い捨て手袋 トイレ用",
+                        asin: "B08TOILETGL67",
+                        price: "¥298",
+                        rating: 4.0,
+                        reviews: 2345,
+                        category: "保護具",
+                        description: "使い捨て・衛生的・トイレ掃除"
+                    }
+                ]
+            },
+            
+            // トイレ・便器内（頑固な汚れ）
+            toilet_bowl_heavy: {
+                cleaners: [
+                    {
+                        title: "強力トイレ洗剤 業務用",
+                        asin: "B07MXPQ9SD",
+                        price: "¥798",
+                        rating: 4.4,
+                        reviews: 4567,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固な汚れ・業務用・強力除去"
+                    },
+                    {
+                        title: "酸性トイレ洗剤",
+                        asin: "B08ACIDTOI89",
+                        price: "¥980",
+                        rating: 4.5,
+                        reviews: 2890,
+                        professional: true,
+                        category: "洗剤",
+                        description: "尿石除去・酸性・プロ仕様"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "強力トイレブラシ 剛毛",
+                        asin: "B08HARDTOI01",
+                        price: "¥880",
+                        rating: 4.3,
+                        reviews: 1890,
+                        professional: true,
+                        category: "道具",
+                        description: "剛毛・強力・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "防護手袋 耐酸",
+                        asin: "B08ACIDGL23",
+                        price: "¥1,280",
+                        rating: 4.2,
+                        reviews: 1456,
+                        category: "保護具",
+                        description: "耐酸・防護・安全作業"
+                    }
+                ]
+            },
+            
+            // トイレ・便座蓋（軽い汚れ）
+            toilet_seat_light: {
+                cleaners: [
+                    {
+                        title: "アルコール除菌シート",
+                        asin: "B08CDRGK7M",
+                        price: "¥398",
+                        rating: 4.4,
+                        reviews: 8765,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "便座除菌・シート・ベストセラー"
+                    },
+                    {
+                        title: "便座除菌スプレー",
+                        asin: "B08SEATSP45",
+                        price: "¥580",
+                        rating: 4.2,
+                        reviews: 4567,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "便座専用・除菌・Amazonチョイス"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "便座用クロス 柔らか",
+                        asin: "B08SEATCL67",
+                        price: "¥298",
+                        rating: 4.1,
+                        reviews: 3456,
+                        category: "道具",
+                        description: "便座専用・柔らか・傷付けない"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "薄手手袋 掃除用",
+                        asin: "B08THINGL89",
+                        price: "¥198",
+                        rating: 4.0,
+                        reviews: 2345,
+                        category: "保護具",
+                        description: "薄手・作業しやすい・衛生的"
+                    }
+                ]
+            },
+            
+            // トイレ・便座蓋（頑固な汚れ）
+            toilet_seat_heavy: {
+                cleaners: [
+                    {
+                        title: "強力除菌洗剤 便座用",
+                        asin: "B08SEATHV01",
+                        price: "¥880",
+                        rating: 4.5,
+                        reviews: 2890,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固な汚れ・除菌・プロ仕様"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "便座用ブラシ 細かい",
+                        asin: "B08SEATBR23",
+                        price: "¥680",
+                        rating: 4.3,
+                        reviews: 1890,
+                        category: "道具",
+                        description: "細部清掃・隙間・効果的"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "厚手ゴム手袋",
+                        asin: "B08THICKGL45",
+                        price: "¥580",
+                        rating: 4.2,
+                        reviews: 1456,
+                        category: "保護具",
+                        description: "厚手・防護・安全作業"
+                    }
+                ]
+            },
+            
+            // トイレ・床壁（軽い汚れ）
+            toilet_floor_light: {
+                cleaners: [
+                    {
+                        title: "トイレ床壁用洗剤",
+                        asin: "B08PQVWY3J",
+                        price: "¥498",
+                        rating: 4.2,
+                        reviews: 5678,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "床壁専用・中性・Amazonチョイス"
+                    },
+                    {
+                        title: "重曹スプレー",
+                        asin: "B015XGJZQY",
+                        price: "¥580",
+                        rating: 4.4,
+                        reviews: 3456,
+                        category: "洗剤",
+                        description: "天然成分・消臭・環境配慮"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "トイレ床用モップ",
+                        asin: "B08FLOOROMOP67",
+                        price: "¥780",
+                        rating: 4.1,
+                        reviews: 2890,
+                        category: "道具",
+                        description: "床専用・効率的・清潔"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "膝パッド 床作業用",
+                        asin: "B08KNEEPAD89",
+                        price: "¥880",
+                        rating: 4.0,
+                        reviews: 1890,
+                        category: "保護具",
+                        description: "膝保護・床作業・快適"
+                    }
+                ]
+            },
+            
+            // トイレ・床壁（頑固な汚れ）
+            toilet_floor_heavy: {
+                cleaners: [
+                    {
+                        title: "強力床用洗剤 トイレ専用",
+                        asin: "B08TOILFLOSTR01",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 2890,
+                        professional: true,
+                        category: "洗剤",
+                        description: "頑固な汚れ・業務用・強力除去"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "強力床ブラシ トイレ用",
+                        asin: "B08TOILETFLBR23",
+                        price: "¥980",
+                        rating: 4.3,
+                        reviews: 1890,
+                        professional: true,
+                        category: "道具",
+                        description: "剛毛・強力・プロ仕様"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "防護マスク 消臭",
+                        asin: "B08ODOUMASK45",
+                        price: "¥1,480",
+                        rating: 4.2,
+                        reviews: 1456,
+                        category: "保護具",
+                        description: "消臭フィルター・呼吸保護・安全"
                     }
                 ]
             }
