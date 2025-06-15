@@ -319,7 +319,7 @@
         <div class="container mx-auto max-w-4xl px-4 py-4">
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-gray-800">🤖 AI掃除アドバイザー</h1>
-                <div class="text-sm text-gray-600">簡単3ステップ</div>
+                <div class="text-sm text-gray-600">簡単5ステップ</div>
             </div>
         </div>
     </header>
@@ -329,14 +329,16 @@
         
         <!-- ステップインジケーター -->
         <div class="mb-8">
-            <div class="step-indicator flex justify-between items-center max-w-md mx-auto">
+            <div class="step-indicator flex justify-between items-center max-w-lg mx-auto">
                 <div class="step active" id="step1-indicator">1</div>
                 <div class="step" id="step2-indicator">2</div>
                 <div class="step" id="step3-indicator">3</div>
                 <div class="step" id="step4-indicator">4</div>
+                <div class="step" id="step5-indicator">5</div>
             </div>
-            <div class="flex justify-between text-xs text-gray-600 max-w-md mx-auto mt-2">
+            <div class="flex justify-between text-xs text-gray-600 max-w-lg mx-auto mt-2">
                 <span>場所選択</span>
+                <span>詳細選択</span>
                 <span>汚れ程度</span>
                 <span>写真(任意)</span>
                 <span>結果表示</span>
@@ -390,8 +392,197 @@
             </div>
         </div>
 
-        <!-- ステップ2: 汚れの程度選択 -->
+        <!-- ステップ2: サブロケーション選択 -->
         <div id="step2" class="step-content hidden">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">🎯 詳細場所選択</h2>
+                <p class="text-gray-600 hidden md:block">選択した場所の詳細箇所を選んでください</p>
+                <p class="text-gray-600 md:hidden">どちらを掃除しますか？</p>
+            </div>
+            
+            <!-- キッチンサブロケーション -->
+            <div id="kitchen-sublocations" class="sublocation-group hidden">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="kitchen_sink">
+                        <div class="text-4xl mb-2">🚰</div>
+                        <h3 class="font-semibold text-gray-800">シンク</h3>
+                        <p class="text-sm text-gray-600">流し台・水垢・汚れ</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="kitchen_gas">
+                        <div class="text-4xl mb-2">🔥</div>
+                        <h3 class="font-semibold text-gray-800">ガスコンロ</h3>
+                        <p class="text-sm text-gray-600">五徳・バーナー・油汚れ</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="kitchen_ih">
+                        <div class="text-4xl mb-2">⚡</div>
+                        <h3 class="font-semibold text-gray-800">IHコンロ</h3>
+                        <p class="text-sm text-gray-600">天板・IH・焦げ付き</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="kitchen_fan">
+                        <div class="text-4xl mb-2">💨</div>
+                        <h3 class="font-semibold text-gray-800">換気扇</h3>
+                        <p class="text-sm text-gray-600">ファン・フード・油汚れ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 浴室サブロケーション -->
+            <div id="bathroom-sublocations" class="sublocation-group hidden">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="bathroom_tub">
+                        <div class="text-4xl mb-2">🛁</div>
+                        <h3 class="font-semibold text-gray-800">浴槽</h3>
+                        <p class="text-sm text-gray-600">湯船・皮脂汚れ・湯垢</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="bathroom_wall">
+                        <div class="text-4xl mb-2">🧱</div>
+                        <h3 class="font-semibold text-gray-800">壁・天井</h3>
+                        <p class="text-sm text-gray-600">カビ・石鹸カス・水垢</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="bathroom_floor">
+                        <div class="text-4xl mb-2">🏠</div>
+                        <h3 class="font-semibold text-gray-800">床</h3>
+                        <p class="text-sm text-gray-600">浴室床・排水口・ぬめり</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="bathroom_drain">
+                        <div class="text-4xl mb-2">🕳️</div>
+                        <h3 class="font-semibold text-gray-800">排水口</h3>
+                        <p class="text-sm text-gray-600">髪の毛・ぬめり・詰まり</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- トイレサブロケーション -->
+            <div id="toilet-sublocations" class="sublocation-group hidden">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="toilet_bowl">
+                        <div class="text-4xl mb-2">🚽</div>
+                        <h3 class="font-semibold text-gray-800">便器内</h3>
+                        <p class="text-sm text-gray-600">尿石・黄ばみ・汚れ</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="toilet_seat">
+                        <div class="text-4xl mb-2">🪑</div>
+                        <h3 class="font-semibold text-gray-800">便座・蓋</h3>
+                        <p class="text-sm text-gray-600">除菌・表面汚れ</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="toilet_floor">
+                        <div class="text-4xl mb-2">🏠</div>
+                        <h3 class="font-semibold text-gray-800">床・壁</h3>
+                        <p class="text-sm text-gray-600">飛び散り・除菌・匂い</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="toilet_tank">
+                        <div class="text-4xl mb-2">📦</div>
+                        <h3 class="font-semibold text-gray-800">タンク・手洗い</h3>
+                        <p class="text-sm text-gray-600">水垢・カビ・ホコリ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- リビングサブロケーション -->
+            <div id="living-sublocations" class="sublocation-group hidden">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="living_sofa">
+                        <div class="text-4xl mb-2">🛋️</div>
+                        <h3 class="font-semibold text-gray-800">ソファ</h3>
+                        <p class="text-sm text-gray-600">布地・皮・シミ汚れ</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="living_carpet">
+                        <div class="text-4xl mb-2">🧽</div>
+                        <h3 class="font-semibold text-gray-800">絨毯・ラグ</h3>
+                        <p class="text-sm text-gray-600">シミ・ダニ・匂い</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="living_floor">
+                        <div class="text-4xl mb-2">🏠</div>
+                        <h3 class="font-semibold text-gray-800">フローリング</h3>
+                        <p class="text-sm text-gray-600">ホコリ・拭き掃除</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="living_furniture">
+                        <div class="text-4xl mb-2">🪑</div>
+                        <h3 class="font-semibold text-gray-800">家具・TV台</h3>
+                        <p class="text-sm text-gray-600">ホコリ・手垢・拭き掃除</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 窓・ガラスサブロケーション -->
+            <div id="window-sublocations" class="sublocation-group hidden">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="window_glass">
+                        <div class="text-4xl mb-2">🪟</div>
+                        <h3 class="font-semibold text-gray-800">ガラス面</h3>
+                        <p class="text-sm text-gray-600">窓ガラス・汚れ・曇り</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="window_frame">
+                        <div class="text-4xl mb-2">🔲</div>
+                        <h3 class="font-semibold text-gray-800">サッシ・枠</h3>
+                        <p class="text-sm text-gray-600">窓枠・レール・溝の汚れ</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="window_screen">
+                        <div class="text-4xl mb-2">🕸️</div>
+                        <h3 class="font-semibold text-gray-800">網戸</h3>
+                        <p class="text-sm text-gray-600">網戸・ホコリ・花粉</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="window_curtain">
+                        <div class="text-4xl mb-2">🪟</div>
+                        <h3 class="font-semibold text-gray-800">カーテン</h3>
+                        <p class="text-sm text-gray-600">カーテン・ブラインド</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 床サブロケーション -->
+            <div id="floor-sublocations" class="sublocation-group hidden">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="floor_wood">
+                        <div class="text-4xl mb-2">🪵</div>
+                        <h3 class="font-semibold text-gray-800">フローリング</h3>
+                        <p class="text-sm text-gray-600">木製・ワックス・傷防止</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="floor_tile">
+                        <div class="text-4xl mb-2">🏢</div>
+                        <h3 class="font-semibold text-gray-800">タイル・石材</h3>
+                        <p class="text-sm text-gray-600">タイル・大理石・目地</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="floor_carpet">
+                        <div class="text-4xl mb-2">🧶</div>
+                        <h3 class="font-semibold text-gray-800">カーペット</h3>
+                        <p class="text-sm text-gray-600">絨毯・シミ・ダニ対策</p>
+                    </div>
+                    
+                    <div class="choice-card border-2 border-gray-200 rounded-xl p-6 text-center" data-sublocation="floor_tatami">
+                        <div class="text-4xl mb-2">🎋</div>
+                        <h3 class="font-semibold text-gray-800">畳</h3>
+                        <p class="text-sm text-gray-600">畳・い草・カビ対策</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button id="backToStep1FromStep2" type="button" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 mr-4">
+                    ← 戻る
+                </button>
+            </div>
+        </div>
+
+        <!-- ステップ3: 汚れの程度選択 -->
+        <div id="step3" class="step-content hidden">
             <div class="text-center mb-8">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">🎯 汚れの程度</h2>
                 <p class="text-gray-600 hidden md:block">該当する汚れの程度を選択してください</p>
@@ -413,14 +604,14 @@
             </div>
             
             <div class="text-center">
-                <button id="backToStep1" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 mr-4">
+                <button id="backToStep2FromStep3" type="button" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 mr-4">
                     ← 戻る
                 </button>
             </div>
         </div>
 
-        <!-- ステップ3: 写真アップロード -->
-        <div id="step3" class="step-content hidden">
+        <!-- ステップ4: 写真アップロード -->
+        <div id="step4" class="step-content hidden">
             <div class="text-center mb-8">
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">📷 写真（任意）</h2>
                 <p class="text-gray-600 hidden md:block">より正確な診断のために写真をアップロードできます</p>
@@ -437,7 +628,7 @@
                     <div class="text-4xl mb-2">⚡</div>
                     <h3 class="font-semibold text-green-800 mb-2">すぐに診断開始</h3>
                     <p class="text-green-700 text-sm mb-4">場所と汚れ程度の選択だけで<br>適切な掃除方法をご提案します</p>
-                    <button id="skipPhoto" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 font-semibold">
+                    <button id="skipPhoto" type="button" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 font-semibold">
                         写真なしで診断開始
                     </button>
                 </div>
@@ -447,28 +638,28 @@
                     <div class="text-3xl mb-2">📁</div>
                     <p class="text-gray-600 mb-4 text-sm">さらに詳細な診断をご希望の場合<br>写真をアップロードしてください</p>
                     <input type="file" id="imageInput" accept="image/*" class="hidden">
-                    <button id="selectImageBtn" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                    <button id="selectImageBtn" type="button" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
                         写真を選択
                     </button>
                 </div>
                 
                 <div id="imagePreview" class="hidden mb-6">
-                    <img id="previewImg" class="w-full rounded-lg shadow-md">
-                    <button id="analyzeWithPhoto" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 mt-4 w-full font-semibold">
+                    <img id="previewImg" src="" alt="アップロードされた画像のプレビュー" class="w-full rounded-lg shadow-md">
+                    <button id="analyzeWithPhoto" type="button" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 mt-4 w-full font-semibold">
                         写真で詳細診断開始
                     </button>
                 </div>
                 
                 <div class="text-center">
-                    <button id="backToStep2" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 text-sm">
+                    <button id="backToStep3" type="button" class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 text-sm">
                         ← 戻る
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- ステップ4: 結果表示 -->
-        <div id="step4" class="step-content hidden">
+        <!-- ステップ5: 結果表示 -->
+        <div id="step5" class="step-content hidden">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">🎉 診断結果</h2>
                 <p class="text-gray-600">あなたにおすすめの掃除方法と商品をご紹介します</p>
@@ -496,10 +687,10 @@
                 
                 <!-- アクション -->
                 <div class="text-center">
-                    <button id="newAnalysis" class="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 mr-4">
+                    <button id="newAnalysis" type="button" class="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 mr-4">
                         新しい診断を開始
                     </button>
-                    <button id="shareResult" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600">
+                    <button id="shareResult" type="button" class="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600">
                         結果をシェア
                     </button>
                 </div>

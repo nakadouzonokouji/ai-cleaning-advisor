@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最終検証テスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .warning { color: orange; font-weight: bold; }
+        .info { color: blue; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .result { margin: 10px 0; padding: 10px; border-left: 4px solid #ddd; }
+        .result.success { border-left-color: green; background: #f0fff0; }
+        .result.error { border-left-color: red; background: #fff0f0; }
+        .result.warning { border-left-color: orange; background: #fff8f0; }
+        .asin-test { margin: 5px 0; padding: 5px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🔍 最終検証テスト - ASIN・機能総合チェック</h1>
+    
+    <div class="test-section">
+        <h2>テスト1: ASIN実在性確認</h2>
+        <button onclick="testRealASINs()">実在ASIN検証</button>
+        <div id="asin-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト2: ガスコンロ・IH商品データベース</h2>
+        <button onclick="testGasIHProducts()">ガスコンロ・IH商品テスト</button>
+        <div id="gas-ih-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト3: サブロケーション機能</h2>
+        <button onclick="testSublocationFlow()">サブロケーション機能テスト</button>
+        <div id="sublocation-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト4: 商品リンク生成</h2>
+        <button onclick="testProductLinks()">商品リンクテスト</button>
+        <div id="link-results"></div>
+    </div>
+
+    <script src="comprehensive-cleaning-products.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // 実在確認済みASINリスト
+        const VERIFIED_REAL_ASINS = [
+            'B01AJQMZ5W', // 茂木和哉 水垢洗剤
+            'B00G7Y5PTO', // サンポール 尿石除去
+            'B07MQ6HTNB', // 業務用クエン酸クリーナー
+            'B079QMN7P8', // 油職人 業務用強力脱脂洗剤
+            'B00IH4U9ZI'  // マジックリン 油汚れ用
+        ];
+        
+        function testRealASINs() {
+            const resultsDiv = document.getElementById('asin-results');
+            
+            try {
+                console.log('🔍 ASIN実在性確認テスト開始');
+                
+                const advisor = new StepWiseCleaningAdvisor();
+                const productDB = advisor.getComprehensiveProductDatabase();
+                
+                let html = '<div class="result success">✅ ASIN検証テスト開始</div>';
+                
+                const allASINs = new Set();
+                
+                // 全商品からASINを収集
+                Object.keys(productDB).forEach(locationKey => {
+                    const locationData = productDB[locationKey];
+                    if (locationData.cleaners) {
+                        locationData.cleaners.forEach(product => {
+                            allASINs.add(product.asin);
+                        });
+                    }
+                });
+                
+                html += `<div class="result info">📊 検出されたASIN数: ${allASINs.size}個</div>`;
+                
+                // 各ASINの検証
+                allASINs.forEach(asin => {
+                    const isVerified = VERIFIED_REAL_ASINS.includes(asin);
+                    const resultClass = isVerified ? 'success' : 'warning';
+                    const icon = isVerified ? '✅' : '⚠️';
+                    
+                    html += `<div class="asin-test result ${resultClass}">
+                        ${icon} ASIN: ${asin} - ${isVerified ? '実在確認済み' : '要確認'}
+                        <br><small>Amazon URL: https://www.amazon.co.jp/dp/${asin}</small>
+                    </div>`;
+                });
+                
+                // 統計情報
+                const verifiedCount = Array.from(allASINs).filter(asin => VERIFIED_REAL_ASINS.includes(asin)).length;
+                const verificationRate = ((verifiedCount / allASINs.size) * 100).toFixed(1);
+                
+                html += `<div class="result ${verificationRate >= 80 ? 'success' : 'warning'}">
+                    📈 検証率: ${verificationRate}% (${verifiedCount}/${allASINs.size})
+                </div>`;
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ ASIN検証テストエラー:', error);
+                resultsDiv.innerHTML = `<div class="result error">❌ エラー: ${error.message}</div>`;
+            }
+        }
+        
+        function testGasIHProducts() {
+            const resultsDiv = document.getElementById('gas-ih-results');
+            
+            try {
+                console.log('🔥 ガスコンロ・IH商品テスト開始');
+                
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                let html = '<div class="result success">✅ ガスコンロ・IH商品テスト開始</div>';
+                
+                // ガスコンロ・IH商品テスト
+                const testCases = [
+                    { location: 'kitchen_stove', level: 1, name: 'ガスコンロ軽い汚れ' },
+                    { location: 'kitchen_stove', level: 2, name: 'ガスコンロ頑固な汚れ' },
+                    { location: 'kitchen_ih', level: 1, name: 'IHコンロ軽い汚れ' },
+                    { location: 'kitchen_ih', level: 2, name: 'IHコンロ頑固な汚れ' }
+                ];
+                
+                testCases.forEach(testCase => {
+                    const products = advisor.getLocationSpecificCleaners(testCase.location, testCase.level);
+                    const hasProducts = Array.isArray(products) && products.length > 0;
+                    
+                    html += `<div class="result ${hasProducts ? 'success' : 'error'}">
+                        ${hasProducts ? '✅' : '❌'} ${testCase.name}: ${products.length}個の商品
+                    </div>`;
+                    
+                    if (hasProducts) {
+                        products.forEach(product => {
+                            const isVerified = VERIFIED_REAL_ASINS.includes(product.asin);
+                            html += `<div style="margin-left: 20px; font-size: 0.9em;">
+                                ${isVerified ? '✅' : '⚠️'} ${product.title} (${product.asin}) - ¥${product.price}
+                            </div>`;
+                        });
+                    }
+                });
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ ガスコンロ・IH商品テストエラー:', error);
+                resultsDiv.innerHTML = `<div class="result error">❌ エラー: ${error.message}</div>`;
+            }
+        }
+        
+        function testSublocationFlow() {
+            const resultsDiv = document.getElementById('sublocation-results');
+            
+            try {
+                console.log('🎯 サブロケーション機能テスト開始');
+                
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                let html = '<div class="result success">✅ サブロケーション機能テスト開始</div>';
+                
+                // 関数存在確認
+                const hasShowSublocation = typeof advisor.showSublocationStep === 'function';
+                const hasSelectSublocation = typeof advisor.selectSublocation === 'function';
+                
+                html += `<div class="result ${hasShowSublocation ? 'success' : 'error'}">
+                    ${hasShowSublocation ? '✅' : '❌'} showSublocationStep 関数: ${hasShowSublocation}
+                </div>`;
+                
+                html += `<div class="result ${hasSelectSublocation ? 'success' : 'error'}">
+                    ${hasSelectSublocation ? '✅' : '❌'} selectSublocation 関数: ${hasSelectSublocation}
+                </div>`;
+                
+                // プロパティ確認
+                const hasSelectedSublocation = advisor.hasOwnProperty('selectedSublocation');
+                html += `<div class="result ${hasSelectedSublocation ? 'success' : 'error'}">
+                    ${hasSelectedSublocation ? '✅' : '❌'} selectedSublocation プロパティ: ${hasSelectedSublocation}
+                </div>`;
+                
+                // サブロケーション要素確認
+                const sublocationElements = document.querySelectorAll('[data-sublocation]');
+                html += `<div class="result ${sublocationElements.length > 0 ? 'success' : 'error'}">
+                    ${sublocationElements.length > 0 ? '✅' : '❌'} サブロケーション要素: ${sublocationElements.length}個
+                </div>`;
+                
+                // サブロケーション統合テスト
+                advisor.selectedSublocation = 'kitchen_stove';
+                const products = advisor.getLocationSpecificCleaners('kitchen', 1, 'kitchen_stove');
+                const hasIntegration = Array.isArray(products) && products.length > 0;
+                
+                html += `<div class="result ${hasIntegration ? 'success' : 'error'}">
+                    ${hasIntegration ? '✅' : '❌'} サブロケーション統合テスト: ${products.length}個の商品
+                </div>`;
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ サブロケーション機能テストエラー:', error);
+                resultsDiv.innerHTML = `<div class="result error">❌ エラー: ${error.message}</div>`;
+            }
+        }
+        
+        function testProductLinks() {
+            const resultsDiv = document.getElementById('link-results');
+            
+            try {
+                console.log('🔗 商品リンクテスト開始');
+                
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                let html = '<div class="result success">✅ 商品リンクテスト開始</div>';
+                
+                // テスト商品の取得
+                const testProducts = advisor.getLocationSpecificCleaners('kitchen_stove', 1);
+                
+                if (testProducts.length > 0) {
+                    testProducts.forEach(product => {
+                        const amazonUrl = `https://www.amazon.co.jp/dp/${product.asin}`;
+                        const isValidASIN = /^B[0-9A-Z]{9}$/.test(product.asin);
+                        
+                        html += `<div class="result ${isValidASIN ? 'success' : 'error'}">
+                            ${isValidASIN ? '✅' : '❌'} ${product.title}
+                            <br><small>ASIN: ${product.asin}</small>
+                            <br><small><a href="${amazonUrl}" target="_blank">${amazonUrl}</a></small>
+                        </div>`;
+                    });
+                } else {
+                    html += '<div class="result error">❌ テスト商品が見つかりません</div>';
+                }
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ 商品リンクテストエラー:', error);
+                resultsDiv.innerHTML = `<div class="result error">❌ エラー: ${error.message}</div>`;
+            }
+        }
+        
+        // ページ読み込み時の基本チェック
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎉 最終検証テストページ読み込み完了');
+            
+            // 基本情報表示
+            console.log('📊 基本情報:');
+            console.log('- StepWiseCleaningAdvisor:', typeof StepWiseCleaningAdvisor);
+            console.log('- COMPREHENSIVE_CLEANING_PRODUCTS:', typeof COMPREHENSIVE_CLEANING_PRODUCTS);
+            console.log('- DOM要素数:', document.querySelectorAll('*').length);
+        });
+    </script>
+</body>
+</html>

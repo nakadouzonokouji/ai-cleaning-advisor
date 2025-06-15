@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI掃除アドバイザー 機能テスト</title>
+    <script src="app.js"></script>
+</head>
+<body>
+    <div id="test-results"></div>
+    <script>
+        console.log('=== AI掃除アドバイザー 機能テスト開始 ===');
+        
+        try {
+            // StepWiseCleaningAdvisor のインスタンス化テスト
+            const advisor = new StepWiseCleaningAdvisor();
+            console.log('✅ StepWiseCleaningAdvisor インスタンス化成功');
+            
+            // getLocationSpecificCleaners メソッドテスト
+            const testCases = [
+                {location: 'kitchen', dirtLevel: 1, sublocation: 'sink'},
+                {location: 'kitchen', dirtLevel: 2, sublocation: 'sink'},
+                {location: 'bathroom', dirtLevel: 1},
+                {location: 'toilet', dirtLevel: 2}
+            ];
+            
+            testCases.forEach((testCase, index) => {
+                try {
+                    const result = advisor.getLocationSpecificCleaners(
+                        testCase.location, 
+                        testCase.dirtLevel, 
+                        testCase.sublocation
+                    );
+                    
+                    if (result && result.products && result.products.length > 0) {
+                        console.log(`✅ テスト${index + 1} 成功:`, testCase);
+                        console.log(`   商品数: ${result.products.length}`);
+                        console.log(`   方法: ${result.method.substring(0, 50)}...`);
+                    } else {
+                        console.log(`❌ テスト${index + 1} 失敗: 商品データなし`, testCase);
+                    }
+                } catch (error) {
+                    console.error(`❌ テスト${index + 1} エラー:`, testCase, error.message);
+                }
+            });
+            
+            // ASIN形式チェック
+            console.log('\n=== ASIN形式チェック ===');
+            let fakeAsinCount = 0;
+            const fakePatterns = ['B085', 'B087', 'B089'];
+            
+            testCases.forEach(testCase => {
+                try {
+                    const result = advisor.getLocationSpecificCleaners(
+                        testCase.location, 
+                        testCase.dirtLevel, 
+                        testCase.sublocation
+                    );
+                    
+                    if (result && result.products) {
+                        result.products.forEach(product => {
+                            if (fakePatterns.some(pattern => product.asin.startsWith(pattern))) {
+                                fakeAsinCount++;
+                                console.log(`❌ 偽ASIN発見: ${product.asin} - ${product.title}`);
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('ASIN チェックエラー:', error.message);
+                }
+            });
+            
+            if (fakeAsinCount === 0) {
+                console.log('✅ 偽ASINは検出されませんでした');
+            } else {
+                console.log(`❌ ${fakeAsinCount}個の偽ASINが検出されました`);
+            }
+            
+            console.log('\n=== テスト完了 ===');
+            
+        } catch (error) {
+            console.error('❌ メインテストエラー:', error.message);
+        }
+    </script>
+</body>
+</html>

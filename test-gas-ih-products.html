@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ガスコンロ・IH商品テスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .product-item { margin: 10px 0; padding: 10px; background: #f5f5f5; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🔥 ガスコンロ・IH商品データベーステスト</h1>
+    
+    <div class="test-section">
+        <h2>テスト1: ガスコンロ商品取得</h2>
+        <button onclick="testGasStove()">ガスコンロ商品テスト実行</button>
+        <div id="gas-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト2: IHコンロ商品取得</h2>
+        <button onclick="testIHStove()">IHコンロ商品テスト実行</button>
+        <div id="ih-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト3: getLocationSpecificCleaners関数テスト</h2>
+        <button onclick="testCleanersFunction()">関数テスト実行</button>
+        <div id="function-results"></div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function testGasStove() {
+            console.log('🔥 ガスコンロ商品テスト開始');
+            const resultsDiv = document.getElementById('gas-results');
+            
+            try {
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                // ガスコンロ軽い汚れ
+                const lightProducts = advisor.getLocationSpecificCleaners('kitchen_stove', 1);
+                console.log('ガスコンロ軽い汚れ商品:', lightProducts);
+                
+                // ガスコンロ頑固な汚れ
+                const heavyProducts = advisor.getLocationSpecificCleaners('kitchen_stove', 2);
+                console.log('ガスコンロ頑固な汚れ商品:', heavyProducts);
+                
+                let html = '<h3 class="success">✅ ガスコンロ商品テスト成功</h3>';
+                html += `<p>軽い汚れ用商品: ${lightProducts.length}個</p>`;
+                html += `<p>頑固な汚れ用商品: ${heavyProducts.length}個</p>`;
+                
+                html += '<h4>軽い汚れ用商品:</h4>';
+                lightProducts.forEach(product => {
+                    html += `<div class="product-item">
+                        <strong>${product.title}</strong><br>
+                        ASIN: ${product.asin}<br>
+                        価格: ${product.price}<br>
+                        評価: ${product.rating}<br>
+                        説明: ${product.description}
+                    </div>`;
+                });
+                
+                html += '<h4>頑固な汚れ用商品:</h4>';
+                heavyProducts.forEach(product => {
+                    html += `<div class="product-item">
+                        <strong>${product.title}</strong><br>
+                        ASIN: ${product.asin}<br>
+                        価格: ${product.price}<br>
+                        評価: ${product.rating}<br>
+                        説明: ${product.description}
+                    </div>`;
+                });
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('ガスコンロテストエラー:', error);
+                resultsDiv.innerHTML = `<p class="error">❌ エラー: ${error.message}</p>`;
+            }
+        }
+        
+        function testIHStove() {
+            console.log('⚡ IHコンロ商品テスト開始');
+            const resultsDiv = document.getElementById('ih-results');
+            
+            try {
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                // IHコンロ軽い汚れ
+                const lightProducts = advisor.getLocationSpecificCleaners('kitchen_ih', 1);
+                console.log('IHコンロ軽い汚れ商品:', lightProducts);
+                
+                // IHコンロ頑固な汚れ
+                const heavyProducts = advisor.getLocationSpecificCleaners('kitchen_ih', 2);
+                console.log('IHコンロ頑固な汚れ商品:', heavyProducts);
+                
+                let html = '<h3 class="success">✅ IHコンロ商品テスト成功</h3>';
+                html += `<p>軽い汚れ用商品: ${lightProducts.length}個</p>`;
+                html += `<p>頑固な汚れ用商品: ${heavyProducts.length}個</p>`;
+                
+                html += '<h4>軽い汚れ用商品:</h4>';
+                lightProducts.forEach(product => {
+                    html += `<div class="product-item">
+                        <strong>${product.title}</strong><br>
+                        ASIN: ${product.asin}<br>
+                        価格: ${product.price}<br>
+                        評価: ${product.rating}<br>
+                        説明: ${product.description}
+                    </div>`;
+                });
+                
+                html += '<h4>頑固な汚れ用商品:</h4>';
+                heavyProducts.forEach(product => {
+                    html += `<div class="product-item">
+                        <strong>${product.title}</strong><br>
+                        ASIN: ${product.asin}<br>
+                        価格: ${product.price}<br>
+                        評価: ${product.rating}<br>
+                        説明: ${product.description}
+                    </div>`;
+                });
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('IHコンロテストエラー:', error);
+                resultsDiv.innerHTML = `<p class="error">❌ エラー: ${error.message}</p>`;
+            }
+        }
+        
+        function testCleanersFunction() {
+            console.log('🧪 関数テスト開始');
+            const resultsDiv = document.getElementById('function-results');
+            
+            try {
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                let html = '<h3 class="success">✅ 関数テスト結果</h3>';
+                
+                // 各種場所×汚れレベルでテスト
+                const testCases = [
+                    { location: 'kitchen_stove', level: 1, name: 'ガスコンロ軽い汚れ' },
+                    { location: 'kitchen_stove', level: 2, name: 'ガスコンロ頑固な汚れ' },
+                    { location: 'kitchen_ih', level: 1, name: 'IHコンロ軽い汚れ' },
+                    { location: 'kitchen_ih', level: 2, name: 'IHコンロ頑固な汚れ' },
+                    { location: 'kitchen_sink', level: 1, name: 'キッチンシンク軽い汚れ' },
+                    { location: 'kitchen', level: 1, name: 'キッチン一般' }
+                ];
+                
+                testCases.forEach(testCase => {
+                    const products = advisor.getLocationSpecificCleaners(testCase.location, testCase.level);
+                    const status = products.length > 0 ? '✅' : '❌';
+                    html += `<p>${status} ${testCase.name}: ${products.length}個の商品</p>`;
+                });
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('関数テストエラー:', error);
+                resultsDiv.innerHTML = `<p class="error">❌ エラー: ${error.message}</p>`;
+            }
+        }
+        
+        // ページ読み込み時に基本テスト実行
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎉 ガスコンロ・IH商品テストページ読み込み完了');
+        });
+    </script>
+</body>
+</html>

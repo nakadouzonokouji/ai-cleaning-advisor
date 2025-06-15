@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サブロケーション機能テスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+        .test-result { margin: 10px 0; padding: 10px; border-left: 4px solid #ddd; }
+        .test-result.success { border-left-color: green; background: #f0fff0; }
+        .test-result.error { border-left-color: red; background: #fff0f0; }
+    </style>
+</head>
+<body>
+    <h1>🧪 サブロケーション機能テスト</h1>
+    
+    <div class="test-section">
+        <h2>テスト1: クラス初期化</h2>
+        <button onclick="testClassInitialization()">初期化テスト実行</button>
+        <div id="init-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト2: サブロケーション関数</h2>
+        <button onclick="testSublocationFunctions()">関数テスト実行</button>
+        <div id="function-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト3: 商品データベース統合テスト</h2>
+        <button onclick="testProductIntegration()">商品DBテスト実行</button>
+        <div id="product-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト4: HTMLイベントリスナー</h2>
+        <button onclick="testEventListeners()">イベントテスト実行</button>
+        <div id="event-results"></div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function testClassInitialization() {
+            const resultsDiv = document.getElementById('init-results');
+            
+            try {
+                console.log('🚀 クラス初期化テスト開始');
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                let html = '<div class="test-result success">✅ クラス初期化成功</div>';
+                
+                // プロパティ確認
+                const hasLocation = advisor.hasOwnProperty('selectedLocation');
+                const hasSublocation = advisor.hasOwnProperty('selectedSublocation');
+                const hasLevel = advisor.hasOwnProperty('selectedLevel');
+                const hasCurrentStep = advisor.hasOwnProperty('currentStep');
+                
+                html += `<div class="test-result ${hasLocation ? 'success' : 'error'}">
+                    ${hasLocation ? '✅' : '❌'} selectedLocation プロパティ: ${hasLocation}
+                </div>`;
+                
+                html += `<div class="test-result ${hasSublocation ? 'success' : 'error'}">
+                    ${hasSublocation ? '✅' : '❌'} selectedSublocation プロパティ: ${hasSublocation}
+                </div>`;
+                
+                html += `<div class="test-result ${hasLevel ? 'success' : 'error'}">
+                    ${hasLevel ? '✅' : '❌'} selectedLevel プロパティ: ${hasLevel}
+                </div>`;
+                
+                html += `<div class="test-result ${hasCurrentStep ? 'success' : 'error'}">
+                    ${hasCurrentStep ? '✅' : '❌'} currentStep プロパティ: ${hasCurrentStep} (値: ${advisor.currentStep})
+                </div>`;
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ 初期化テストエラー:', error);
+                resultsDiv.innerHTML = `<div class="test-result error">❌ エラー: ${error.message}</div>`;
+            }
+        }
+        
+        function testSublocationFunctions() {
+            const resultsDiv = document.getElementById('function-results');
+            
+            try {
+                console.log('🎯 サブロケーション関数テスト開始');
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                let html = '<div class="test-result success">✅ 関数テスト開始</div>';
+                
+                // showSublocationStep関数テスト
+                const hasShowSublocation = typeof advisor.showSublocationStep === 'function';
+                html += `<div class="test-result ${hasShowSublocation ? 'success' : 'error'}">
+                    ${hasShowSublocation ? '✅' : '❌'} showSublocationStep 関数: ${hasShowSublocation}
+                </div>`;
+                
+                // selectSublocation関数テスト
+                const hasSelectSublocation = typeof advisor.selectSublocation === 'function';
+                html += `<div class="test-result ${hasSelectSublocation ? 'success' : 'error'}">
+                    ${hasSelectSublocation ? '✅' : '❌'} selectSublocation 関数: ${hasSelectSublocation}
+                </div>`;
+                
+                // getLocationSpecificCleaners関数テスト（サブロケーション対応確認）
+                const testProducts = advisor.getLocationSpecificCleaners('kitchen_stove', 1);
+                const hasProducts = Array.isArray(testProducts) && testProducts.length > 0;
+                
+                html += `<div class="test-result ${hasProducts ? 'success' : 'error'}">
+                    ${hasProducts ? '✅' : '❌'} getLocationSpecificCleaners(kitchen_stove): ${testProducts.length}個の商品
+                </div>`;
+                
+                if (hasProducts) {
+                    html += '<div class="info"><h4>サンプル商品:</h4>';
+                    testProducts.slice(0, 2).forEach(product => {
+                        html += `<pre>${JSON.stringify(product, null, 2)}</pre>`;
+                    });
+                    html += '</div>';
+                }
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ 関数テストエラー:', error);
+                resultsDiv.innerHTML = `<div class="test-result error">❌ エラー: ${error.message}</div>`;
+            }
+        }
+        
+        function testProductIntegration() {
+            const resultsDiv = document.getElementById('product-results');
+            
+            try {
+                console.log('🛒 商品データベース統合テスト開始');
+                const advisor = new StepWiseCleaningAdvisor();
+                
+                let html = '<div class="test-result success">✅ 商品統合テスト開始</div>';
+                
+                // 各サブロケーションのテスト
+                const testCases = [
+                    { location: 'kitchen_stove', level: 1, name: 'ガスコンロ軽い汚れ' },
+                    { location: 'kitchen_stove', level: 2, name: 'ガスコンロ頑固な汚れ' },
+                    { location: 'kitchen_ih', level: 1, name: 'IHコンロ軽い汚れ' },
+                    { location: 'kitchen_ih', level: 2, name: 'IHコンロ頑固な汚れ' },
+                    { location: 'kitchen_sink', level: 1, name: 'キッチンシンク' },
+                    { location: 'bathroom_tub', level: 1, name: '浴室浴槽' },
+                    { location: 'toilet_bowl', level: 1, name: 'トイレ便器内' }
+                ];
+                
+                testCases.forEach(testCase => {
+                    const products = advisor.getLocationSpecificCleaners(testCase.location, testCase.level);
+                    const hasProducts = Array.isArray(products) && products.length > 0;
+                    
+                    html += `<div class="test-result ${hasProducts ? 'success' : 'error'}">
+                        ${hasProducts ? '✅' : '❌'} ${testCase.name}: ${products.length}個の商品
+                    </div>`;
+                    
+                    if (hasProducts && products.length > 0) {
+                        // ASINチェック
+                        const firstProduct = products[0];
+                        const hasValidAsin = firstProduct.asin && firstProduct.asin.length > 5;
+                        html += `<div class="test-result ${hasValidAsin ? 'success' : 'error'}">
+                            ${hasValidAsin ? '✅' : '❌'} 有効ASIN: ${firstProduct.asin}
+                        </div>`;
+                    }
+                });
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ 商品統合テストエラー:', error);
+                resultsDiv.innerHTML = `<div class="test-result error">❌ エラー: ${error.message}</div>`;
+            }
+        }
+        
+        function testEventListeners() {
+            const resultsDiv = document.getElementById('event-results');
+            
+            try {
+                console.log('🎧 イベントリスナーテスト開始');
+                
+                let html = '<div class="test-result success">✅ イベントリスナーテスト開始</div>';
+                
+                // サブロケーションエレメントの存在確認
+                const sublocationElements = document.querySelectorAll('[data-sublocation]');
+                html += `<div class="test-result ${sublocationElements.length > 0 ? 'success' : 'error'}">
+                    ${sublocationElements.length > 0 ? '✅' : '❌'} サブロケーション要素: ${sublocationElements.length}個
+                </div>`;
+                
+                // 戻るボタンの存在確認
+                const backButtons = [
+                    'backToStep1FromStep2',
+                    'backToStep2FromStep3',
+                    'backToStep3'
+                ];
+                
+                backButtons.forEach(buttonId => {
+                    const button = document.getElementById(buttonId);
+                    html += `<div class="test-result ${button ? 'success' : 'error'}">
+                        ${button ? '✅' : '❌'} ボタン ${buttonId}: ${button ? '存在' : '未発見'}
+                    </div>`;
+                });
+                
+                // ステップインジケーターの確認
+                const stepIndicators = document.querySelectorAll('[id$="-indicator"]');
+                html += `<div class="test-result ${stepIndicators.length >= 5 ? 'success' : 'error'}">
+                    ${stepIndicators.length >= 5 ? '✅' : '❌'} ステップインジケーター: ${stepIndicators.length}個 (期待値: 5個)
+                </div>`;
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ イベントリスナーテストエラー:', error);
+                resultsDiv.innerHTML = `<div class="test-result error">❌ エラー: ${error.message}</div>`;
+            }
+        }
+        
+        // ページ読み込み時の基本チェック
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎉 テストページ読み込み完了');
+            
+            // 基本的な存在確認
+            console.log('StepWiseCleaningAdvisor クラス:', typeof StepWiseCleaningAdvisor);
+            console.log('DOM要素数:', document.querySelectorAll('*').length);
+        });
+    </script>
+</body>
+</html>
