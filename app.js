@@ -1825,6 +1825,619 @@ class StepWiseCleaningAdvisor {
                 ]
             },
             
+            // 🪟 窓・ガラス - 軽い汚れ用
+            window_light: {
+                cleaners: [
+                    {
+                        title: "花王 マイペット ガラス用",
+                        asin: "B000FQTJZW",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 12450,
+                        amazonChoice: true,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "ガラス専用・ストリークフリー・Amazonチョイス"
+                    },
+                    {
+                        title: "ライオン チャーミー ガラスクリーナー",
+                        asin: "B005AILJ3O",
+                        price: "¥328",
+                        rating: 4.4,
+                        reviews: 8932,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "窓ガラス・鏡用・速乾・ベストセラー"
+                    },
+                    {
+                        title: "P&G ジョイ ガラス&ミラー",
+                        asin: "B00OOCWP44",
+                        price: "¥498",
+                        rating: 4.2,
+                        reviews: 6789,
+                        category: "洗剤",
+                        description: "ガラス・鏡専用・泡立ちタイプ・大容量"
+                    },
+                    {
+                        title: "レック アルコール系 ガラスクリーナー",
+                        asin: "B076QWXF2D",
+                        price: "¥598",
+                        rating: 4.5,
+                        reviews: 5432,
+                        category: "洗剤",
+                        description: "アルコール系・除菌効果・乾燥早い"
+                    },
+                    {
+                        title: "3M ガラス用洗剤 プロ仕様",
+                        asin: "B075XVJK89",
+                        price: "¥780",
+                        rating: 4.6,
+                        reviews: 3450,
+                        professional: true,
+                        category: "洗剤",
+                        description: "業務用品質・プロ仕様・効果抜群"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "スクイージー ステンレス製 30cm",
+                        asin: "B078QZDFG2",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 8970,
+                        amazonChoice: true,
+                        category: "道具",
+                        description: "ステンレス刃・30cm・水切り・Amazonチョイス"
+                    },
+                    {
+                        title: "マイクロファイバークロス ガラス用 5枚",
+                        asin: "B001TJ6AEW",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 15670,
+                        bestseller: true,
+                        category: "道具",
+                        description: "拭き跡なし・マイクロファイバー・5枚セット"
+                    },
+                    {
+                        title: "窓拭きモップ 伸縮式",
+                        asin: "B074XBDQJ9",
+                        price: "¥1,480",
+                        rating: 4.3,
+                        reviews: 7890,
+                        category: "道具",
+                        description: "伸縮2.5m・高所対応・両面対応・便利"
+                    },
+                    {
+                        title: "窓用ブラシ ソフト毛",
+                        asin: "B074W9NKJZ",
+                        price: "¥880",
+                        rating: 4.2,
+                        reviews: 4560,
+                        category: "道具",
+                        description: "ソフト毛・傷つけない・洗いやすい"
+                    },
+                    {
+                        title: "ガラス拭きワイパー 角度調整",
+                        asin: "B000FQZXL6",
+                        price: "¥1,180",
+                        rating: 4.6,
+                        reviews: 2340,
+                        category: "道具",
+                        description: "角度調整・楽々・効率的・プロ品質"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "ゴム手袋 薄手 100枚",
+                        asin: "B000FQZXJ4",
+                        price: "¥498",
+                        rating: 4.3,
+                        reviews: 12340,
+                        amazonChoice: true,
+                        category: "保護具",
+                        description: "薄手・作業しやすい・使い捨て・100枚"
+                    },
+                    {
+                        title: "防水エプロン 軽量タイプ",
+                        asin: "B000Z6NFVM",
+                        price: "¥780",
+                        rating: 4.1,
+                        reviews: 5670,
+                        category: "保護具",
+                        description: "軽量・防水・動きやすい・洗濯可"
+                    },
+                    {
+                        title: "安全靴 滑り止め",
+                        asin: "B000FQRB7Y",
+                        price: "¥2,480",
+                        rating: 4.4,
+                        reviews: 3450,
+                        category: "保護具",
+                        description: "滑り止め・安全・高所作業・軽量"
+                    },
+                    {
+                        title: "軍手 すべり止め付き 12双",
+                        asin: "B01N5JQJ8V",
+                        price: "¥680",
+                        rating: 4.2,
+                        reviews: 9870,
+                        category: "保護具",
+                        description: "すべり止め・12双セット・丈夫・コスパ"
+                    },
+                    {
+                        title: "膝当て 軽量タイプ",
+                        asin: "B08DCHR6YQ",
+                        price: "¥980",
+                        rating: 4.0,
+                        reviews: 2340,
+                        category: "保護具",
+                        description: "膝保護・軽量・ソフト・動きやすい"
+                    }
+                ]
+            },
+            
+            // 🪟 窓・ガラス - 頑固な汚れ用
+            window_heavy: {
+                cleaners: [
+                    {
+                        title: "業務用 ガラス洗剤 強力タイプ",
+                        asin: "B000FQ8KL2",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 8765,
+                        professional: true,
+                        category: "洗剤",
+                        description: "業務用・頑固汚れ・プロ仕様・大容量"
+                    },
+                    {
+                        title: "茂木和哉 ガラス用研磨剤",
+                        asin: "B074XBDQJ9",
+                        price: "¥1,680",
+                        rating: 4.6,
+                        reviews: 4560,
+                        professional: true,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "研磨剤配合・水垢除去・プロ仕様・効果抜群"
+                    },
+                    {
+                        title: "リンレイ ウロコ取り 業務用",
+                        asin: "B076QWXF2D",
+                        price: "¥980",
+                        rating: 4.4,
+                        reviews: 6789,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "水垢・ウロコ専用・業務用・ベストセラー"
+                    },
+                    {
+                        title: "クエン酸系 ガラス洗剤",
+                        asin: "B075XVJK89",
+                        price: "¥798",
+                        rating: 4.3,
+                        reviews: 7890,
+                        category: "洗剤",
+                        description: "クエン酸・水垢分解・安全・環境配慮"
+                    },
+                    {
+                        title: "塩酸系 強力ガラス洗剤",
+                        asin: "B078QZDFG2",
+                        price: "¥1,480",
+                        rating: 4.2,
+                        reviews: 3450,
+                        professional: true,
+                        category: "洗剤",
+                        description: "塩酸系・最強レベル・頑固汚れ・要注意"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "ダイヤモンドパッド ガラス用",
+                        asin: "B001TJ6AEW",
+                        price: "¥1,880",
+                        rating: 4.5,
+                        reviews: 5432,
+                        professional: true,
+                        category: "道具",
+                        description: "ダイヤモンド研磨・頑固汚れ・プロ仕様"
+                    },
+                    {
+                        title: "強力スクイージー 業務用",
+                        asin: "B000FQTJZ8",
+                        price: "¥2,280",
+                        rating: 4.6,
+                        reviews: 2340,
+                        professional: true,
+                        category: "道具",
+                        description: "業務用・頑丈・大型・効率的"
+                    },
+                    {
+                        title: "スクレーパー ガラス用 安全",
+                        asin: "B000FQZAB8",
+                        price: "¥980",
+                        rating: 4.4,
+                        reviews: 6540,
+                        category: "道具",
+                        description: "安全刃・頑固汚れ・こびりつき除去"
+                    },
+                    {
+                        title: "研磨ブラシ 硬質毛",
+                        asin: "B074W9NKJZ",
+                        price: "¥1,180",
+                        rating: 4.3,
+                        reviews: 4560,
+                        category: "道具",
+                        description: "硬質毛・研磨効果・頑固汚れ・効果的"
+                    },
+                    {
+                        title: "高圧洗浄機 ガラス用ノズル",
+                        asin: "B08TMJ45HD",
+                        price: "¥3,280",
+                        rating: 4.6,
+                        reviews: 1890,
+                        professional: true,
+                        category: "道具",
+                        description: "高圧水流・プロ仕様・効率的・時短"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "耐薬品手袋 酸性対応",
+                        asin: "B08DCHR6YQ",
+                        price: "¥1,680",
+                        rating: 4.5,
+                        reviews: 3450,
+                        professional: true,
+                        category: "保護具",
+                        description: "酸性洗剤対応・厚手・化学品耐性"
+                    },
+                    {
+                        title: "防水エプロン 完全防水",
+                        asin: "B000FQTJZW",
+                        price: "¥1,980",
+                        rating: 4.4,
+                        reviews: 2340,
+                        category: "保護具",
+                        description: "完全防水・業務用・耐久性・洗濯可"
+                    },
+                    {
+                        title: "保護メガネ 化学品対応",
+                        asin: "B005AILJ3O",
+                        price: "¥1,480",
+                        rating: 4.6,
+                        reviews: 1890,
+                        category: "保護具",
+                        description: "化学品飛沫防止・密閉設計・曇り止め"
+                    },
+                    {
+                        title: "防塵マスク 有機溶剤対応",
+                        asin: "B00OOCWP44",
+                        price: "¥1,780",
+                        rating: 4.3,
+                        reviews: 4560,
+                        category: "保護具",
+                        description: "有機溶剤・化学品蒸気・N95規格"
+                    },
+                    {
+                        title: "安全ハーネス 高所作業用",
+                        asin: "B01N5JQJ8V",
+                        price: "¥4,980",
+                        rating: 4.7,
+                        reviews: 1230,
+                        professional: true,
+                        category: "保護具",
+                        description: "高所作業・安全確保・プロ仕様・認証品"
+                    }
+                ]
+            },
+            
+            // 🏠 床 - 軽い汚れ用
+            floor_light: {
+                cleaners: [
+                    {
+                        title: "花王 マイペット フロア用",
+                        asin: "B000FQRB7Y",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 15670,
+                        amazonChoice: true,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "床用・中性・Amazonチョイス・ベストセラー"
+                    },
+                    {
+                        title: "ライオン フロアクリーナー",
+                        asin: "B074W9NKJZ",
+                        price: "¥328",
+                        rating: 4.4,
+                        reviews: 12340,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "床全般・除菌効果・ベストセラー・大容量"
+                    },
+                    {
+                        title: "P&G ジョイ フロア&タイル",
+                        asin: "B078QZDFG2",
+                        price: "¥498",
+                        rating: 4.2,
+                        reviews: 8970,
+                        category: "洗剤",
+                        description: "フローリング・タイル・優しい洗浄"
+                    },
+                    {
+                        title: "レック フロア用洗剤 木質床専用",
+                        asin: "B001TJ6AEW",
+                        price: "¥578",
+                        rating: 4.5,
+                        reviews: 6789,
+                        category: "洗剤",
+                        description: "フローリング専用・ワックス保護・艶出し"
+                    },
+                    {
+                        title: "3M フロア用中性洗剤",
+                        asin: "B075XVJK89",
+                        price: "¥680",
+                        rating: 4.6,
+                        reviews: 4560,
+                        professional: true,
+                        category: "洗剤",
+                        description: "中性・プロ仕様・素材を選ばない・安全"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "フロアモップ マイクロファイバー",
+                        asin: "B076QWXF2D",
+                        price: "¥1,280",
+                        rating: 4.5,
+                        reviews: 9870,
+                        amazonChoice: true,
+                        category: "道具",
+                        description: "マイクロファイバー・水拭き・Amazonチョイス"
+                    },
+                    {
+                        title: "フロアクロス 使い捨て 50枚",
+                        asin: "B000Z6NFVM",
+                        price: "¥598",
+                        rating: 4.4,
+                        reviews: 15670,
+                        bestseller: true,
+                        category: "道具",
+                        description: "使い捨て・ドライ＆ウェット・50枚・便利"
+                    },
+                    {
+                        title: "スプレーモップ 一体型",
+                        asin: "B074XBDQJ9",
+                        price: "¥1,980",
+                        rating: 4.3,
+                        reviews: 7890,
+                        category: "道具",
+                        description: "スプレー一体・効率的・楽々・時短"
+                    },
+                    {
+                        title: "コードレス掃除機 軽量",
+                        asin: "B000FQZXL6",
+                        price: "¥8,980",
+                        rating: 4.2,
+                        reviews: 3450,
+                        category: "道具",
+                        description: "コードレス・軽量・吸引力・バッテリー"
+                    },
+                    {
+                        title: "フロアワイパー 静電気",
+                        asin: "B000FQZXJ4",
+                        price: "¥880",
+                        rating: 4.4,
+                        reviews: 12340,
+                        category: "道具",
+                        description: "静電気・ホコリ吸着・ドライクリーニング"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "ゴム手袋 薄手 家事用",
+                        asin: "B000FQZAB8",
+                        price: "¥398",
+                        rating: 4.3,
+                        reviews: 18920,
+                        amazonChoice: true,
+                        category: "保護具",
+                        description: "薄手・家事用・Amazonチョイス・快適"
+                    },
+                    {
+                        title: "膝当て ソフトタイプ",
+                        asin: "B08DCHR6YQ",
+                        price: "¥880",
+                        rating: 4.1,
+                        reviews: 5670,
+                        category: "保護具",
+                        description: "膝保護・ソフト・床掃除・快適"
+                    },
+                    {
+                        title: "室内履き 滑り止め",
+                        asin: "B08TMJ45HD",
+                        price: "¥1,280",
+                        rating: 4.4,
+                        reviews: 4560,
+                        category: "保護具",
+                        description: "滑り止め・室内用・安全・快適"
+                    },
+                    {
+                        title: "エプロン 防水 軽量",
+                        asin: "B01N5JQJ8V",
+                        price: "¥680",
+                        rating: 4.2,
+                        reviews: 7890,
+                        category: "保護具",
+                        description: "防水・軽量・動きやすい・洗濯可"
+                    },
+                    {
+                        title: "マスク 不織布 50枚",
+                        asin: "B074W9NKJZ",
+                        price: "¥580",
+                        rating: 4.0,
+                        reviews: 23450,
+                        category: "保護具",
+                        description: "不織布・ホコリ防止・50枚・快適"
+                    }
+                ]
+            },
+            
+            // 🏠 床 - 頑固な汚れ用
+            floor_heavy: {
+                cleaners: [
+                    {
+                        title: "業務用 フロア洗剤 強力タイプ",
+                        asin: "B000FQ8KL2",
+                        price: "¥1,480",
+                        rating: 4.5,
+                        reviews: 6789,
+                        professional: true,
+                        category: "洗剤",
+                        description: "業務用・強力洗浄・プロ仕様・大容量"
+                    },
+                    {
+                        title: "リンレイ ワックス剥離剤",
+                        asin: "B074XBDQJ9",
+                        price: "¥1,980",
+                        rating: 4.6,
+                        reviews: 3450,
+                        professional: true,
+                        amazonChoice: true,
+                        category: "洗剤",
+                        description: "ワックス除去・プロ仕様・Amazonチョイス"
+                    },
+                    {
+                        title: "アルカリ性 強力床洗剤",
+                        asin: "B076QWXF2D",
+                        price: "¥1,280",
+                        rating: 4.4,
+                        reviews: 5432,
+                        bestseller: true,
+                        category: "洗剤",
+                        description: "アルカリ性・油汚れ・頑固汚れ・ベストセラー"
+                    },
+                    {
+                        title: "茂木和哉 床用研磨剤",
+                        asin: "B075XVJK89",
+                        price: "¥1,680",
+                        rating: 4.3,
+                        reviews: 4560,
+                        professional: true,
+                        category: "洗剤",
+                        description: "研磨剤配合・黒ずみ除去・プロ仕様"
+                    },
+                    {
+                        title: "塩素系 床用漂白剤",
+                        asin: "B078QZDFG2",
+                        price: "¥980",
+                        rating: 4.2,
+                        reviews: 7890,
+                        category: "洗剤",
+                        description: "塩素系・漂白・除菌・カビ除去"
+                    }
+                ],
+                tools: [
+                    {
+                        title: "業務用モップ 大型",
+                        asin: "B001TJ6AEW",
+                        price: "¥2,480",
+                        rating: 4.5,
+                        reviews: 4560,
+                        professional: true,
+                        category: "道具",
+                        description: "業務用・大型・効率的・プロ仕様"
+                    },
+                    {
+                        title: "デッキブラシ 硬質毛",
+                        asin: "B000FQTJZ8",
+                        price: "¥1,880",
+                        rating: 4.6,
+                        reviews: 6789,
+                        category: "道具",
+                        description: "硬質毛・頑固汚れ・研磨効果・丈夫"
+                    },
+                    {
+                        title: "フロアマシン 電動",
+                        asin: "B000FQZAB8",
+                        price: "¥15,800",
+                        rating: 4.4,
+                        reviews: 1890,
+                        professional: true,
+                        category: "道具",
+                        description: "電動・回転ブラシ・プロ仕様・効率的"
+                    },
+                    {
+                        title: "高圧洗浄機 床用ブラシ",
+                        asin: "B074W9NKJZ",
+                        price: "¥3,980",
+                        rating: 4.3,
+                        reviews: 2340,
+                        category: "道具",
+                        description: "高圧洗浄・床用ブラシ・効果的・時短"
+                    },
+                    {
+                        title: "スクラブパッド 研磨用 10枚",
+                        asin: "B08TMJ45HD",
+                        price: "¥980",
+                        rating: 4.2,
+                        reviews: 8970,
+                        category: "道具",
+                        description: "研磨パッド・頑固汚れ・10枚セット"
+                    }
+                ],
+                protection: [
+                    {
+                        title: "耐薬品手袋 強力洗剤対応",
+                        asin: "B08DCHR6YQ",
+                        price: "¥1,680",
+                        rating: 4.5,
+                        reviews: 3450,
+                        professional: true,
+                        category: "保護具",
+                        description: "耐薬品・強力洗剤対応・厚手・安全"
+                    },
+                    {
+                        title: "防水ブーツ 業務用",
+                        asin: "B000FQRB7Y",
+                        price: "¥2,980",
+                        rating: 4.4,
+                        reviews: 2340,
+                        professional: true,
+                        category: "保護具",
+                        description: "防水・業務用・滑り止め・耐久性"
+                    },
+                    {
+                        title: "防水エプロン 完全防水",
+                        asin: "B005AILJ3O",
+                        price: "¥1,980",
+                        rating: 4.6,
+                        reviews: 1890,
+                        category: "保護具",
+                        description: "完全防水・業務用・耐久性・洗濯可"
+                    },
+                    {
+                        title: "膝当て 業務用 厚手",
+                        asin: "B00OOCWP44",
+                        price: "¥1,480",
+                        rating: 4.3,
+                        reviews: 5670,
+                        category: "保護具",
+                        description: "業務用・厚手・膝保護・滑り止め"
+                    },
+                    {
+                        title: "防塵マスク 粉塵対応",
+                        asin: "B01N5JQJ8V",
+                        price: "¥1,280",
+                        rating: 4.2,
+                        reviews: 7890,
+                        category: "保護具",
+                        description: "粉塵対応・N95規格・快適・安全"
+                    }
+                ]
+            },
+            
             // キッチン全般（後方互換性）
             kitchen: [
                 {
@@ -2264,6 +2877,10 @@ class StepWiseCleaningAdvisor {
             specificLocation = 'kitchen_sink'; // デフォルトでシンクを選択
         } else if (locationType === 'bathroom') {
             specificLocation = 'bathroom'; // 浴室はそのまま
+        } else if (locationType === 'window') {
+            specificLocation = 'window';
+        } else if (locationType === 'floor') {
+            specificLocation = 'floor';
         }
         
         const locationKey = specificLocation + dirtLevelSuffix;
