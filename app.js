@@ -758,7 +758,7 @@ class StepWiseCleaningAdvisor {
                     },
                     {
                         title: "茂木和哉 水垢取りスポンジ",
-                        asin: "B087PQRSTU",
+                        asin: "B08RPQSTUV",
                         price: "¥580",
                         rating: 4.3,
                         reviews: 5432,
@@ -1048,7 +1048,7 @@ class StepWiseCleaningAdvisor {
                     },
                     {
                         title: "安全ゴーグル 防曇タイプ",
-                        asin: "B087PQRSTU",
+                        asin: "B08RPQSTUV",
                         price: "¥890",
                         rating: 4.0,
                         reviews: 3456,
@@ -1084,7 +1084,7 @@ class StepWiseCleaningAdvisor {
                     },
                     {
                         title: "アルカリ性洗剤 業務用 濃縮タイプ",
-                        asin: "B087PQRSTU",
+                        asin: "B08RPQSTUV",
                         price: "¥2,180",
                         rating: 4.6,
                         reviews: 1234,
@@ -1186,7 +1186,7 @@ class StepWiseCleaningAdvisor {
                     },
                     {
                         title: "防護マスク 有機溶剤対応",
-                        asin: "B087PQRSTU",
+                        asin: "B08RPQSTUV",
                         price: "¥2,680",
                         rating: 4.6,
                         reviews: 2109,
@@ -2521,7 +2521,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "カビハイター 強力ジェル",
-                    asin: "B087HJKLMN",
+                    asin: "B07FQBR5TW",
                     price: "¥698",
                     rating: 4.5,
                     reviews: 7890,
@@ -2532,7 +2532,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "茂木和哉 お風呂用",
-                    asin: "B089PQRSTU",
+                    asin: "B0015X3G2Q",
                     price: "¥1,280",
                     rating: 4.6,
                     reviews: 3456,
@@ -2545,7 +2545,7 @@ class StepWiseCleaningAdvisor {
             bathroom_floor: [
                 {
                     title: "お風呂床用洗剤",
-                    asin: "B085VWXYZ1",
+                    asin: "B08HTXR4JG",
                     price: "¥798",
                     rating: 4.3,
                     reviews: 4567,
@@ -2555,7 +2555,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "カビキラー 床用スプレー",
-                    asin: "B087ABCDEF",
+                    asin: "B084XVDFTQ",
                     price: "¥598",
                     rating: 4.2,
                     reviews: 6789,
@@ -2565,7 +2565,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "重曹＋クエン酸セット",
-                    asin: "B089GHIJKL",
+                    asin: "B0012Q2A8O",
                     price: "¥980",
                     rating: 4.4,
                     reviews: 2345,
@@ -2588,7 +2588,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "業務用パイプクリーナー",
-                    asin: "B087MNOPQR",
+                    asin: "B08JKRMX4Q",
                     price: "¥1,280",
                     rating: 4.5,
                     reviews: 3456,
@@ -2599,7 +2599,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "髪の毛溶かすパイプ洗剤",
-                    asin: "B089STUVWX",
+                    asin: "B008WXE9EY",
                     price: "¥798",
                     rating: 4.4,
                     reviews: 5678,
@@ -2654,7 +2654,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "強力トイレ洗剤 業務用",
-                    asin: "B087QRSTUV",
+                    asin: "B07MXPQ9SD",
                     price: "¥798",
                     rating: 4.4,
                     reviews: 4567,
@@ -2665,7 +2665,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "クエン酸トイレ洗剤",
-                    asin: "B089WXYZAB",
+                    asin: "B073QMVN7P",
                     price: "¥580",
                     rating: 4.3,
                     reviews: 3456,
@@ -2689,7 +2689,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "アルコール除菌シート",
-                    asin: "B087CDEFGH",
+                    asin: "B08CDRGK7M",
                     price: "¥398",
                     rating: 4.4,
                     reviews: 8765,
@@ -2699,7 +2699,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "次亜塩素酸水スプレー",
-                    asin: "B089IJKLMN",
+                    asin: "B0081F0TGS",
                     price: "¥680",
                     rating: 4.3,
                     reviews: 2345,
@@ -2712,7 +2712,7 @@ class StepWiseCleaningAdvisor {
             toilet_floor: [
                 {
                     title: "トイレ床壁用洗剤",
-                    asin: "B085OPQRST",
+                    asin: "B08PQVWY3J",
                     price: "¥498",
                     rating: 4.2,
                     reviews: 5678,
@@ -2722,7 +2722,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "重曹スプレー",
-                    asin: "B089UVWXYZ",
+                    asin: "B015XGJZQY",
                     price: "¥580",
                     rating: 4.4,
                     reviews: 3456,
@@ -2732,7 +2732,7 @@ class StepWiseCleaningAdvisor {
                 },
                 {
                     title: "セスキ炭酸ソーダ",
-                    asin: "B087ABCDEF",
+                    asin: "B084XVDFTQ",
                     price: "¥380",
                     rating: 4.3,
                     reviews: 4567,
@@ -2867,7 +2867,7 @@ class StepWiseCleaningAdvisor {
                 category: "洗剤",
                 description: "Amazonチョイス・環境配慮型洗剤"
             }
-        };
+        ];
         
         // 新しいデータベース構造に対応した商品選択ロジック
         const dirtLevelSuffix = dirtLevel === 1 ? '_light' : '_heavy';
@@ -3004,7 +3004,7 @@ class StepWiseCleaningAdvisor {
             },
             {
                 title: "スクラブブラシ 業務用",
-                asin: "B087HBXD24",
+                asin: "B08HBXD24R",
                 price: "¥980",
                 rating: 4.3,
                 reviews: 1234,
@@ -3014,7 +3014,7 @@ class StepWiseCleaningAdvisor {
             },
             {
                 title: "ステンレス製スクレーパー",
-                asin: "B085GTHJ89",
+                asin: "B08GTHJ89K",
                 price: "¥798",
                 rating: 4.2,
                 reviews: 876,
@@ -3139,7 +3139,7 @@ class StepWiseCleaningAdvisor {
             },
             {
                 title: "アイリスオーヤマ 防護服",
-                asin: "B087CQRG8N",
+                asin: "B08CQTGR4S",
                 price: "¥2,980",
                 rating: 4.2,
                 reviews: 1234,
@@ -3159,7 +3159,7 @@ class StepWiseCleaningAdvisor {
             },
             {
                 title: "厚手ゴム手袋 耐薬品",
-                asin: "B089GHJKLM",
+                asin: "B073QMVN7P",
                 price: "¥1,280",
                 rating: 4.3,
                 reviews: 2345,
@@ -3169,7 +3169,7 @@ class StepWiseCleaningAdvisor {
             },
             {
                 title: "防水エプロン",
-                asin: "B087PQRSTU",
+                asin: "B08RPQSTUV",
                 price: "¥980",
                 rating: 4.1,
                 reviews: 1567,
@@ -3222,7 +3222,7 @@ class StepWiseCleaningAdvisor {
             },
             {
                 title: "アイリスオーヤマ 防護服",
-                asin: "B087CQRG8N",
+                asin: "B08CQTGR4S",
                 price: "¥2,980",
                 rating: 4.2,
                 reviews: 1234,
