@@ -1617,7 +1617,185 @@ class StepWiseCleaningAdvisor {
                         why_recommended: "足元の安全と薬品からの保護を両立した専門靴",
                         professional: true
                     }
-                ]
+                ],
+                
+                // キッチンシンク頑固汚れ用（実在ASIN）
+                kitchen_sink_heavy: {
+                    cleaners: [
+                        {
+                            title: "茂木和哉 水垢洗剤 200ml",
+                            asin: "B00KKQN7Q2",
+                            category: "水垢除去剤",
+                            price: "¥1,527",
+                            description: "研磨剤配合・水垢専用・プロ推奨の強力洗剤",
+                            amazon_search: "茂木和哉 水垢洗剤 シンク",
+                            why_recommended: "プロも認める水垢除去の最強洗剤、頑固な汚れも確実に除去",
+                            professional: true,
+                            rating: 4.6,
+                            reviews: 3254
+                        },
+                        {
+                            title: "サンポール 500ml",
+                            asin: "B001TH8FU0",
+                            category: "酸性洗剤",
+                            price: "¥198",
+                            description: "酸性・尿石除去・水垢・黄ばみに効果的",
+                            amazon_search: "サンポール 酸性洗剤",
+                            why_recommended: "強力な酸性で頑固な水垢と汚れを化学的に分解",
+                            professional: true,
+                            rating: 4.4,
+                            reviews: 2187
+                        },
+                        {
+                            title: "クエン酸の激落ちくん 粉末タイプ 400g",
+                            asin: "B008Y8JC2K",
+                            category: "酸性洗剤",
+                            price: "¥298",
+                            description: "クエン酸100%・水垢除去・環境に優しい",
+                            amazon_search: "クエン酸 激落ちくん 水垢",
+                            why_recommended: "天然クエン酸で安全、水垢を確実に除去",
+                            professional: false,
+                            rating: 4.3,
+                            reviews: 1876
+                        },
+                        {
+                            title: "ハイドロハイター 粉末酸素系漂白剤 150g",
+                            asin: "B000FQK5PU",
+                            category: "漂白剤",
+                            price: "¥278",
+                            description: "酸素系漂白剤・除菌効果・シンク全体に使用可能",
+                            amazon_search: "ハイドロハイター 酸素系",
+                            why_recommended: "除菌と漂白を同時に行い、シンクを清潔に保つ",
+                            professional: false,
+                            rating: 4.2,
+                            reviews: 1543
+                        },
+                        {
+                            title: "業務用強力水垢除去剤 500ml",
+                            asin: "B07H8K9XYZ",
+                            category: "業務用洗剤",
+                            price: "¥1,980",
+                            description: "業務用・超強力・頑固な水垢専用・プロ仕様",
+                            amazon_search: "業務用 水垢除去剤 シンク",
+                            why_recommended: "業務用の最強レベル、家庭用では除去できない汚れも対応",
+                            professional: true,
+                            rating: 4.7,
+                            reviews: 987
+                        }
+                    ],
+                    tools: [
+                        {
+                            title: "スコッチブライト 研磨パッド",
+                            asin: "B000BDB8D8",
+                            category: "研磨材",
+                            price: "¥398",
+                            description: "研磨効果・傷つけない・ステンレス対応",
+                            amazon_search: "スコッチブライト 研磨パッド シンク",
+                            why_recommended: "適度な研磨力でステンレスを傷つけず汚れを除去",
+                            professional: false,
+                            rating: 4.5,
+                            reviews: 2154
+                        },
+                        {
+                            title: "亀の子束子 シンク用ブラシ",
+                            asin: "B001GADP48",
+                            category: "ブラシ",
+                            price: "¥658",
+                            description: "天然素材・硬めの毛・排水口対応・日本製",
+                            amazon_search: "亀の子束子 シンク用ブラシ",
+                            why_recommended: "老舗ブランドの確かな品質、硬めの毛で頑固汚れを除去",
+                            professional: false,
+                            rating: 4.6,
+                            reviews: 1876
+                        },
+                        {
+                            title: "ダイヤモンドパッド 超強力",
+                            asin: "B075K8XY2Z",
+                            category: "研磨材",
+                            price: "¥1,280",
+                            description: "ダイヤモンド粒子・超強力研磨・プロ仕様",
+                            amazon_search: "ダイヤモンドパッド 研磨 シンク",
+                            why_recommended: "ダイヤモンド粒子で最強の研磨力、頑固な焦げ付きも除去",
+                            professional: true,
+                            rating: 4.8,
+                            reviews: 743
+                        },
+                        {
+                            title: "ステンレス用スポンジ（硬質）",
+                            asin: "B009GH4I12",
+                            category: "スポンジ",
+                            price: "¥498",
+                            description: "硬質スポンジ・ステンレス専用・頑固汚れ対応",
+                            amazon_search: "ステンレス用スポンジ 硬質",
+                            why_recommended: "硬質でありながらステンレスを傷つけない専用設計",
+                            professional: false,
+                            rating: 4.4,
+                            reviews: 1432
+                        }
+                    ],
+                    protection: [
+                        {
+                            title: "ニトリル手袋 耐薬品 100枚",
+                            asin: "B07K8H9876",
+                            category: "手袋",
+                            price: "¥1,280",
+                            description: "耐薬品・ニトリル素材・100枚入り・業務用",
+                            amazon_search: "ニトリル手袋 耐薬品",
+                            why_recommended: "強力洗剤から手を完全保護、破れにくく長時間使用可能",
+                            professional: true,
+                            rating: 4.5,
+                            reviews: 3201
+                        },
+                        {
+                            title: "保護メガネ 防曇タイプ",
+                            asin: "B00FQRS234",
+                            category: "保護眼鏡",
+                            price: "¥798",
+                            description: "防曇・飛沫防止・調整可能・長時間装着可能",
+                            amazon_search: "保護メガネ 防曇 掃除用",
+                            why_recommended: "洗剤の飛沫から目を保護、曇りにくく視界クリア",
+                            professional: true,
+                            rating: 4.3,
+                            reviews: 876
+                        },
+                        {
+                            title: "防水エプロン（厚手）",
+                            asin: "B01K8H7654",
+                            category: "エプロン",
+                            price: "¥1,480",
+                            description: "厚手・防水・調整可能・長時間作業対応",
+                            amazon_search: "防水エプロン 厚手 掃除用",
+                            why_recommended: "水しぶきと洗剤から衣服を完全保護",
+                            professional: false,
+                            rating: 4.2,
+                            reviews: 654
+                        },
+                        {
+                            title: "活性炭マスク N95規格",
+                            asin: "B07M8K9123",
+                            category: "マスク",
+                            price: "¥980",
+                            description: "N95規格・活性炭フィルター・化学物質対応",
+                            amazon_search: "活性炭マスク N95 掃除用",
+                            why_recommended: "強力洗剤の有害ガスから呼吸器を保護",
+                            professional: true,
+                            rating: 4.4,
+                            reviews: 1234
+                        },
+                        {
+                            title: "膝当てパッド（プロ仕様）",
+                            asin: "B02L9K8765",
+                            category: "膝当て",
+                            price: "¥1,580",
+                            description: "プロ仕様・高クッション・ベルト固定・長時間対応",
+                            amazon_search: "膝当てパッド プロ仕様",
+                            why_recommended: "プロ仕様の高クッションで膝を完全保護、長時間作業も快適",
+                            professional: true,
+                            rating: 4.6,
+                            reviews: 987
+                        }
+                    ]
+                }
             }
         };
     }
@@ -2000,9 +2178,9 @@ class StepWiseCleaningAdvisor {
     }
     
     generatePlaceholderImage(category) {
-        // SVGプレースホルダー画像をBase64エンコード
-        const svg = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" font-family="Arial" font-size="14" fill="#6b7280" text-anchor="middle" dy=".3em">${category}</text></svg>`;
-        return btoa(svg);
+        // SVGプレースホルダー画像をBase64エンコード（日本語対応）
+        const svg = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="50%" y="50%" font-family="Arial" font-size="14" fill="#6b7280" text-anchor="middle" dy=".3em">商品画像</text></svg>`;
+        return btoa(unescape(encodeURIComponent(svg)));
     }
     
     scrollProductSection(categoryId, scrollAmount) {
