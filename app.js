@@ -1223,67 +1223,84 @@ class StepWiseCleaningAdvisor {
                 1: {
                     steps: [
                         {
-                            title: "前準備",
-                            description: "床の物を移動し、簡単に水で流します",
-                            tips: "事前に大まかな汚れを落としておくと効率的"
+                            icon: "🧹",
+                            title: "前準備と安全確認",
+                            description: "床の物を全て移動し、換気扇を回して十分な換気を確保します。滑り止めマットを敷くか、滑りにくい靴を履いて安全を確保してください。",
+                            tips: "事前に大まかな汚れを落としておくと、後の作業が大幅に楽になります"
                         },
                         {
-                            title: "洗剤適用",
-                            description: "浴室用中性洗剤を床全体にスプレーします",
-                            tips: "隅々まで均等に洗剤を行き渡らせる"
+                            icon: "💧",
+                            title: "予備洗浄",
+                            description: "40℃程度のぬるま湯で床全体を洗い流し、髪の毛やゴミなどの大きな汚れを除去します。排水口の詰まりも確認してください。",
+                            tips: "お湯を使うことで皮脂汚れが落ちやすくなり、洗剤の効果も高まります"
                         },
                         {
-                            title: "軽く擦り洗い",
-                            description: "柔らかいブラシで優しく擦り洗いします",
-                            tips: "力を入れすぎると床材を傷める可能性があります"
+                            icon: "🧴",
+                            title: "洗剤適用と浸透",
+                            description: "浴室用中性洗剤を床全体にスプレーし、特に汚れが目立つ部分には重点的に塗布します。5-10分放置して汚れを浮き上がらせます。",
+                            tips: "洗剤は隅々まで均等に行き渡らせ、目地の奥まで浸透させることが重要です"
                         },
                         {
-                            title: "洗い流し",
-                            description: "シャワーでしっかりと洗剤を洗い流します",
-                            tips: "洗剤残りはぬめりの原因になります"
+                            icon: "🪥",
+                            title: "ブラッシング作業",
+                            description: "柔らかいブラシで目地に沿って丁寧に擦り洗いします。円を描くような動きで汚れを浮かせ、直線的な動きで掻き出します。",
+                            tips: "力を入れすぎると床材を傷める可能性があるため、適度な力加減で根気よく作業してください"
                         },
                         {
-                            title: "水切り",
-                            description: "スクイージーで水を排水口に導きます",
-                            tips: "水滴を残すとカビの原因になります"
+                            icon: "🚿",
+                            title: "徹底洗浄",
+                            description: "シャワーの強めの水圧で洗剤と浮いた汚れを完全に洗い流します。目地の奥に洗剤が残らないよう、十分な時間をかけて流してください。",
+                            tips: "洗剤残りはぬめりや変色の原因になるため、最低2回は全体を洗い流しましょう"
+                        },
+                        {
+                            icon: "🧽",
+                            title: "水切りと乾燥",
+                            description: "スクイージーやモップで床の水を排水口に導き、マイクロファイバークロスで仕上げ拭きを行います。可能であれば窓を開けて自然乾燥させてください。",
+                            tips: "水滴を残すと新たなカビの原因になるため、隅々まで水気を取り除くことが重要です"
                         }
                     ],
-                    warning: "濡れた床は滑りやすいので、転倒に注意してください"
+                    warning: "濡れた床は非常に滑りやすいため、転倒防止対策を必ず講じてください"
                 },
                 2: {
                     steps: [
                         {
-                            title: "保護具着用",
-                            description: "手袋、マスク、保護眼鏡を着用し換気を行います",
-                            tips: "強力洗剤は皮膚や呼吸器に刺激があります"
+                            icon: "🛡️",
+                            title: "完全防護と環境準備",
+                            description: "耐薬品手袋、N95マスク、保護眼鏡を着用し、換気扇を最強にして窓も開放します。家族やペットを別の部屋に移動させ、作業エリアを完全に隔離してください。",
+                            tips: "強力洗剤は皮膚や呼吸器に重篤な影響を与える可能性があるため、防護を怠らないでください"
                         },
                         {
-                            title: "カビ取り剤適用",
-                            description: "強力カビ取り剤を床全体、特に目地に重点的に塗布",
-                            tips: "目地の奥まで洗剤が浸透するよう時間をかける"
+                            icon: "🧪",
+                            title: "強力カビ取り剤の戦略的適用",
+                            description: "業務用カビ取り剤を床全体、特に目地部分に集中的に塗布します。スプレーボトルとハケを併用し、洗剤が確実に浸透するよう厚めに塗ってください。",
+                            tips: "目地の奥深くまで洗剤が浸透するよう、ハケで押し込むように塗布するのがプロの技術です"
                         },
                         {
-                            title: "長時間放置",
-                            description: "30分から1時間、洗剤を浸透させます",
-                            tips: "頑固なカビには時間をかけて化学的に分解"
+                            icon: "⏰",
+                            title: "長時間化学反応待機",
+                            description: "30分から最大2時間、洗剤を完全に浸透させます。この間、室内に立ち入らず、定期的に換気状況を確認してください。",
+                            tips: "頑固なカビには時間をかけて化学的に分解させることが、物理的な力による除去よりも効果的です"
                         },
                         {
-                            title: "強力ブラシ作業",
-                            description: "硬いブラシで目地のカビを徹底的に除去",
-                            tips: "古い歯ブラシも細かい部分の清掃に有効"
+                            icon: "🔧",
+                            title: "専門工具による物理除去",
+                            description: "硬毛ブラシ、目地専用ブラシ、スクレーパーを使い分けて、浮き上がったカビを徹底的に除去します。特に頑固な部分は工業用スチームクリーナーも有効です。",
+                            tips: "古い歯ブラシや使い古しのクレジットカードも、細かい部分の清掃に意外なほど有効な道具です"
                         },
                         {
-                            title: "高圧洗浄",
-                            description: "シャワーの強い水圧で洗剤とカビを完全に除去",
-                            tips: "洗剤が残ると変色の原因になります"
+                            icon: "💦",
+                            title: "高圧・大量洗浄",
+                            description: "シャワーを最強水圧に設定し、全体を最低15分間かけて洗い流します。洗剤とカビの残骸を完全に除去し、化学物質を一切残さないよう徹底してください。",
+                            tips: "洗剤が残ると後に変色や腐食の原因となるため、「流しすぎ」ということはありません"
                         },
                         {
-                            title: "防カビ処理",
-                            description: "完全に乾燥させた後、防カビスプレーを適用",
-                            tips: "定期的な防カビ処理で再発を防止"
+                            icon: "🌿",
+                            title: "予防的アフターケア",
+                            description: "完全に乾燥させた後、防カビ・抗菌スプレーを全体に適用し、今後のカビ発生を予防します。月1回の定期的な防カビ処理スケジュールも立てましょう。",
+                            tips: "定期的な防カビ処理により、今回のような大掃除の頻度を大幅に減らすことができます"
                         }
                     ],
-                    warning: "塩素系洗剤使用時は絶対に酸性洗剤と混ぜないでください。有毒ガスが発生します"
+                    warning: "塩素系洗剤使用時は絶対に酸性洗剤と混ぜないでください。有毒な塩素ガスが発生し、生命に危険が及ぶ可能性があります。また、作業中は絶対に一人にならず、緊急時の連絡手段を確保してください。"
                 }
             }
         };
@@ -1311,6 +1328,283 @@ class StepWiseCleaningAdvisor {
         }
         
         return defaultMethod;
+    }
+    
+    // 拡張商品データベースを追加
+    getExtendedProductDatabase() {
+        return {
+            // 浴室床軽い汚れ用
+            bathroom_floor_light: {
+                cleaners: [
+                    {
+                        title: "バスマジックリン 泡立ちスプレー",
+                        category: "浴室用洗剤",
+                        price: "¥350-600",
+                        description: "泡が汚れに密着・除菌効果・日常清掃に最適",
+                        amazon_search: "バスマジックリン 泡立ち 浴室床",
+                        why_recommended: "浴室の日常清掃に最適で、泡が汚れをしっかり浮かせます",
+                        professional: false
+                    },
+                    {
+                        title: "スクラビングバブル バス用",
+                        category: "浴室用洗剤",
+                        price: "¥400-700",
+                        description: "強力泡洗浄・カビ予防・香り付き",
+                        amazon_search: "スクラビングバブル バス用 床",
+                        why_recommended: "強力な泡で汚れを分解し、カビの発生も予防します",
+                        professional: false
+                    },
+                    {
+                        title: "ウタマロクリーナー",
+                        category: "中性洗剤",
+                        price: "¥300-500",
+                        description: "中性・肌に優しい・環境配慮・万能クリーナー",
+                        amazon_search: "ウタマロクリーナー 浴室",
+                        why_recommended: "肌に優しく安全性が高いため、安心して使用できます",
+                        professional: false
+                    },
+                    {
+                        title: "重曹クリーナー（天然成分）",
+                        category: "自然派洗剤",
+                        price: "¥250-450",
+                        description: "天然成分100%・環境に優しい・研磨効果",
+                        amazon_search: "重曹クリーナー 天然成分 浴室",
+                        why_recommended: "天然成分で安全、軽い研磨効果で汚れをやさしく除去",
+                        professional: false
+                    },
+                    {
+                        title: "セスキ炭酸ソーダクリーナー",
+                        category: "アルカリ性洗剤",
+                        price: "¥300-550",
+                        description: "皮脂汚れに効果的・重曹より強力・環境配慮",
+                        amazon_search: "セスキ炭酸ソーダ 浴室用",
+                        why_recommended: "皮脂汚れに特に効果的で、重曹より強力な洗浄力",
+                        professional: false
+                    }
+                ],
+                tools: [
+                    {
+                        title: "バススポンジ（抗菌加工）",
+                        category: "スポンジ",
+                        price: "¥200-400",
+                        description: "抗菌加工・目地対応・持ちやすい形状",
+                        amazon_search: "バススポンジ 抗菌 目地",
+                        why_recommended: "抗菌加工で衛生的、目地の掃除にも最適な形状",
+                        professional: false
+                    },
+                    {
+                        title: "浴室用デッキブラシ",
+                        category: "ブラシ",
+                        price: "¥800-1500",
+                        description: "長柄・広範囲清掃・腰への負担軽減",
+                        amazon_search: "浴室用デッキブラシ 長柄",
+                        why_recommended: "立ったまま床全体を効率的に清掃でき、腰への負担を軽減",
+                        professional: false
+                    },
+                    {
+                        title: "目地用ブラシ（細毛）",
+                        category: "専用ブラシ",
+                        price: "¥300-600",
+                        description: "目地専用・細かい毛・深部まで届く",
+                        amazon_search: "目地用ブラシ 細毛 浴室",
+                        why_recommended: "目地の奥深くまで届く細かい毛で、隅々まで清掃可能",
+                        professional: false
+                    },
+                    {
+                        title: "マイクロファイバーモップ",
+                        category: "モップ",
+                        price: "¥600-1200",
+                        description: "超吸水・繰り返し使用可・静電気除去",
+                        amazon_search: "マイクロファイバーモップ 浴室用",
+                        why_recommended: "超吸水性で水切り効果が高く、静電気も除去します",
+                        professional: false
+                    }
+                ],
+                protection: [
+                    {
+                        title: "滑り止め付きゴム手袋",
+                        category: "手袋",
+                        price: "¥300-600",
+                        description: "滑り止め加工・水仕事対応・フィット感良好",
+                        amazon_search: "滑り止め ゴム手袋 浴室用",
+                        why_recommended: "濡れた状態でもしっかりグリップでき、安全に作業できます",
+                        professional: false
+                    },
+                    {
+                        title: "ひざ当てパッド",
+                        category: "保護具",
+                        price: "¥500-1000",
+                        description: "膝保護・滑り止め・長時間作業対応",
+                        amazon_search: "ひざ当てパッド 掃除用",
+                        why_recommended: "床掃除時の膝への負担を軽減し、快適に作業できます",
+                        professional: false
+                    },
+                    {
+                        title: "防水エプロン",
+                        category: "保護具",
+                        price: "¥800-1500",
+                        description: "防水・調節可能・長時間作業対応",
+                        amazon_search: "防水エプロン 掃除用",
+                        why_recommended: "水しぶきから衣服を守り、清潔に作業できます",
+                        professional: false
+                    },
+                    {
+                        title: "滑り止めシューズ",
+                        category: "安全靴",
+                        price: "¥1200-2500",
+                        description: "浴室対応・滑り止めソール・速乾性",
+                        amazon_search: "滑り止めシューズ 浴室用",
+                        why_recommended: "濡れた浴室でも安全に歩行でき、転倒事故を防止します",
+                        professional: false
+                    },
+                    {
+                        title: "換気マスク（防湿）",
+                        category: "マスク",
+                        price: "¥400-800",
+                        description: "防湿・通気性良好・長時間着用可能",
+                        amazon_search: "防湿マスク 浴室清掃用",
+                        why_recommended: "湿度の高い浴室でも快適に呼吸でき、長時間の作業に対応",
+                        professional: false
+                    }
+                ]
+            },
+            
+            // 浴室床頑固汚れ用
+            bathroom_floor_heavy: {
+                cleaners: [
+                    {
+                        title: "カビキラー 強力ジェル",
+                        category: "強力洗剤",
+                        price: "¥600-1000",
+                        description: "ジェルタイプ・密着力強・頑固カビ対応",
+                        amazon_search: "カビキラー 強力ジェル 目地",
+                        why_recommended: "ジェル状で垂れにくく、頑固なカビにしっかり密着して除去",
+                        professional: true
+                    },
+                    {
+                        title: "業務用カビ取りクリーナー",
+                        category: "業務用洗剤",
+                        price: "¥1200-2000",
+                        description: "プロ仕様・超強力・業務用濃度",
+                        amazon_search: "業務用カビ取り 浴室 プロ仕様",
+                        why_recommended: "プロも使用する強力洗剤で、最も頑固なカビも確実に除去",
+                        professional: true
+                    },
+                    {
+                        title: "茂木和哉 バスタブ用",
+                        category: "研磨剤入り洗剤",
+                        price: "¥1500-2500",
+                        description: "研磨剤配合・水垢対応・プロ推奨",
+                        amazon_search: "茂木和哉 バスタブ用 研磨",
+                        why_recommended: "研磨剤配合で頑固な水垢と汚れを物理的・化学的に除去",
+                        professional: true
+                    },
+                    {
+                        title: "ハイター 泡ハイター",
+                        category: "塩素系洗剤",
+                        price: "¥400-700",
+                        description: "塩素系・除菌効果・漂白作用",
+                        amazon_search: "ハイター 泡ハイター 浴室",
+                        why_recommended: "強力な除菌・漂白効果で、カビと雑菌を根こそぎ除去",
+                        professional: false
+                    },
+                    {
+                        title: "オキシクリーン（酸素系漂白剤）",
+                        category: "酸素系漂白剤",
+                        price: "¥800-1500",
+                        description: "酸素系・つけ置き対応・環境配慮",
+                        amazon_search: "オキシクリーン 浴室用 酸素系",
+                        why_recommended: "つけ置きで頑固な汚れを分解し、環境にも優しい漂白剤",
+                        professional: false
+                    }
+                ],
+                tools: [
+                    {
+                        title: "硬毛ブラシ（業務用）",
+                        category: "業務用ブラシ",
+                        price: "¥800-1500",
+                        description: "硬い毛・頑固汚れ対応・プロ仕様",
+                        amazon_search: "硬毛ブラシ 業務用 浴室",
+                        why_recommended: "プロ仕様の硬毛で、最も頑固な汚れも物理的に除去可能",
+                        professional: true
+                    },
+                    {
+                        title: "スクレーパー（金属製）",
+                        category: "削り取り用具",
+                        price: "¥600-1200",
+                        description: "金属製・こびりつき除去・角度調整可能",
+                        amazon_search: "金属スクレーパー 浴室用",
+                        why_recommended: "こびりついた汚れを物理的に削り取る、最終手段の強力ツール",
+                        professional: true
+                    },
+                    {
+                        title: "電動ブラシ",
+                        category: "電動工具",
+                        price: "¥2000-4000",
+                        description: "電動・高速回転・省力化",
+                        amazon_search: "電動ブラシ 浴室掃除用",
+                        why_recommended: "電動の力で労力を大幅削減し、効率的に頑固汚れを除去",
+                        professional: true
+                    },
+                    {
+                        title: "高圧洗浄機（小型）",
+                        category: "洗浄機器",
+                        price: "¥8000-15000",
+                        description: "高圧水流・洗剤混合可能・家庭用",
+                        amazon_search: "高圧洗浄機 小型 浴室用",
+                        why_recommended: "高圧水流で洗剤と汚れを一気に洗い流す、最強の洗浄力",
+                        professional: true
+                    }
+                ],
+                protection: [
+                    {
+                        title: "耐薬品手袋（厚手）",
+                        category: "特殊手袋",
+                        price: "¥800-1500",
+                        description: "耐薬品・厚手・長時間対応・肘まで保護",
+                        amazon_search: "耐薬品手袋 厚手 強力洗剤対応",
+                        why_recommended: "強力洗剤から手を完全保護し、長時間の作業も安心",
+                        professional: true
+                    },
+                    {
+                        title: "防毒マスク（有機溶剤対応）",
+                        category: "防毒マスク",
+                        price: "¥2000-4000",
+                        description: "有機溶剤対応・交換フィルター・長時間使用可",
+                        amazon_search: "防毒マスク 有機溶剤 強力洗剤",
+                        why_recommended: "強力洗剤の有害ガスから呼吸器を完全保護",
+                        professional: true
+                    },
+                    {
+                        title: "保護眼鏡（密閉型）",
+                        category: "保護眼鏡",
+                        price: "¥1000-2000",
+                        description: "密閉型・飛沫完全防止・曇り止め",
+                        amazon_search: "保護眼鏡 密閉型 強力洗剤用",
+                        why_recommended: "洗剤の飛沫から目を完全保護し、視界もクリアに保持",
+                        professional: true
+                    },
+                    {
+                        title: "全身防護服（使い捨て）",
+                        category: "防護服",
+                        price: "¥500-1000",
+                        description: "使い捨て・全身保護・通気性確保",
+                        amazon_search: "防護服 使い捨て 清掃用",
+                        why_recommended: "強力洗剤から全身を保護し、作業後は廃棄で衛生的",
+                        professional: true
+                    },
+                    {
+                        title: "安全長靴（耐薬品）",
+                        category: "安全靴",
+                        price: "¥1500-3000",
+                        description: "耐薬品・滑り止め・長時間立ち作業対応",
+                        amazon_search: "安全長靴 耐薬品 滑り止め",
+                        why_recommended: "足元の安全と薬品からの保護を両立した専門靴",
+                        professional: true
+                    }
+                ]
+            }
+        };
     }
     
     async analyzeImage(imageData) {
@@ -1386,13 +1680,26 @@ class StepWiseCleaningAdvisor {
                     <h4 class="font-semibold text-lg mb-2">🧽 推奨手順</h4>
                     <div class="cleaning-steps">
                         ${method.steps.map((step, index) => `
-                            <div class="step-item mb-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="step-item mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-l-4 border-blue-400 hover:shadow-md transition-all duration-300">
                                 <div class="flex items-start">
-                                    <span class="step-number bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3 mt-1">${index + 1}</span>
-                                    <div>
-                                        <h5 class="font-medium text-gray-800">${step.title}</h5>
-                                        <p class="text-gray-600 text-sm mt-1">${step.description}</p>
-                                        ${step.tips ? `<p class="text-blue-600 text-sm mt-1">💡 ${step.tips}</p>` : ''}
+                                    <div class="step-number-container flex-shrink-0 mr-4">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl flex items-center justify-center text-sm font-bold shadow-lg transform hover:scale-105 transition-transform">
+                                            ${index + 1}
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h5 class="font-bold text-gray-800 text-base mb-2 flex items-center">
+                                            ${step.icon || '🧽'} ${step.title}
+                                        </h5>
+                                        <p class="text-gray-700 mb-3 leading-relaxed">${step.description}</p>
+                                        ${step.tips ? `
+                                            <div class="bg-blue-100 border border-blue-200 rounded-lg p-3">
+                                                <p class="text-blue-800 text-sm font-medium flex items-start">
+                                                    <span class="mr-2">💡</span>
+                                                    <span><strong>プロのコツ:</strong> ${step.tips}</span>
+                                                </p>
+                                            </div>
+                                        ` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -1413,45 +1720,113 @@ class StepWiseCleaningAdvisor {
         const productsDiv = document.getElementById('recommendedProducts');
         if (!productsDiv) return;
         
-        // 商品を取得
-        const products = this.getLocationSpecificCleaners(
-            this.selectedLocation, 
-            this.selectedLevel, 
-            this.selectedSublocation
-        );
+        // 商品データベースから商品を取得
+        const productDatabase = this.getComprehensiveProductDatabase();
+        const extendedDatabase = this.getExtendedProductDatabase();
+        const locationKey = this.selectedSublocation || this.selectedLocation;
+        const levelSuffix = this.selectedLevel === 1 ? '_light' : '_heavy';
+        const fullKey = locationKey + levelSuffix;
         
-        if (products.length === 0) {
+        // 拡張データベースを優先して確認
+        let productData = extendedDatabase[fullKey] || productDatabase[fullKey];
+        
+        if (!productData) {
             productsDiv.innerHTML = `
                 <div class="col-span-full text-center py-8 text-gray-500">
-                    <p>商品情報を取得できませんでした。</p>
+                    <p>この場所・汚れレベルの商品情報を準備中です。</p>
                     <p class="text-sm mt-2">一般的な住宅用洗剤をお試しください。</p>
                 </div>
             `;
             return;
         }
         
-        // 商品カードを生成
-        productsDiv.innerHTML = products.slice(0, 6).map(product => `
-            <div class="product-card bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div class="product-header mb-3">
-                    <h4 class="font-semibold text-gray-800 text-sm">${product.title}</h4>
-                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mt-1">${product.category}</span>
+        // カテゴリ別表示
+        let html = '';
+        
+        // 洗剤カテゴリ（5種類以上）
+        if (productData.cleaners && productData.cleaners.length > 0) {
+            html += `
+                <div class="col-span-full mb-6">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        🧴 洗剤・クリーナー（${productData.cleaners.length}種類）
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${productData.cleaners.map(product => this.generateProductCard(product)).join('')}
+                    </div>
                 </div>
-                <div class="product-body mb-3">
-                    <p class="text-gray-600 text-xs mb-2">${product.description}</p>
-                    <p class="text-green-600 font-medium text-sm">${product.price}</p>
+            `;
+        }
+        
+        // 道具・ブラシカテゴリ（4種類以上）
+        if (productData.tools && productData.tools.length > 0) {
+            html += `
+                <div class="col-span-full mb-6">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        🧽 清掃道具・ブラシ（${productData.tools.length}種類）
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${productData.tools.map(product => this.generateProductCard(product)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 保護具カテゴリ（5種類以上）
+        if (productData.protection && productData.protection.length > 0) {
+            html += `
+                <div class="col-span-full mb-6">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        🛡️ 保護具・安全用品（${productData.protection.length}種類）
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${productData.protection.map(product => this.generateProductCard(product)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (html === '') {
+            html = `
+                <div class="col-span-full text-center py-8 text-gray-500">
+                    <p>商品情報を取得できませんでした。</p>
+                    <p class="text-sm mt-2">一般的な住宅用洗剤をお試しください。</p>
+                </div>
+            `;
+        }
+        
+        productsDiv.innerHTML = html;
+        
+        console.log(`✅ カテゴリ別商品を表示しました`);
+    }
+    
+    generateProductCard(product) {
+        return `
+            <div class="product-card bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                <div class="product-header mb-3">
+                    <h5 class="font-bold text-gray-800 text-sm mb-2">${product.title}</h5>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="inline-block bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs px-3 py-1 rounded-full font-medium">${product.category}</span>
+                        ${product.professional ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-bold">プロ仕様</span>' : ''}
+                    </div>
+                </div>
+                <div class="product-body mb-4">
+                    <p class="text-gray-600 text-xs mb-3 leading-relaxed">${product.description}</p>
+                    <p class="text-green-600 font-bold text-base">${product.price}</p>
                 </div>
                 <div class="product-footer">
-                    <p class="text-blue-600 text-xs mb-2">💡 ${product.why_recommended}</p>
-                    <button class="w-full bg-orange-500 text-white text-xs py-2 px-3 rounded hover:bg-orange-600 transition-colors" 
+                    <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 mb-3">
+                        <p class="text-blue-800 text-xs font-medium flex items-start">
+                            <span class="mr-2">💡</span>
+                            <span>${product.why_recommended}</span>
+                        </p>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm py-3 px-4 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-bold shadow-md hover:shadow-lg transform hover:scale-105" 
                             onclick="window.open('https://amazon.co.jp/s?k=${encodeURIComponent(product.amazon_search)}', '_blank')">
-                        Amazonで検索
+                        🛒 Amazonで検索
                     </button>
                 </div>
             </div>
-        `).join('');
-        
-        console.log(`✅ ${products.length}件の商品を表示しました`);
+        `;
     }
     
     displayError(error) {
